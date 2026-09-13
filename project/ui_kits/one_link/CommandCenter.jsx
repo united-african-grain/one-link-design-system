@@ -1,5 +1,7 @@
 /** 01 Command Center — Calm and Exception (owner). */
 export function CommandCenter({ state = 'calm', mobile = false }) {
+  const compact = useCompact(mobile);
+  const sectionGap = useMinWidth(1024) ? 32 : 24;
   const exception = state === 'exception';
   const [period, setPeriod] = useState('Month');
   const [view, setView] = useState('Overview');
@@ -10,14 +12,14 @@ export function CommandCenter({ state = 'calm', mobile = false }) {
     : <Banner tone="success" title="Clean">books match reality · all reconciled</Banner>;
 
   const hero = (
-    <Card padding={mobile ? 16 : 20} gap={20}>
-      <div style={{ display: mobile ? 'flex' : 'grid', flexDirection: 'column', gridTemplateColumns: mobile ? undefined : 'minmax(0,1fr) 1px minmax(0,1fr)', gap: mobile ? 20 : 24, alignItems: 'start' }}>
-        <Figure label="your position right now" value="K125M" size={mobile ? 'display-2-condensed' : 'display-1-condensed'} derivation="physical K80M · in-transit K45M"
+    <Card padding={compact ? 16 : 20} gap={20}>
+      <div style={{ display: compact ? 'flex' : 'grid', flexDirection: 'column', gridTemplateColumns: compact ? undefined : 'minmax(0,1fr) 1px minmax(0,1fr)', gap: compact ? 20 : 24, alignItems: 'start' }}>
+        <Figure label="your position right now" value="K125M" size={compact ? 'display-2-condensed' : 'display-1-condensed'} derivation="physical K80M · in-transit K45M"
           derivationRows={[{ label: 'Physical stock', value: 'K80M' }, { label: 'In transit', value: 'K45M' }, { label: 'Position', value: 'K125M', total: true }]} />
-        {mobile ? null : <span style={{ alignSelf: 'stretch', background: 'var(--border-light)' }} />}
-        <Figure label="blended margin" value="K11.8M" size={mobile ? 'heading-1-condensed' : 'display-3-condensed'} delta="9.4%" derivation="margin on delivered tonnes, month to date" />
+        {compact ? null : <span style={{ alignSelf: 'stretch', background: 'var(--border-light)' }} />}
+        <Figure label="blended margin" value="K11.8M" size={compact ? 'heading-1-condensed' : 'display-3-condensed'} delta="9.4%" derivation="margin on delivered tonnes, month to date" />
       </div>
-      <ChartCard title="Position over the month" height={mobile ? 200 : 280} ranges={['1M', '3M', '1Y']} range="1M"
+      <ChartCard title="Position over the month" height={compact ? 200 : 280} ranges={['1M', '3M', '1Y']} range="1M"
         series={[{ type: 'area', color: '#2563EB', name: 'Position', format: (v) => 'K' + Math.round(v) + 'M', data: pos }]}
         style={{ boxShadow: 'none', padding: 0 }} />
     </Card>
@@ -26,7 +28,7 @@ export function CommandCenter({ state = 'calm', mobile = false }) {
   const tiles = (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <SectionLabel>month to date</SectionLabel>
-      <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(3, minmax(0,1fr))', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(3, minmax(0,1fr))', gap: 16 }}>
         <Card><Figure label="in" value="+K8.8M" delta="12 receipts" deltaDirection="up" derivation="goods received, month to date" /></Card>
         <Card><Figure label="out" value="K5.6M" derivation="8 dispatches" /></Card>
         <Card><Figure label="net" value="+K3.2M" delta="net movement" deltaDirection="up" derivation="in K8.8M less out K5.6M" /></Card>
@@ -78,7 +80,7 @@ export function CommandCenter({ state = 'calm', mobile = false }) {
     );
   }
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
       {head}
       <WithRail rail={rail}>
         {exception ? <Banner tone="error" title="Weighbridge feed silent">position may look flat. Tickets can still be photographed.</Banner> : null}

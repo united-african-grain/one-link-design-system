@@ -4,8 +4,10 @@ import { Icon } from '../core/Icon.jsx';
 import { Button } from '../actions/Button.jsx';
 import { CapsuleGroup } from '../actions/Capsule.jsx';
 
+const OL_CHART_NONE = [];
+
 /** Chart card on TradingView Lightweight Charts v5 (window.LightweightCharts). series: [{type:'line'|'area'|'baseline'|'histogram', data, color, name, options}]. */
-export function ChartCard({ title, ranges, range, onRange, series = [], priceLines = [], markers = [], height = 280, state = 'ready', onRetry, retrying = false, endLabel = true, footerNote, style }) {
+export function ChartCard({ title, ranges, range, onRange, series = OL_CHART_NONE, priceLines = OL_CHART_NONE, markers = OL_CHART_NONE, height = 280, state = 'ready', onRetry, retrying = false, endLabel = true, footerNote, style }) {
   const ref = useRef(null);
   const [end, setEnd] = useState(null);
   useEffect(() => {
@@ -13,7 +15,7 @@ export function ChartCard({ title, ranges, range, onRange, series = [], priceLin
     if (!LW || !el || state !== 'ready' || !series.length) return;
     const chart = LW.createChart(el, {
       width: el.clientWidth, height,
-      layout: { background: { type: 'solid', color: '#ffffff' }, textColor: 'rgba(0,15,33,0.45)', fontFamily: 'Inter', fontSize: 11, attributionLogo: true },
+      layout: { background: { type: 'solid', color: '#ffffff' }, textColor: 'rgba(0,15,33,0.45)', fontFamily: 'InterVariable, Inter, system-ui, sans-serif', fontSize: 11, attributionLogo: true },
       grid: { vertLines: { visible: false }, horzLines: { color: 'rgba(0,18,55,0.10)', style: LW.LineStyle.Dotted } },
       rightPriceScale: { borderVisible: false, scaleMargins: { top: 0.1, bottom: 0.1 } }, timeScale: { borderVisible: false },
       crosshair: { mode: LW.CrosshairMode.Magnet, vertLine: { color: 'rgba(0,16,42,0.25)', style: LW.LineStyle.Dashed, width: 1, labelBackgroundColor: '#23272d' }, horzLine: { color: 'rgba(0,16,42,0.25)', style: LW.LineStyle.Dashed, width: 1, labelBackgroundColor: '#23272d' } },

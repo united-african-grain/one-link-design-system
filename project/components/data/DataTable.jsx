@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Icon } from '../core/Icon.jsx';
 import { textStyle } from '../core/Text.jsx';
 import { Button } from '../actions/Button.jsx';
+import { useElementWidth } from '../core/Interaction.jsx';
+import { Dot, MetaParts } from './Card.jsx';
 
 /** Restricted cell: a content-quaternary dash plus a 12px eye-off. Never looks like zero, blank or loading. */
 export function RestrictedCell({ tooltip = 'Not available to Stock Control' }) {
@@ -26,16 +28,23 @@ export function DerivedCell({ children, rows = [] }) {
 /** Ref link cell: body-3-strong brand. */
 export function RefCell({ children, href = '#' }) { return <a href={href} onClick={(e) => e.preventDefault()} style={{ ...textStyle('body-3', { strong: true, tone: 'brand' }), fontVariantNumeric: 'tabular-nums', textDecoration: 'none' }}>{children}</a>; }
 
-/** Dense register. columns: [{key, label, align, width, render}]. rows: objects; row.correction = {reason, actor, time} adds a compensating row beneath. */
-export function DataTable({ columns, rows, footer, total, page = 1, pageSize, onPage, rowKey = 'id', groupLabels, style }) {
+/** Dense register. columns: [{key, label, align, width, render}]. rows: objects; row.correction = {reason, actor, time} adds a compensating row beneath.
+    When its container is narrower than minWidth (default 80px per column) the table scrolls inside its own overflow-x container. */
+export function DataTable({ columns, rows, footer, total, page = 1, pageSize, onPage, rowKey = 'id', groupLabels, minWidth, style }) {
   const [hoverI, setHoverI] = useState(-1);
+  const outer = useRef(null);
+  const outerW = useElementWidth(outer);
+  const tableMin = minWidth != null ? minWidth : columns.length * 80;
+  const scroll = outerW > 0 && outerW < tableMin;
   const grid = columns.map((c) => c.width || (c.align === 'right' ? 'max-content' : 'minmax(0,1fr)')).join(' ');
   const cell = (c, r, i) => {
     const v = c.render ? c.render(r, i) : r[c.key];
     return <div key={c.key} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: c.align === 'right' ? 'flex-end' : 'flex-start', padding: '0 12px', minWidth: 0, textAlign: c.align || 'left', ...textStyle('body-3', { tone: c.tone || 'primary', tabular: c.align === 'right' || c.tabular }), overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v}</div>;
   };
   return (
-    <div style={{ width: '100%', ...style }}>
+    <div ref={outer} style={{ width: '100%', ...style }}>
+      <div style={scroll ? { overflowX: 'auto', margin: '0 -8px', padding: '0 8px', WebkitOverflowScrolling: 'touch' } : undefined}>
+      <div style={scroll ? { minWidth: tableMin } : undefined}>
       {groupLabels ? <div style={{ display: 'grid', gridTemplateColumns: grid, height: 24 }}>{groupLabels.map((g, i) => <div key={i} style={{ gridColumn: g.span ? `span ${g.span}` : undefined, padding: '0 12px', display: 'flex', alignItems: 'center', ...textStyle('caption-1-condensed', { tone: 'tertiary' }) }}>{g.label}</div>)}</div> : null}
       <div role="row" style={{ display: 'grid', gridTemplateColumns: grid, height: 36, boxShadow: 'inset 0 -1px 0 var(--border-light)' }}>
         {columns.map((c) => <div key={c.key} style={{ display: 'flex', alignItems: 'center', justifyContent: c.align === 'right' ? 'flex-end' : 'flex-start', padding: '0 12px', ...textStyle('body-4', { tone: 'tertiary' }), whiteSpace: 'nowrap' }}>{c.label}</div>)}
@@ -48,11 +57,13 @@ export function DataTable({ columns, rows, footer, total, page = 1, pageSize, on
           </div>
           {r.correction ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, height: 32, padding: '0 12px', boxShadow: 'inset 0 -1px 0 var(--border-light)', ...textStyle('body-4', { tone: 'secondary' }), fontVariantNumeric: 'tabular-nums' }}>
-              <Icon name="rotate-ccw" size={12} /><span>{r.correction.reason}</span><span style={{ color: 'var(--content-tertiary)' }}>· {r.correction.actor} · {r.correction.time}</span>
+              <Icon name="rotate-ccw" size={12} /><span>{r.correction.reason}</span><span style={{ display: 'inline-flex', alignItems: 'center', color: 'var(--content-tertiary)' }}><Dot style={{ marginLeft: 0 }} /><MetaParts meta={[r.correction.actor, r.correction.time]} /></span>
             </div>
           ) : null}
         </React.Fragment>
       ))}
+      </div>
+      </div>
       {(footer || total) ? (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '12px 12px 0', ...textStyle('body-3', { tone: 'tertiary' }), fontVariantNumeric: 'tabular-nums' }}>
           <span>{footer || `Showing ${rows.length} of ${total}`}</span>

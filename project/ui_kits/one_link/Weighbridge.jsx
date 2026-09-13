@@ -6,6 +6,8 @@ const TICKETS = [
 
 /** 06 Weighbridge Tickets (Warehouse · Clerk) — default, sync silent, empty. */
 export function Weighbridge({ state = 'default', mobile = false }) {
+  const compact = useCompact(mobile);
+  const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [syncing, setSyncing] = useState(false);
   const silent = state === 'silent';
   const empty = state === 'empty';
@@ -14,7 +16,7 @@ export function Weighbridge({ state = 'default', mobile = false }) {
   const head = (
     <PageHead title="Weighbridge tickets" meta={<SyncStatus state={silent ? 'stalled' : 'live'} style={{ padding: 0, height: 'auto' }} />}
       right={<Button variant="outline" icon="refresh-cw" loading={syncing} onClick={() => { setSyncing(true); setTimeout(() => setSyncing(false), 1800); }}>Sync tickets</Button>}>
-      <Segmented options={[{ value: 'ready', label: 'Ready', icon: 'check', count: empty ? 0 : 3 }, { value: 'prob', label: 'Problematic', icon: 'triangle-alert', count: empty ? 0 : 1 }, { value: 'linked', label: 'Linked', icon: 'link', count: 0 }, { value: 'done', label: 'Done', icon: 'circle-check', count: 0 }]} value="ready" />
+      <ScrollRow><Segmented options={[{ value: 'ready', label: 'Ready', icon: 'check', count: empty ? 0 : 3 }, { value: 'prob', label: 'Problematic', icon: 'triangle-alert', count: empty ? 0 : 1 }, { value: 'linked', label: 'Linked', icon: 'link', count: 0 }, { value: 'done', label: 'Done', icon: 'circle-check', count: 0 }]} value="ready" /></ScrollRow>
     </PageHead>
   );
 
@@ -32,7 +34,7 @@ export function Weighbridge({ state = 'default', mobile = false }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <SectionLabel>ready for a GRN</SectionLabel>
       {empty ? <Card><EmptyState tone="neutral" icon="clock" title="No tickets waiting" meta="Next batch lands when the feed runs" /></Card> : (
-        <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(2, minmax(0,1fr))', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(2, minmax(0,1fr))', gap: 16 }}>
           {TICKETS.map((t) => (
             <Card key={t.ref} interactive commodityColor={maize} title={`${t.ref} · ${t.cp}`} meta={[t.truck, t.driver, t.weights]}
               headerRight={<Button size="xsmall" variant="brand">Raise GRN</Button>}>
@@ -58,11 +60,13 @@ export function Weighbridge({ state = 'default', mobile = false }) {
 
   const body = <>{silent ? <Banner tone="error" title="Weighbridge feed silent">position may look flat. Tickets can still be photographed.</Banner> : null}{empty ? null : attention}{ready}</>;
   if (mobile) return <>{head}{body}{rail}</>;
-  return <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>{head}<Tabs tabs={['Tickets', 'Goods received', 'Dispatch']} value="Tickets" /><WithRail rail={rail}>{body}</WithRail></div>;
+  return <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>{head}<Tabs tabs={['Tickets', 'Goods received', 'Dispatch']} value="Tickets" /><WithRail rail={rail}>{body}</WithRail></div>;
 }
 
 /** 07 GRN finalise — three outcomes, GR10000356 · Maize (white) · Harvest Co-op. */
 export function GRNFinalise({ mobile = false }) {
+  const compact = useCompact(mobile);
+  const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [busy, setBusy] = useState(false);
   const variants = [
     { key: 'within', outcome: 'within', label: 'Within tolerance', cols: [{ label: 'Weighed in', value: '28.20', unit: 't', provenance: 'synced' }, { label: 'Deduction', value: '0.00', unit: 't', provenance: 'ocr-medium' }, { label: 'Applied', value: '28.20', unit: 't', provenance: 'typed' }] },
@@ -70,10 +74,10 @@ export function GRNFinalise({ mobile = false }) {
     { key: 'block', outcome: 'block', label: 'Hard block', cols: [{ label: 'Gross', value: '34.20', unit: 't', provenance: 'synced' }, { label: 'Tare', value: '36.00', unit: 't', provenance: 'typed', color: 'var(--error-strong)' }, { label: 'Net', value: '—', provenance: 'typed' }] },
   ];
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
       <PageHead breadcrumb={['Warehouse', 'Goods received']} title="GR10000356 · Maize (white)" meta="Harvest Co-op · ticket weights gross 34.2 · tare 6 · net 28.2 MT"
         intro="Three outcomes from the same ticket. The clerk never types a net — it is folded from the weighbridge." />
-      <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(3, minmax(0,1fr))', gap: 16, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(3, minmax(0,1fr))', gap: 16, alignItems: 'start' }}>
         {variants.map((v) => (
           <div key={v.key} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <SectionLabel>{v.label}</SectionLabel>
@@ -89,6 +93,9 @@ export function GRNFinalise({ mobile = false }) {
 
 /** 08 Grading dispute — GR10000377 · DSP-0219 (Warehouse). */
 export function GradingDispute({ mobile = false }) {
+  const compact = useCompact(mobile);
+  const sectionGap = useMinWidth(1024) ? 32 : 24;
+  const panelFull = !useMinWidth(1024);
   const [outcome, setOutcome] = useState('uphold');
   const [busy, setBusy] = useState(false);
   const rows = [
@@ -113,7 +120,7 @@ export function GradingDispute({ mobile = false }) {
   ]} />;
   const pack = (
     <Card title="Our evidence pack" meta={['Spec version v4', 'Assessor P. Zulu']}>
-      <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(3, minmax(0,1fr))', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(3, minmax(0,1fr))', gap: 16 }}>
         <Figure label="weighed in" value="30.02" unit="t" size="heading-3-condensed" />
         <Figure label="deduction" value="0.32" unit="t" size="heading-3-condensed" derivation="1.05% of weighed" />
         <Figure label="applied" value="29.70" unit="t" size="heading-3-condensed" />
@@ -125,7 +132,7 @@ export function GradingDispute({ mobile = false }) {
     </Card>
   );
   const panel = (
-    <ActionPanel tile="KF" context="GR10000377 · DSP-0219" subject="Resolve dispute" width={mobile ? '100%' : 350}>
+    <ActionPanel tile="KF" context="GR10000377 · DSP-0219" subject="Resolve dispute" width={mobile || panelFull ? '100%' : 350}>
       <RadioList value={outcome} onChange={setOutcome} options={[{ value: 'uphold', label: 'Uphold deduction' }, { value: 'credit', label: 'Credit the difference', hint: '0.32 t · K2,176' }, { value: 'regrade', label: 'Re-grade from retained sample' }, { value: 'dismiss', label: 'Dismiss' }]} />
       <Text variant="body-4" tone="secondary" style={{ textWrap: 'pretty' }}>The retained sample is still inside its 30-day window, so a re-grade is available until 31 Aug.</Text>
       <PressButton kind="large" variant="primary" fullWidth loading={busy} onClick={() => { setBusy(true); setTimeout(() => setBusy(false), 1800); }}>Resolve case</PressButton>
@@ -139,12 +146,9 @@ export function GradingDispute({ mobile = false }) {
   const history = <Card title="History"><Timeline entries={[{ text: 'Delivery weighed in at 30.02 t', actor: 'bridge', time: '1 Aug 18:02' }, { text: 'Grading: moisture 13.4% · deduction 0.32 t applied', actor: 'P. Zulu', time: '1 Aug 19:16' }, { text: 'Dispute lodged by Kapiri Farms', actor: 'C. Musonda', time: '1 Aug 18:14' }, { text: 'Escalated to Thandiwe', actor: 'system', time: '4 Aug 18:14' }]} /></Card>;
   if (mobile) return <>{head}{claim}{figures}{pack}{history}{panel}</>;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
       {head}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 350px', gap: 'var(--rail-gap)', alignItems: 'start' }}>
-        <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>{claim}{figures}{pack}{history}</div>
-        <div style={{ position: 'sticky', top: 24 }}>{panel}</div>
-      </div>
+      <WithPanel panel={panel}>{claim}{figures}{pack}{history}</WithPanel>
     </div>
   );
 }

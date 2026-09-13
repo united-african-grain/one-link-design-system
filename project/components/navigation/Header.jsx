@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon } from '../core/Icon.jsx';
 import { textStyle } from '../core/Text.jsx';
 import { Avatar } from '../core/Avatar.jsx';
@@ -6,6 +6,7 @@ import { Logo } from '../core/Logo.jsx';
 import { SearchField } from '../inputs/SearchField.jsx';
 import { SyncStatus } from './SyncStatus.jsx';
 import { Tabs } from './Tabs.jsx';
+import { useInteraction, useMinWidth } from '../core/Interaction.jsx';
 
 export const MODULES = [
   { value: 'command', label: 'Command Center', icon: 'gauge' },
@@ -17,22 +18,37 @@ export const MODULES = [
 ];
 
 function IconButton({ icon, label, onClick }) {
-  const [h, setH] = useState(false);
-  return <button type="button" aria-label={label} onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} style={{ width: 36, height: 36, borderRadius: 'var(--radius-max)', border: 0, background: h ? 'var(--hover-overlay-darker)' : 'transparent', color: 'var(--content-primary)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background var(--dur-default) var(--ease-default)' }}><Icon name={icon} size={20} stroke={1.75} /></button>;
+  const { hover, focusVisible, handlers } = useInteraction();
+  return <button type="button" aria-label={label} onClick={onClick} {...handlers} style={{ width: 36, height: 36, flex: 'none', borderRadius: 'var(--radius-max)', border: 0, outline: 'none', background: hover ? 'var(--hover-overlay-darker)' : 'transparent', color: 'var(--content-primary)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: focusVisible ? '0 0 0 4px color-mix(in srgb, var(--content-primary) 25%, transparent)' : 'none', transition: 'background var(--dur-default) var(--ease-default)' }}><Icon name={icon} size={20} stroke={1.75} /></button>;
 }
 
-/** Desktop header: 56px top row (logo + BETA, search, sync pill, bell, avatar) and a 48px module tab row. Set scrolled for the 80% white + blur surface. */
-export function Header({ modules = MODULES, module, onModuleChange, sync = 'live', syncLabel, initials = 'TM', userLine = 'T. Mwila · Owner', product = 'One Link', showBeta = true, showTabs = true, scrolled = false, showSearch = true, right, style }) {
+/** Desktop header, sticky at the top (z 30): 2px + 56px top row (logo + BETA, search, sync pill, bell, avatar) + 48px module tab row = 106px (--header-desktop).
+    Turns 80% white with a 24px blur once the page scrolls past 8px (blurOnScroll, on by default); `scrolled` forces that surface.
+    Side padding 16px, 24px from 1024px. Below 768px search collapses to an icon and the sync pill shows its dot only; tabs scroll sideways. */
+export function Header({ modules = MODULES, module, onModuleChange, sync = 'live', syncLabel, initials = 'TM', userLine = 'T. Mwila · Owner', product = 'One Link', showBeta = true, showTabs = true, scrolled = false, blurOnScroll = true, showSearch = true, right, style }) {
   const [menu, setMenu] = useState(false);
+  const [pastTop, setPastTop] = useState(false);
+  const desktop = useMinWidth(1024);
+  const roomy = useMinWidth(768);
+  useEffect(() => {
+    if (!blurOnScroll || typeof window === 'undefined') return undefined;
+    const on = () => setPastTop(window.scrollY > 8);
+    on();
+    window.addEventListener('scroll', on, { passive: true });
+    return () => window.removeEventListener('scroll', on);
+  }, [blurOnScroll]);
+  const blurred = scrolled || (blurOnScroll && pastTop);
+  const pad = desktop ? 24 : 16;
   return (
-    <header style={{ position: 'relative', background: scrolled ? 'rgba(255,255,255,.8)' : 'var(--surface)', backdropFilter: scrolled ? 'blur(24px)' : undefined, WebkitBackdropFilter: scrolled ? 'blur(24px)' : undefined, boxShadow: 'inset 0 -1px 0 var(--border)', ...style }}>
-      <div style={{ maxWidth: 'var(--shell-max)', margin: '0 auto', padding: '0 var(--shell-pad-desktop)' }}>
-        <div style={{ height: 56, display: 'flex', alignItems: 'center', gap: 16 }}>
-          <Logo product={product} showBeta={showBeta} />
-          {showSearch ? <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start', marginLeft: 8 }}><SearchField /></div> : <div style={{ flex: 1 }} />}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+    <header data-blurred={blurred || undefined} style={{ position: 'sticky', top: 0, zIndex: 30, background: blurred ? 'color-mix(in srgb, var(--surface) 80%, transparent)' : 'var(--surface)', backdropFilter: blurred ? 'blur(24px)' : undefined, WebkitBackdropFilter: blurred ? 'blur(24px)' : undefined, boxShadow: 'inset 0 -1px 0 var(--border)', transition: 'background var(--dur-default) var(--ease-default)', ...style }}>
+      <div style={{ maxWidth: 'var(--shell-max)', margin: '0 auto', padding: `${showTabs ? 2 : 0}px ${pad}px 0`, boxSizing: 'border-box' }}>
+        <div style={{ height: 56, display: 'flex', alignItems: 'center', gap: roomy ? 16 : 8, minWidth: 0 }}>
+          <Logo product={product} showBeta={showBeta} style={{ flex: 'none' }} />
+          {showSearch && roomy ? <div style={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'flex-start', marginLeft: 8 }}><SearchField /></div> : <div style={{ flex: 1 }} />}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 'none' }}>
             {right}
-            {sync ? <SyncStatus state={sync} label={syncLabel} /> : null}
+            {sync ? <SyncStatus state={sync} label={syncLabel} compact={!roomy} /> : null}
+            {showSearch && !roomy ? <IconButton icon="search" label="Search" /> : null}
             <IconButton icon="bell" label="Digest" />
             <div style={{ position: 'relative' }}>
               <button type="button" aria-haspopup="menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)} style={{ border: 0, padding: 0, background: 'transparent', cursor: 'pointer', display: 'inline-flex', borderRadius: 'var(--radius-max)' }}><Avatar initials={initials} size={32} /></button>
@@ -45,7 +61,11 @@ export function Header({ modules = MODULES, module, onModuleChange, sync = 'live
             </div>
           </div>
         </div>
-        {showTabs ? <Tabs tabs={modules} value={module || modules[0].value} onChange={onModuleChange} height={48} gap={24} /> : null}
+        {showTabs ? (
+          <div style={{ overflowX: 'auto', scrollbarWidth: 'none', margin: `0 -${pad}px`, padding: `0 ${pad}px` }}>
+            <Tabs tabs={modules} value={module || modules[0].value} onChange={onModuleChange} height={48} gap={20} style={{ width: 'max-content' }} />
+          </div>
+        ) : null}
       </div>
     </header>
   );

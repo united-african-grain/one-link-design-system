@@ -14,8 +14,10 @@ export interface HeaderProps {
   /** Hide the 48px module row (Partner Portal). */
   showTabs?: boolean;
   showSearch?: boolean;
-  /** 80% white + 24px blur once content scrolls under. */
+  /** Force the 80% white + 24px blur surface. */
   scrolled?: boolean;
+  /** Listen to window scroll and blur once scrollY > 8 (default true). */
+  blurOnScroll?: boolean;
   /** Extra elements before the sync pill. */
   right?: React.ReactNode;
   style?: React.CSSProperties;

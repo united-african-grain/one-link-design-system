@@ -1,6 +1,6 @@
 :root {
-  --font-text: "Inter", "Inter Variable", system-ui, sans-serif;
-  --font-condensed: "Instrument Sans", "Inter", system-ui, sans-serif;
+  --font-text: "InterVariable", "Inter", system-ui, sans-serif; /* rsms.me names the variable face InterVariable (wght + opsz axes); static "Inter" snaps 480/540/580 */
+  --font-condensed: "Instrument Sans", "Arial Narrow", ui-sans-serif, sans-serif;
 
   --weight-regular: 480;
   --weight-heading: 540;
@@ -93,6 +93,8 @@
 .t-body-2-condensed{font:var(--font-body-2-condensed);letter-spacing:0.2px}
 .t-caption-1-condensed{font:var(--font-caption-1-condensed);letter-spacing:0.15px}
 .t-caption-2-condensed{font:var(--font-caption-2-condensed);letter-spacing:0.15px}
-[class*="-condensed"]{font-stretch:75%;text-transform:uppercase;font-feature-settings:var(--features-condensed);font-variant-numeric:tabular-nums}
+.t-display-1-condensed,.t-display-2-condensed,.t-display-3-condensed,.t-display-4-condensed,.t-heading-1-condensed,.t-heading-2-condensed,.t-heading-3-condensed,.t-body-2-condensed,.t-caption-1-condensed,.t-caption-2-condensed{font-stretch:75%;text-transform:uppercase;font-variant-numeric:tabular-nums}
+/* display/heading condensed (and .t-condensed) keep "case","cv09"; body/caption condensed get "case" only */
 .t-display-1-condensed,.t-display-2-condensed,.t-display-3-condensed,.t-display-4-condensed,.t-heading-1-condensed,.t-heading-2-condensed,.t-heading-3-condensed{font-feature-settings:var(--features-condensed-display)}
+.t-body-2-condensed,.t-caption-1-condensed,.t-caption-2-condensed{font-feature-settings:var(--features-condensed)}
 .t-num{font-variant-numeric:tabular-nums}

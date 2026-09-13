@@ -7,4 +7,4 @@ Standard button in 7 variants and 4 sizes. Any button that starts work shows `lo
 <Button variant="critical-ghost">Decline</Button>
 ```
 
-Hover mixes 10% white into filled buttons and 5% black into light fills; press scales to 0.97; focus is a 4px ring at 25%. Disabled = grouped-light fill, tertiary label.
+Hover mixes 10% white into filled buttons and 5% black into light fills; press scales to 0.97; keyboard focus (not pointer focus) is a 4px ring at 25%; press also responds to touch and Space/Enter. Disabled = grouped-light fill, tertiary label.

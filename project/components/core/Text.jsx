@@ -1,9 +1,10 @@
 import React from 'react';
 
 const INTER = {
-  'display-1': ['var(--font-display-1)', 'var(--display-1-tracking)', true],
-  'display-4': ['var(--font-display-4)', 'var(--display-4-tracking)', true],
-  'heading-1': ['var(--font-heading-1)', 'var(--heading-1-tracking)', true],
+  /* 4th entry = fixed weight: display-1 is regular only (520); display-4 and heading-1 are strong only (600). */
+  'display-1': ['var(--font-display-1)', 'var(--display-1-tracking)', true, 520],
+  'display-4': ['var(--font-display-4)', 'var(--display-4-tracking)', true, 'var(--weight-strong-heading)'],
+  'heading-1': ['var(--font-heading-1)', 'var(--heading-1-tracking)', true, 'var(--weight-strong-heading)'],
   'heading-2': ['var(--font-heading-2)', 'var(--heading-2-tracking)', true],
   'heading-3': ['var(--font-heading-3)', 'var(--heading-3-tracking)', true],
   'heading-4': ['var(--font-heading-4)', 'var(--heading-4-tracking)', true],
@@ -43,7 +44,7 @@ export function textStyle(variant = 'body-3', { strong = false, tone = 'primary'
   }
   const v = INTER[variant] || INTER['body-3'];
   const isHeading = !!v[2];
-  const weight = strong ? (isHeading ? 'var(--weight-strong-heading)' : 'var(--weight-strong)') : (isHeading ? 'var(--weight-heading)' : 'var(--weight-regular)');
+  const weight = v[3] != null ? v[3] : strong ? (isHeading ? 'var(--weight-strong-heading)' : 'var(--weight-strong)') : (isHeading ? 'var(--weight-heading)' : 'var(--weight-regular)');
   return { font: v[0], fontWeight: weight, letterSpacing: v[1],
     fontFeatureSettings: isHeading ? 'var(--features-heading)' : 'var(--features-text)',
     fontVariationSettings: isHeading ? 'var(--variation-heading)' : undefined,

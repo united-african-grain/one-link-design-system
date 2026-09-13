@@ -10,6 +10,8 @@ const MILLS = [
 
 /** 04 Coverage — Wheat (local) (Trade Desk). */
 export function Coverage({ mobile = false }) {
+  const compact = useCompact(mobile);
+  const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [com, setCom] = useState('wheat-local');
   const wheat = 'var(--commodity-wheat)';
   const series = useMemo(() => Array.from({ length: 26 }, (_, i) => ({ time: '2026-06-' + String(i + 1).padStart(2, '0'), value: 92000 + i * 700 + Math.sin(i / 3) * 1200 })), []);
@@ -26,7 +28,7 @@ export function Coverage({ mobile = false }) {
   );
 
   const cards = (
-    <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(2, minmax(0,1fr))', gap: 16 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(2, minmax(0,1fr))', gap: 16 }}>
       {MILLS.map((m) => (
         <Card key={m.name} interactive commodityColor={wheat} closed={m.closed} title={m.name} meta={[`target ${m.target}`, `window ${m.window}`]}>
           <CardRow closed={m.closed} leading={<Avatar initials={initials(m.name)} commodityColor={wheat} dimmed={m.closed} />}
@@ -56,7 +58,7 @@ export function Coverage({ mobile = false }) {
   const head = (
     <PageHead title="Coverage" meta="Tue 24 Jun · 07:02" intro="Nobody types a balance. Every figure below is derived from signed legs, declarations and movement.">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <CommodityTabs value={com} onChange={setCom} tabs={[{ value: 'white-maize', label: 'White maize' }, { value: 'wheat-local', label: 'Wheat (local)' }, { value: 'soya', label: 'Soya' }, { value: 'se-meal', label: 'SE meal' }]} />
+        <ScrollRow><CommodityTabs value={com} onChange={setCom} tabs={[{ value: 'white-maize', label: 'White maize' }, { value: 'wheat-local', label: 'Wheat (local)' }, { value: 'soya', label: 'Soya' }, { value: 'se-meal', label: 'SE meal' }]} /></ScrollRow>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><Capsule selected>Season 2026</Capsule><Capsule chevron>Site: all</Capsule></div>
       </div>
     </PageHead>
@@ -66,7 +68,7 @@ export function Coverage({ mobile = false }) {
 
   if (mobile) return <>{head}{figures}{cards}{rail}{foot}</>;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
       {head}
       <Tabs tabs={['Trade Board', 'Coverage', 'Approvals']} value="Coverage" />
       <WithRail rail={rail}>{figures}{cards}{foot}</WithRail>

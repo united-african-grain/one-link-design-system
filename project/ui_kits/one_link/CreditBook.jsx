@@ -14,6 +14,8 @@ const FARMERS = [
 
 /** 10 Farmer Finance — Credit book (Programmes). */
 export function CreditBook({ mobile = false }) {
+  const compact = useCompact(mobile);
+  const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [price, setPrice] = useState('$400');
   const wheat = 'var(--commodity-wheat)';
   const ltv = useMemo(() => Array.from({ length: 26 }, (_, i) => ({ time: '2026-07-' + String(i + 1).padStart(2, '0'), value: 17.5 + Math.sin(i / 4) * 2.6 + i * 0.28 })), []);
@@ -68,5 +70,5 @@ export function CreditBook({ mobile = false }) {
 
   const foot = <Text variant="body-4" tone="tertiary">Every number here is derived from the ledger. Nothing on this screen is typed.</Text>;
   if (mobile) return <>{head}{figures}{table}{rail}{foot}</>;
-  return <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>{head}<WithRail rail={rail}>{figures}{table}{foot}</WithRail></div>;
+  return <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>{head}<WithRail rail={rail}>{figures}{table}{foot}</WithRail></div>;
 }

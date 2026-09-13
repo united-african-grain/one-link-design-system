@@ -10,6 +10,8 @@ const STACKS = [
 
 /** 09 Stock board — Kafue Road, Lusaka (Stock). Owner and Stock Control views. */
 export function StockBoard({ role = 'Owner', mobile = false }) {
+  const compact = useCompact(mobile);
+  const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [owners, setOwners] = useState('All owners');
   const restricted = role !== 'Owner';
 
@@ -20,17 +22,17 @@ export function StockBoard({ role = 'Owner', mobile = false }) {
   );
 
   const figures = (
-    <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(2, minmax(0,1fr))', gap: 16 }}>
-      <Card><Figure label="site total" value="34,117" unit="MT" size={mobile ? 'display-4-condensed' : 'display-3-condensed'} derivation="across 7 stacks and silos" /></Card>
+    <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(2, minmax(0,1fr))', gap: 16 }}>
+      <Card><Figure label="site total" value="34,117" unit="MT" size={compact ? 'display-4-condensed' : 'display-3-condensed'} derivation="across 7 stacks and silos" /></Card>
       <Card>
-        <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(3, minmax(0,1fr))', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(3, minmax(0,1fr))', gap: 16 }}>
           <Figure label="committed" value="6,900" unit="MT" size="heading-3-condensed" derivation="already sold" />
           <Figure label="third-party held" value="2,100" unit="MT" size="heading-3-condensed" derivation="in our shed, not our grain" />
           <Figure label="free to sell" value="25,117" unit="MT" size="heading-3-condensed" derivation="site total less committed and 3P"
             derivationRows={[{ label: 'Site total', value: '34,117' }, { label: 'Committed', value: '−6,900' }, { label: 'Third-party held', value: '−2,100' }, { label: 'Free to sell', value: '25,117', total: true }]} />
         </div>
       </Card>
-      <Card style={{ gridColumn: mobile ? undefined : 'span 2' }}>
+      <Card style={{ gridColumn: compact ? undefined : 'span 2' }}>
         {restricted
           ? <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}><Text variant="body-3" tone="secondary">book value at cost</Text><div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><RestrictedCell /><Text variant="body-3" tone="tertiary">Not available to Stock Control</Text></div></div>
           : <Figure label="book value at cost" value="K190,790,400" size="heading-1-condensed" derivation="weighted average cost across stacks" />}
@@ -72,5 +74,5 @@ export function StockBoard({ role = 'Owner', mobile = false }) {
   );
 
   if (mobile) return <>{head}{figures}{needs}{table}</>;
-  return <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>{head}<WithRail rail={needs}>{figures}{table}</WithRail></div>;
+  return <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>{head}<WithRail rail={needs}>{figures}{table}</WithRail></div>;
 }

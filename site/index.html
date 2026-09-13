@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One Link design system</title>
+<meta name="description" content="Tokens, type, motion, components and screens for One Link, the grain trading and warehousing platform. Light theme, web and mobile.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="{{cdn.react}}" defer></script>
+<script src="{{cdn.reactDom}}" defer></script>
+<script src="{{cdn.lucide}}" defer></script>
+<script src="{{cdn.charts}}" defer></script>
+<script src="_ds_bundle.js" defer></script>
+<script src="landing.js" defer></script>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:120px;background:var(--surface)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--surface);color:var(--content-primary);font-synthesis:none;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4,p,ul,ol,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit;text-decoration:none}
+code,.tok,.hex,.ref{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;letter-spacing:0}
+.tok{color:var(--content-primary);overflow-wrap:anywhere}
+.hex{color:var(--content-secondary)}
+.ref{display:inline-block;padding:1px 6px;border-radius:var(--radius-4xs);background:var(--grouped-light);color:var(--content-secondary);white-space:nowrap}
+.muted{color:var(--content-tertiary)}
+.num{font-variant-numeric:tabular-nums}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+a:focus-visible,summary:focus-visible,button:focus-visible{outline:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--content-primary) 25%,transparent);border-radius:var(--radius-2xs)}
+.flash{animation:flash 1.4s ease-out}
+@keyframes flash{0%,40%{background:var(--yellow-200)}to{background:transparent}}
+[data-lucide],svg.lucide{width:16px;height:16px;flex:none}
+
+.shell{max-width:var(--shell-max);margin-inline:auto;padding-inline:var(--shell-pad)}
+@media (min-width:64rem){.shell{padding-inline:var(--shell-pad-desktop)}}
+
+/* ---------- buttons used by static markup ---------- */
+.btn{--bg:transparent;--fg:var(--content-primary);--hover:#000 5%;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:4px;height:36px;padding-inline:14px;border:0;border-radius:var(--radius-max);background:var(--bg);color:var(--fg);font:var(--font-body-3-strong);letter-spacing:var(--body-3-tracking);white-space:nowrap;cursor:pointer;transition:background-color .15s ease-out,scale .15s ease-out}
+.btn:hover{background:color-mix(in srgb,var(--hover),var(--bg))}
+.btn:active{scale:var(--scale-press-button)}
+.btn--brand{--bg:var(--buttons-brand);--fg:var(--buttons-label);--hover:#fff 10%}
+.btn--primary{--bg:var(--buttons-primary);--fg:var(--buttons-label);--hover:#fff 10%}
+.btn--outline{--bg:var(--elevated);box-shadow:inset 0 0 0 1px var(--border-light)}
+.btn[data-size="xsmall"]{height:32px;padding-inline:12px;border-radius:var(--radius-xs)}
+.btn svg{width:20px;height:20px}
+
+/* ---------- navbar ---------- */
+.navbar{position:sticky;top:0;z-index:30;background:var(--surface);box-shadow:inset 0 -1px 0 var(--border)}
+.navbar[data-blurred]{background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.nav-top{display:flex;align-items:center;gap:16px;height:var(--header-top)}
+.lockup{display:inline-flex;align-items:center;gap:8px;flex:none}
+.lockup .mark{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:var(--radius-2xs);background:var(--buttons-primary);color:#fff}
+.badge{display:inline-flex;align-items:center;height:16px;padding:2px 5px 1px;border-radius:var(--radius-4xs);background:var(--beta-fill);color:var(--beta-label)}
+.nav-search{flex:1;max-width:400px;position:relative}
+.search{display:flex;align-items:center;gap:8px;height:40px;padding-inline:12px;border-radius:var(--radius-sm);background:var(--grouped-light);color:var(--content-secondary);transition:background-color .15s ease-out,box-shadow .15s ease-out}
+.search:hover{background:color-mix(in srgb,#000 5%,var(--grouped))}
+.search:focus-within{background:var(--surface);box-shadow:inset 0 0 0 1px var(--border),0 0 0 4px var(--grayt-100)}
+.search input{flex:1;min-width:0;border:0;background:none;color:var(--content-primary);font:var(--font-body-3);letter-spacing:var(--body-3-tracking);outline:none}
+.search input::placeholder{color:var(--content-primary);opacity:.3}
+.kbd{padding:2px 4px;border-radius:var(--radius-4xs);background:var(--hover-overlay-darker);color:var(--content-secondary)}
+.nav-search .status{position:absolute;right:44px;top:50%;translate:0 -50%;color:var(--content-tertiary)}
+.nav-top .spacer{flex:1}
+@media (max-width:40rem){.nav-search{display:none}.nav-top .gh-label{display:none}}
+.tabs{position:relative;display:flex;gap:20px;height:var(--header-tabs);align-items:center;overflow-x:auto;scrollbar-width:none;margin-bottom:-.5px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;display:flex;align-items:center;height:100%;white-space:nowrap;color:var(--content-tertiary);transition:color .2s ease-out}
+.tab:hover,.tab[aria-current]{color:var(--content-primary)}
+.tab-bar{position:absolute;left:0;bottom:0;height:2px;width:1px;background:var(--content-primary);transform-origin:left;transition:translate .3s var(--ease-spring),scale .3s var(--ease-spring)}
+@media (prefers-reduced-motion:reduce){.tab-bar{transition:none}}
+
+/* ---------- two column grid ---------- */
+.layout{display:flex;flex-direction:column;gap:24px;padding-block:24px 64px}
+@media (min-width:72rem){.layout{display:grid;grid-template-columns:minmax(0,1fr) var(--rail-w-narrow);gap:var(--rail-gap);padding-block:32px 96px}}
+@media (min-width:80rem){.layout{grid-template-columns:minmax(0,1fr) var(--rail-w)}}
+main{display:flex;flex-direction:column;gap:64px;min-width:0}
+.rail{min-width:0}
+@media (min-width:72rem){.rail-sticky{position:sticky;top:128px}}
+.rail-sticky{display:flex;flex-direction:column;gap:24px}
+
+section{display:flex;flex-direction:column;gap:24px;min-width:0}
+.sec-head{display:flex;flex-direction:column;gap:6px;max-width:68ch}
+.sec-head h2{text-wrap:balance}
+.sec-head p{color:var(--content-secondary)}
+.sub{display:flex;flex-direction:column;gap:12px;min-width:0}
+.sub-head{display:flex;flex-direction:column;gap:4px;max-width:70ch}
+.sub-head p{color:var(--content-secondary)}
+
+/* ---------- hero ---------- */
+.hero{display:grid;gap:24px;padding:20px;border-radius:var(--radius-lg);background:var(--elevated);box-shadow:var(--shadow-minimal-soft)}
+@media (min-width:52rem){.hero{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);padding:28px;gap:32px;align-items:center}}
+.hero-copy{display:flex;flex-direction:column;gap:14px;min-width:0}
+.hero-copy h1{text-wrap:balance}
+.hero-copy>p{color:var(--content-secondary);max-width:56ch}
+.ideas{display:flex;flex-direction:column;border-top:1px dashed var(--border)}
+.ideas li{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;padding-block:12px;border-bottom:1px dashed var(--border)}
+.ideas .k{grid-row:span 2;margin-top:1px;width:22px;height:22px;border-radius:var(--radius-max);display:grid;place-items:center;background:var(--info-subtle);color:var(--info-strong);box-shadow:inset 0 0 0 1px var(--brand-100)}
+.ideas .k svg{width:12px;height:12px}
+.ideas p{color:var(--content-secondary)}
+.hero-demo{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:var(--radius-md);background:var(--grouped);min-width:0}
+.hint{color:var(--content-tertiary);text-align:center}
+.mount{min-width:0}
+.mount:empty{min-height:120px;border-radius:var(--radius-lg);background:var(--grouped)}
+
+/* ---------- rules ---------- */
+.rules{display:grid;gap:12px}
+@media (min-width:44rem){.rules{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rule{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:var(--radius-lg);background:var(--elevated);box-shadow:var(--shadow-minimal-soft);min-width:0}
+.rule-head{display:flex;gap:10px;align-items:flex-start}
+.rule-head .k{flex:none;width:28px;height:28px;border-radius:var(--radius-2xs);display:grid;place-items:center;background:var(--grouped);color:var(--content-primary)}
+.rule-head .k svg{width:16px;height:16px}
+.rule p{color:var(--content-secondary)}
+.rule .example{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px;border-radius:var(--radius-md);background:var(--grouped);min-height:56px}
+.rule .example:empty{background:var(--grouped)}
+
+/* ---------- colour ---------- */
+.role-group{display:grid;gap:12px}
+@media (min-width:56rem){.role-group{grid-template-columns:200px minmax(0,1fr);gap:24px}}
+.role-head{display:flex;flex-direction:column;gap:4px}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;color:var(--content-tertiary);padding:0 16px 8px 0;white-space:nowrap}
+td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-align:middle}
+.roles td:first-child{display:flex;flex-direction:column;gap:2px;min-width:190px}
+.use{color:var(--content-tertiary)}
+@media (max-width:40rem){
+  .roles thead{display:none}
+  .roles tr{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 12px;padding-block:12px;border-top:1px solid var(--border-light)}
+  .roles td{padding:0;border:0}
+  .roles td:first-child{grid-column:1/-1;min-width:0}
+}
+.swatch-cell{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.chip{display:grid;place-items:center;width:44px;height:30px;border-radius:var(--radius-2xs);background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);flex:none}
+.chip-fill{width:30px;height:18px;border-radius:var(--radius-4xs);box-shadow:inset 0 0 0 1px #0000000d}
+.ramps{display:flex;flex-direction:column;gap:12px}
+.ramp{display:grid;gap:6px}
+@media (min-width:56rem){.ramp{grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:center}}
+.ramp-name{display:flex;flex-direction:column;gap:2px}
+.ramp-name .t-body-3{text-transform:capitalize}
+.strip-scroll{overflow-x:auto}
+.strip{display:grid;grid-template-columns:repeat(11,minmax(52px,1fr));border-radius:var(--radius-2xs);overflow:hidden;box-shadow:inset 0 0 0 1px var(--border-light)}
+.cell{display:flex;flex-direction:column;justify-content:space-between;height:52px;padding:6px;font:500 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}
+.cell-hex{opacity:.8}
+.note{display:flex;gap:10px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--info-subtle);color:var(--info-strong);max-width:78ch}
+.note svg{flex:none;width:16px;height:16px;margin-top:2px}
+.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.team-swatch{display:flex;flex-direction:column;gap:6px}
+.team-fill{display:flex;align-items:flex-end;height:64px;padding:10px 12px;border-radius:var(--radius-sm);color:#fff}
+.team-meta{display:flex;flex-direction:column;gap:1px}
+.wash{position:relative;display:block;height:28px;border-radius:var(--radius-2xs)}
+.wash i{position:absolute;left:10px;bottom:8px;width:60%;height:2px;border-radius:2px}
+
+/* ---------- type ---------- */
+.type-group{display:flex;flex-direction:column}
+.group-label{padding-block:16px 8px}
+.type-row{display:grid;gap:6px;padding-block:14px;border-top:1px solid var(--border-light)}
+@media (min-width:56rem){.type-row{grid-template-columns:240px minmax(0,1fr);gap:24px;align-items:baseline}}
+.type-meta{display:flex;flex-direction:column;gap:2px}
+.type-sample{overflow-wrap:anywhere;min-width:0}
+@media (max-width:40rem){.type-sample.t-display-1,.type-sample.t-display-1-condensed{font-size:56px;line-height:56px}.type-sample.t-display-2-condensed{font-size:48px;line-height:46px}}
+.facts{display:grid;gap:12px}
+@media (min-width:48rem){.facts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.fact{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:var(--radius-md);background:var(--grouped)}
+.fact p{color:var(--content-secondary)}
+
+/* ---------- shape ---------- */
+.radii{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:20px 12px}
+.radius{display:flex;flex-direction:column;gap:8px;min-width:0}
+.radius-box{height:64px;background:var(--grouped-light);box-shadow:inset 0 0 0 1.5px var(--border)}
+.radius figcaption,.shadow figcaption{display:flex;flex-direction:column;gap:1px}
+.shadows{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:28px 20px;padding:clamp(16px,4vw,28px);border-radius:var(--radius-lg);box-shadow:inset 0 0 0 1px var(--border-light)}
+.shadow{display:flex;flex-direction:column;gap:12px}
+.shadow-box{height:80px;border-radius:var(--radius-lg);background:var(--elevated)}
+
+/* ---------- motion ---------- */
+.motion{display:grid;gap:20px}
+@media (min-width:60rem){.motion{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start}}
+.chart-card{padding:16px;border-radius:var(--radius-lg);background:var(--elevated);box-shadow:var(--shadow-minimal-soft)}
+.ease-chart{display:block;width:100%;height:auto}
+.ease-chart .grid{stroke:var(--border);stroke-width:1;stroke-dasharray:2 3}
+.ease-chart .axis{fill:var(--content-tertiary);font:var(--font-caption-2)}
+.ease-chart .strong{fill:var(--brand-500);font-weight:580}
+.legend{display:flex;flex-direction:column;gap:10px}
+.legend li{display:grid;grid-template-columns:18px auto;gap:0 8px;align-items:center}
+.legend li .muted{grid-column:2}
+.legend-line{height:3px;border-radius:2px}
+.tracks{display:flex;flex-direction:column;gap:10px}
+.track{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center}
+.rail-line{position:relative;height:14px;border-radius:var(--radius-max);background:var(--grouped-light)}
+.dot{position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%}
+.tracks[data-run="on"] .dot{translate:calc(var(--track-w,200px) - 14px) 0}
+@media (prefers-reduced-motion:reduce){.dot{transition:none!important}}
+.durations{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.dur{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--grouped)}
+
+/* ---------- components ---------- */
+.panel{padding:16px;border-radius:var(--radius-lg);box-shadow:inset 0 0 0 1px var(--border-light);min-width:0;overflow-x:auto}
+.panel.grey{background:var(--grouped);box-shadow:none}
+.two-col{display:grid;gap:16px}
+@media (min-width:60rem){.two-col{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.ticket-wrap{display:grid;gap:20px}
+@media (min-width:60rem){.ticket-wrap{grid-template-columns:350px minmax(0,1fr);align-items:start}}
+.anatomy{display:flex;flex-direction:column}
+.anatomy li{display:grid;grid-template-columns:24px 1fr;gap:10px;padding-block:12px;border-top:1px solid var(--border-light)}
+.anatomy li:first-child{border-top:0}
+.anatomy .n{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--grouped-light);color:var(--content-secondary)}
+.anatomy p{color:var(--content-secondary)}
+
+/* ---------- screens ---------- */
+.screens{display:grid;gap:16px}
+@media (min-width:52rem){.screens{grid-template-columns:repeat(3,minmax(0,1fr))}.screens .wide{grid-column:1/-1}}
+.screen{display:flex;flex-direction:column;gap:10px;min-width:0}
+.frame{position:relative;overflow:hidden;border-radius:var(--radius-lg);background:var(--grouped);box-shadow:var(--shadow-minimal-soft)}
+.frame iframe{position:absolute;top:0;left:0;border:0;transform-origin:0 0;background:var(--surface)}
+.frame.phone{border-radius:28px;box-shadow:var(--shadow-strong)}
+.screen-meta{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.screen-meta a{color:var(--content-accent-brand);display:inline-flex;gap:4px;align-items:center;white-space:nowrap}
+
+/* ---------- layout diagrams ---------- */
+.diagrams{display:grid;gap:16px}
+@media (min-width:52rem){.diagrams{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.diagram{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:var(--radius-lg);background:var(--grouped)}
+.d-bar{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-inline:10px;border-radius:var(--radius-2xs);background:var(--elevated);color:var(--content-secondary);box-shadow:var(--shadow-flat)}
+.d-body{display:grid;gap:8px;height:170px}
+.d-box{display:flex;flex-direction:column;justify-content:space-between;padding:10px;border-radius:var(--radius-2xs);background:var(--elevated);color:var(--content-secondary);box-shadow:var(--shadow-flat);min-width:0}
+.specs{display:flex;flex-direction:column}
+.spec{display:flex;justify-content:space-between;gap:16px;padding-block:10px;border-top:1px solid var(--border-light)}
+.spec:first-child{border-top:0}
+.spec .muted{text-align:right}
+
+/* ---------- rail ---------- */
+.rail-block{display:flex;flex-direction:column}
+.rail-title{padding-bottom:6px}
+.rail-row{position:relative;display:flex;align-items:center;gap:10px;min-height:56px;outline:none}
+.rail-surface{position:absolute;inset:2px -10px;border-radius:var(--radius-md);background:var(--grouped);opacity:0;transition:opacity .15s ease-out}
+.rail-row:hover>.rail-surface,.rail-row:focus-visible>.rail-surface,.rail-row[aria-current]>.rail-surface{opacity:1}
+.rail-main{position:relative;display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.rail-line1,.rail-line2{display:flex;justify-content:space-between;gap:12px}
+.rail-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--content-secondary)}
+.toc-count,.chev{position:relative}
+.chev{width:16px;height:16px;color:var(--content-quaternary)}
+.divider{border-top:1px dashed var(--border)}
+.capsules{display:flex;flex-wrap:wrap;gap:8px}
+.capsule{display:inline-flex;align-items:center;gap:6px;height:32px;padding-inline:12px;border:1px solid transparent;border-radius:var(--radius-max);background:var(--grouped-light);color:var(--content-secondary);font:var(--font-body-3);letter-spacing:var(--body-3-tracking);cursor:pointer;transition:color .18s ease-in-out,scale .15s ease-out}
+.capsule i{width:8px;height:8px;border-radius:50%}
+.capsule[aria-pressed="true"]{background:var(--surface);color:var(--content-primary);border-color:var(--border);box-shadow:0 0 0 1px var(--surface),0 0 0 3px color-mix(in srgb,var(--border) 50%,transparent);font-weight:600}
+.capsule:active{scale:var(--scale-press-button)}
+@media (max-width:40rem){.capsule{height:36px}}
+.files{display:flex;flex-direction:column;gap:6px}
+.files a{display:flex;flex-direction:column;gap:1px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--grouped);transition:background-color .15s ease-out}
+.files a:hover{background:color-mix(in srgb,#000 5%,var(--grouped))}
+.card-group{display:flex;flex-direction:column}
+.card-links{display:grid;grid-template-columns:minmax(0,1fr);gap:0 24px}
+.card-links li,.rail-row{min-width:0}
+@media (min-width:56rem){.card-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.foot{display:flex;flex-direction:column;gap:6px;padding-block:24px 40px;color:var(--content-tertiary);box-shadow:inset 0 1px 0 var(--border-light)}
+.foot a{color:var(--content-secondary);text-decoration:underline;text-underline-offset:2px}
+</style>
+</head>
+<body>
+<header class="navbar" id="navbar">
+  <div class="shell">
+    <div class="nav-top">
+      <a class="lockup" href="#overview" aria-label="One Link design system, home">
+        <span class="mark t-caption-2-condensed" aria-hidden="true">OL</span>
+        <span class="t-heading-4 t-strong">One Link</span>
+        <span class="badge t-caption-2-condensed">Beta</span>
+      </a>
+      <form class="nav-search" id="search-form" role="search">
+        <label class="search">
+          <i data-lucide="search"></i>
+          <span class="sr-only">Find a token</span>
+          <input id="search-input" type="text" placeholder="Find a token, e.g. elevated" autocomplete="off" spellcheck="false" aria-describedby="search-status">
+          <kbd class="kbd t-body-4 t-strong">/</kbd>
+        </label>
+        <span class="status t-caption-1" id="search-status" aria-live="polite"></span>
+      </form>
+      <span class="spacer"></span>
+      <a class="btn btn--outline" href="https://github.com/united-african-grain/one-link-design-system" target="_blank" rel="noopener"><i data-lucide="code-xml"></i><span class="gh-label">Source</span></a>
+      <a class="btn btn--brand" href="#screens">Screens</a>
+    </div>
+    <nav class="tabs" aria-label="Sections"><a class="tab t-body-3 t-strong" href="#overview" data-tab="overview" aria-current="true">Overview</a><a class="tab t-body-3 t-strong" href="#rules" data-tab="rules">Rules</a><a class="tab t-body-3 t-strong" href="#colour" data-tab="colour">Colour</a><a class="tab t-body-3 t-strong" href="#type" data-tab="type">Type</a><a class="tab t-body-3 t-strong" href="#shape" data-tab="shape">Shape</a><a class="tab t-body-3 t-strong" href="#motion" data-tab="motion">Motion</a><a class="tab t-body-3 t-strong" href="#components" data-tab="components">Components</a><a class="tab t-body-3 t-strong" href="#screens" data-tab="screens">Screens</a><a class="tab t-body-3 t-strong" href="#layout" data-tab="layout">Layout</a><a class="tab t-body-3 t-strong" href="#cards" data-tab="cards">Cards</a><span class="tab-bar" aria-hidden="true"></span></nav>
+  </div>
+</header>
+
+<div class="shell">
+  <div class="layout">
+    <main>
+      <section id="overview" aria-labelledby="overview-title">
+        <div class="hero">
+          <div class="hero-copy">
+            <p class="t-body-4 muted">Light theme · web and mobile · v1</p>
+            <h1 id="overview-title" class="t-heading-1">The One Link design system</h1>
+            <p class="t-body-2">One Link runs a grain and fertilizer business: trades and mill coverage, weighbridge intake, stock, and farmer input finance, with a portal for counterparties and a field app for drivers. Every screen leads with what needs attention, and every figure is derived, never typed.</p>
+            <ul class="ideas">
+              <li><span class="k" aria-hidden="true"><i data-lucide="layers"></i></span><strong class="t-body-3 t-strong">White lifts, grey recedes</strong><p class="t-body-3">Cards, tickets and figure buttons are white on white, held apart by very soft shadows. Grey marks only what is secondary or switched off.</p></li>
+              <li><span class="k" aria-hidden="true"><i data-lucide="droplet"></i></span><strong class="t-body-3 t-strong">Greys tinted navy, and see-through</strong><p class="t-body-3">Text and hairlines are navy-black at set opacities, so one token reads right on white and on grey. Each has a solid twin for use over photos.</p></li>
+              <li><span class="k" aria-hidden="true"><i data-lucide="git-fork"></i></span><strong class="t-body-3 t-strong">Two layers of colour</strong><p class="t-body-3">Components use semantic tokens only. Those point at 11-step palettes, so a palette change never touches a component.</p></li>
+              <li><span class="k" aria-hidden="true"><i data-lucide="wheat"></i></span><strong class="t-body-3 t-strong">The commodity takes over</strong><p class="t-body-3">Blue is for links and entry points. Inside a commodity, its colour drives the share bars, chart lines and the trade ticket. Decisions stay primary dark.</p></li>
+              <li><span class="k" aria-hidden="true"><i data-lucide="mouse-pointer-click"></i></span><strong class="t-body-3 t-strong">Physical feedback</strong><p class="t-body-3">Anything that commits sits on a 4px edge and sinks into it. Buttons scale to 0.97, motion settles on a spring, and every working button shows it is working.</p></li>
+            </ul>
+          </div>
+          <div class="hero-demo">
+            <div class="mount" id="demo-hero"></div>
+            <p class="hint t-caption-1">Hover the card for the commodity wash. Press a figure to sink it. Switch commodity in the rail.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="rules" aria-labelledby="rules-title">
+        <div class="sec-head">
+          <h2 id="rules-title" class="t-heading-2 t-strong">Rules</h2>
+          <p class="t-body-2">These come from how the business works, not from taste. Every component and screen obeys them.</p>
+        </div>
+        <div class="rules">
+          <article class="rule"><div class="rule-head"><span class="k"><i data-lucide="bell"></i></span><div><h3 class="t-body-2 t-strong">Exceptions are the interface</h3><p class="t-body-3">Screens answer "is anything wrong?" first. Nothing to do is a designed, confident state, not an empty one. Show changes, not levels.</p></div></div><div class="example" id="rule-silence"></div></article>
+          <article class="rule"><div class="rule-head"><span class="k"><i data-lucide="sigma"></i></span><div><h3 class="t-body-2 t-strong">Every figure is derived, and can show how</h3><p class="t-body-3">Balances, stock, exposure and margin are computed, never typed. A headline figure reveals the subtraction behind it in one interaction.</p></div></div><div class="example" id="rule-derived"></div></article>
+          <article class="rule"><div class="rule-head"><span class="k"><i data-lucide="contrast"></i></span><div><h3 class="t-body-2 t-strong">Provenance and confirmation never merge</h3><p class="t-body-3">How a weight was captured and whether the counterparty agrees are two separate chips, with two separate icons.</p></div></div><div class="example" id="rule-trust"></div></article>
+          <article class="rule"><div class="rule-head"><span class="k"><i data-lucide="eye-off"></i></span><div><h3 class="t-body-2 t-strong">Absent is not zero</h3><p class="t-body-3">A figure withheld from a role is genuinely missing. It shows as a quaternary dash with eye-off, and never as K0, blank, loading or blurred.</p></div></div><div class="example" id="rule-restricted"></div></article>
+          <article class="rule"><div class="rule-head"><span class="k"><i data-lucide="octagon-x"></i></span><div><h3 class="t-body-2 t-strong">Three outcomes, three looks</h3><p class="t-body-3">Within tolerance books. Held for review goes to the owner. A hard block, like tare above gross, never books and is shown calmly, not as an error flood.</p></div></div><div class="example" id="rule-outcomes"></div></article>
+          <article class="rule"><div class="rule-head"><span class="k"><i data-lucide="rotate-ccw"></i></span><div><h3 class="t-body-2 t-strong">Nothing is edited</h3><p class="t-body-3">Records are append-only. A correction is a compensating entry with a reason, an actor and a time, beside the original.</p></div></div><div class="example" id="rule-history"></div></article>
+          <article class="rule"><div class="rule-head"><span class="k"><i data-lucide="radio-tower"></i></span><div><h3 class="t-body-2 t-strong">Freshness is visible, degraded modes are loud</h3><p class="t-body-3">A silent weighbridge feed makes the position look flat, so sync health is always shown, and silence is unmistakable. Offline is a state with a queue.</p></div></div><div class="example" id="rule-sync"></div></article>
+          <article class="rule"><div class="rule-head"><span class="k"><i data-lucide="loader-circle"></i></span><div><h3 class="t-body-2 t-strong">Every working button shows it is working</h3><p class="t-body-3">The label fades and scales to 0.8 while a spinner takes its place. The button keeps its size and stays busy until the action lands.</p></div></div><div class="example" id="rule-busy"></div></article>
+        </div>
+        <p class="note t-body-3"><i data-lucide="info"></i><span>Status is always an icon and a word, never colour alone. Icons are Lucide only: no emoji, no Unicode symbols standing in for icons. Charts are TradingView Lightweight Charts.</span></p>
+      </section>
+
+      <section id="colour" aria-labelledby="colour-title">
+        <div class="sec-head">
+          <h2 id="colour-title" class="t-heading-2 t-strong">Colour</h2>
+          <p class="t-body-2">Two layers. Components use only the semantic tokens; the "Points to" column shows the palette step each one resolves to. Hover mixes 5% black into light fills and 10% white into filled buttons.</p>
+        </div>
+        <!-- @colour-groups -->
+        <div class="sub">
+          <div class="sub-head"><h3 class="t-heading-4 t-strong">Palettes</h3><p class="t-body-3">Eleven steps each. The brand ramp keeps the reference's lightness per step, with One Link blue at 500.</p></div>
+          <div class="ramps"><!-- @colour-ramps --></div>
+        </div>
+        <div class="sub">
+          <div class="sub-head"><h3 class="t-heading-4 t-strong">Commodity colours</h3><p class="t-body-3">The deep shade carries a white label at AA or better. Underlines are 2px, washes are 9% in oklab, tiles 16%.</p></div>
+          <ul class="teams"><!-- @colour-commodity --></ul>
+        </div>
+      </section>
+
+      <section id="type" aria-labelledby="type-title">
+        <div class="sec-head">
+          <h2 id="type-title" class="t-heading-2 t-strong">Type</h2>
+          <p class="t-body-2">Two families. Inter for everything you read. Instrument Sans condensed, always uppercase, for headline figures, commodity tabs and detail titles. Specs are size/line height · weight · tracking.</p>
+        </div>
+        <div class="facts">
+          <div class="fact"><span class="t-caption-1-condensed muted">Regular is 480</span><p class="t-body-3">A touch heavier than 400, which keeps small translucent text crisp on white. Strong body is 580, strong headings 600.</p></div>
+          <div class="fact"><span class="t-caption-1-condensed muted">14px carries the product</span><p class="t-body-3">body-3 is the workhorse for tables, meta lines and rows. Headings are rare; condensed figures do the shouting.</p></div>
+          <div class="fact"><span class="t-caption-1-condensed muted">Every figure is tabular</span><p class="t-body-3">Money, tonnes, percentages, refs and timestamps all use tabular numerals. Kwacha millions take M: K125M, K174,840.</p></div>
+        </div>
+        <!-- @type -->
+      </section>
+
+      <section id="shape" aria-labelledby="shape-title">
+        <div class="sec-head">
+          <h2 id="shape-title" class="t-heading-2 t-strong">Shape</h2>
+          <p class="t-body-2">A radius scale with one odd step, 14px, used only on 48px buttons. On white, shadows do the separating that grey fills would do elsewhere.</p>
+        </div>
+        <div class="radii"><!-- @radii --></div>
+        <div class="sub">
+          <div class="sub-head"><h3 class="t-heading-4 t-strong">Elevation</h3><p class="t-body-3">Six exact shadow stacks.</p></div>
+          <div class="shadows"><!-- @shadows --></div>
+        </div>
+      </section>
+
+      <section id="motion" aria-labelledby="motion-title">
+        <div class="sec-head">
+          <h2 id="motion-title" class="t-heading-2 t-strong">Motion</h2>
+          <p class="t-body-2">Springs are CSS <code>linear()</code> curves, so there is no animation library. Every animation has a reduced-motion fallback that keeps colour changes and drops scale, translate and ping.</p>
+        </div>
+        <div class="motion">
+          <div class="chart-card"><!-- @motion-chart --></div>
+          <div class="sub">
+            <ul class="legend"><!-- @motion-legend --></ul>
+            <div class="tracks" id="tracks"><!-- @motion-tracks --></div>
+            <div><button type="button" class="btn btn--primary" data-size="xsmall" id="replay">Replay</button></div>
+          </div>
+        </div>
+        <div class="durations"><!-- @motion-durations --></div>
+      </section>
+
+      <section id="components" aria-labelledby="components-title">
+        <div class="sec-head">
+          <h2 id="components-title" class="t-heading-2 t-strong">Components</h2>
+          <p class="t-body-2">These are the real components from <code>project/components</code>, running live. Every one is interactive; the commodity switch in the rail recolours the ones that take a commodity.</p>
+        </div>
+        <div class="sub"><div class="sub-head"><h3 class="t-heading-4 t-strong">Buttons</h3><p class="t-body-3">Brand for entry points, primary for decisions, critical for destructive, commodity only on the trade ticket. Every button that starts work has the loading state.</p></div><div class="panel mount" id="demo-buttons"></div></div>
+        <div class="sub"><div class="sub-head"><h3 class="t-heading-4 t-strong">Press buttons</h3><p class="t-body-3">A face on a 4px edge. It sinks 4px in 50ms and returns in 100ms. Filled edges are the fill under 15% black.</p></div><div class="panel mount" id="demo-press"></div></div>
+        <div class="sub"><div class="sub-head"><h3 class="t-heading-4 t-strong">Capsules, segmented, stepper, tabs, search</h3><p class="t-body-3">Selected capsules go white with a 1px ring and a 3px halo; the label weight settles over 180ms. Tab underlines glide on the spring.</p></div><div class="panel mount" id="demo-controls"></div></div>
+        <div class="sub"><div class="sub-head"><h3 class="t-heading-4 t-strong">Status, trust and sync</h3><p class="t-body-3">Status marks are an icon and a word. Provenance and confirmation are separate chips. Sync health is green while live and red, without a ping, when silent.</p></div><div class="panel mount" id="demo-status"></div></div>
+        <div class="sub"><div class="sub-head"><h3 class="t-heading-4 t-strong">Cards, figures and rail rows</h3><p class="t-body-3">List items carry share bars in the commodity colour, quantity chips and figure buttons. Figures open their derivation.</p></div><div class="two-col"><div class="mount" id="demo-cards"></div><div class="mount" id="demo-figures"></div></div></div>
+        <div class="sub"><div class="sub-head"><h3 class="t-heading-4 t-strong">Data table</h3><p class="t-body-3">Dense, tabular, with ref links, a restricted cell, a derived cell and a correction row. Tables scroll inside their own container on phones.</p></div><div class="mount" id="demo-table"></div></div>
+        <div class="sub"><div class="sub-head"><h3 class="t-heading-4 t-strong">Charts</h3><p class="t-body-3">TradingView Lightweight Charts, styled to the system: dotted grid, magnet crosshair, end-of-line labels, dashed policy lines. The TradingView logo stays visible.</p></div><div class="mount" id="demo-chart"></div></div>
+        <div class="sub"><div class="sub-head"><h3 class="t-heading-4 t-strong">Trade ticket</h3><p class="t-body-3">The main action panel: side toggle, commodity tabs, amount, quick amounts and a full-width commit in the commodity colour.</p></div>
+          <div class="ticket-wrap"><div class="mount" id="demo-ticket"></div>
+            <ol class="anatomy">
+              <li><span class="n t-caption-1 t-strong">1</span><div><strong class="t-body-3 t-strong">Header</strong><p class="t-body-3">28px commodity tile, context in body-3 secondary, subject in body-1 strong.</p></div></li>
+              <li><span class="n t-caption-1 t-strong">2</span><div><strong class="t-body-3 t-strong">Side toggle</strong><p class="t-body-3">Two-up 48px press buttons. The chosen side fills with the commodity colour.</p></div></li>
+              <li><span class="n t-caption-1 t-strong">3</span><div><strong class="t-body-3 t-strong">Amount</strong><p class="t-body-3">Label on the left, condensed figure on the right with a quaternary unit, quick amounts beneath.</p></div></li>
+              <li><span class="n t-caption-1 t-strong">4</span><div><strong class="t-body-3 t-strong">Commit</strong><p class="t-body-3">48px large press button with the strong shadow. It keeps its size and spins until the trade lands.</p></div></li>
+            </ol>
+          </div>
+        </div>
+        <div class="sub"><div class="sub-head"><h3 class="t-heading-4 t-strong">Reconcile, evidence and history</h3><p class="t-body-3">The goods-received reconcile in its three outcomes, evidence tiles, and an append-only timeline with a compensating entry.</p></div><div class="two-col"><div class="mount" id="demo-reconcile"></div><div class="mount" id="demo-records"></div></div></div>
+      </section>
+
+      <section id="screens" aria-labelledby="screens-title">
+        <div class="sec-head">
+          <h2 id="screens-title" class="t-heading-2 t-strong">Screens</h2>
+          <p class="t-body-2">Interactive UI kits built only from these components, with fictional sample data. The desktop app is drawn at 1440; the mobile app, partner portal and field app at 390.</p>
+        </div>
+        <div class="screens">
+          <div class="screen wide"><div class="frame" data-frame="1440x900"><iframe loading="lazy" title="One Link desktop app" data-src="ui_kits/one_link/index.html"></iframe></div>
+            <div class="screen-meta"><div><strong class="t-body-3 t-strong">Desktop app</strong><p class="t-body-4 muted">Command Center, Trade Desk, Warehouse, Stock, Farmer Finance</p></div><a class="t-body-3 t-strong" href="ui_kits/one_link/index.html" target="_blank" rel="noopener">Open<i data-lucide="arrow-up-right"></i></a></div></div>
+          <div class="screen"><div class="frame phone" data-frame="390x844"><iframe loading="lazy" title="One Link mobile app" data-src="ui_kits/one_link_mobile/index.html"></iframe></div>
+            <div class="screen-meta"><div><strong class="t-body-3 t-strong">Mobile app</strong><p class="t-body-4 muted">The same screens at 390</p></div><a class="t-body-3 t-strong" href="ui_kits/one_link_mobile/index.html" target="_blank" rel="noopener">Open<i data-lucide="arrow-up-right"></i></a></div></div>
+          <div class="screen"><div class="frame phone" data-frame="390x844"><iframe loading="lazy" title="Partner portal" data-src="ui_kits/partner_portal/index.html"></iframe></div>
+            <div class="screen-meta"><div><strong class="t-body-3 t-strong">Partner portal</strong><p class="t-body-4 muted">Counterparties confirm or dispute</p></div><a class="t-body-3 t-strong" href="ui_kits/partner_portal/index.html" target="_blank" rel="noopener">Open<i data-lucide="arrow-up-right"></i></a></div></div>
+          <div class="screen"><div class="frame phone" data-frame="390x844"><iframe loading="lazy" title="Field app" data-src="ui_kits/field_app/index.html"></iframe></div>
+            <div class="screen-meta"><div><strong class="t-body-3 t-strong">Field app</strong><p class="t-body-4 muted">Offline-first delivery proof</p></div><a class="t-body-3 t-strong" href="ui_kits/field_app/index.html" target="_blank" rel="noopener">Open<i data-lucide="arrow-up-right"></i></a></div></div>
+        </div>
+      </section>
+
+      <section id="layout" aria-labelledby="layout-title">
+        <div class="sec-head">
+          <h2 id="layout-title" class="t-heading-2 t-strong">Layout</h2>
+          <p class="t-body-2">A centred 1293px shell. List pages have a content column and a sticky "Needs you" rail; detail pages swap the rail for the 350px action panel. Phones get one column and a bottom tab bar.</p>
+        </div>
+        <div class="diagrams" aria-hidden="true">
+          <div class="diagram"><h3 class="t-body-3 t-strong">List page</h3>
+            <div class="d-bar t-caption-1" style="height:26px"><span>Logo · Search</span><span>Sync · Avatar</span></div>
+            <div class="d-bar t-caption-1" style="height:20px"><span>Command Center  Trade Desk …</span><span>48px</span></div>
+            <div class="d-body" style="grid-template-columns:1fr 30%"><div class="d-box t-caption-1"><span>Figures · cards · tables</span><span>1fr</span></div><div class="d-box t-caption-1"><span>Needs you</span><span>320 → 358</span></div></div></div>
+          <div class="diagram"><h3 class="t-body-3 t-strong">Detail page</h3>
+            <div class="d-bar t-caption-1" style="height:26px"><span>Logo · Search</span><span>Sync · Avatar</span></div>
+            <div class="d-bar t-caption-1" style="height:20px"><span>Breadcrumb · tabs</span><span>48px</span></div>
+            <div class="d-body" style="grid-template-columns:1fr 32%"><div class="d-box t-caption-1"><span>Record · chart · evidence</span><span>1fr</span></div><div class="d-box t-caption-1"><span>Action panel</span><span>350</span></div></div></div>
+          <div class="diagram"><h3 class="t-body-3 t-strong">Phone</h3>
+            <div class="d-bar t-caption-1" style="height:26px"><span>Title</span><span>Avatar</span></div>
+            <div class="d-bar t-caption-1" style="height:20px"><span>Sub-tabs, scrolling</span><span>48px</span></div>
+            <div class="d-body" style="grid-template-rows:1fr 26px"><div class="d-box t-caption-1"><span>One column · sheet for actions</span><span>390</span></div><div class="d-bar t-caption-1"><span>Bottom tab bar</span><span>70 + safe area</span></div></div></div>
+        </div>
+        <div class="specs">
+          <div class="spec"><span class="t-body-3 t-strong">Shell</span><span class="t-body-3 muted num">1293px max · 16px sides, 24px from 1024px</span></div>
+          <div class="spec"><span class="t-body-3 t-strong">Two columns</span><span class="t-body-3 muted num">From 1152px: rail 320px, 40px gap; below, the rail stacks</span></div>
+          <div class="spec"><span class="t-body-3 t-strong">Wide rail</span><span class="t-body-3 muted num">From 1280px: rail 358px</span></div>
+          <div class="spec"><span class="t-body-3 t-strong">Action panel</span><span class="t-body-3 muted num">350px on detail pages · bottom sheet below 1024px</span></div>
+          <div class="spec"><span class="t-body-3 t-strong">Header</span><span class="t-body-3 muted num">116px phone · 106px from 1024px · blurs on scroll</span></div>
+          <div class="spec"><span class="t-body-3 t-strong">Mobile tab bar</span><span class="t-body-3 muted num">70px + safe area</span></div>
+          <div class="spec"><span class="t-body-3 t-strong">Spacing</span><span class="t-body-3 muted num">4px unit · sections 24px, 32px from 1024px · cards 16px</span></div>
+          <div class="spec"><span class="t-body-3 t-strong">Artboards</span><span class="t-body-3 muted num">Desktop 1440 · mobile 390</span></div>
+        </div>
+      </section>
+
+      <section id="cards" aria-labelledby="cards-title">
+        <div class="sec-head">
+          <h2 id="cards-title" class="t-heading-2 t-strong">Cards</h2>
+          <p class="t-body-2">Every specimen card from the Claude Design export, each a standalone page. They are the source these pages are built from.</p>
+        </div>
+        <!-- @cards -->
+      </section>
+    </main>
+
+    <aside class="rail" aria-label="Contents and settings">
+      <div class="rail-sticky">
+        <div class="rail-block">
+          <h2 class="rail-title t-body-3 t-strong">In this design system</h2>
+          <a class="rail-row toc-row" href="#rules" data-toc="rules"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Derived figures, trust, restricted values</span><span class="t-body-2 t-strong">Rules</span></span><span class="t-caption-1 muted num toc-count">8 rules</span><i data-lucide="chevron-right" class="chev"></i></a>
+          <a class="rail-row toc-row" href="#colour" data-toc="colour"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Roles, palettes, commodity colours</span><span class="t-body-2 t-strong">Colour</span></span><span class="t-caption-1 muted num toc-count">{{count.colour}}</span><i data-lucide="chevron-right" class="chev"></i></a>
+          <a class="rail-row toc-row" href="#type" data-toc="type"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Inter + condensed display</span><span class="t-body-2 t-strong">Type</span></span><span class="t-caption-1 muted num toc-count">{{count.type}}</span><i data-lucide="chevron-right" class="chev"></i></a>
+          <a class="rail-row toc-row" href="#shape" data-toc="shape"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Radius and elevation</span><span class="t-body-2 t-strong">Shape</span></span><span class="t-caption-1 muted num toc-count">{{count.shape}}</span><i data-lucide="chevron-right" class="chev"></i></a>
+          <a class="rail-row toc-row" href="#motion" data-toc="motion"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Springs via linear()</span><span class="t-body-2 t-strong">Motion</span></span><span class="t-caption-1 muted num toc-count">{{count.motion}}</span><i data-lucide="chevron-right" class="chev"></i></a>
+          <a class="rail-row toc-row" href="#components" data-toc="components"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Buttons, tickets, tables, charts</span><span class="t-body-2 t-strong">Components</span></span><span class="t-caption-1 muted num toc-count">{{count.components}}</span><i data-lucide="chevron-right" class="chev"></i></a>
+          <a class="rail-row toc-row" href="#screens" data-toc="screens"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Desktop, mobile, portal, field</span><span class="t-body-2 t-strong">Screens</span></span><span class="t-caption-1 muted num toc-count">{{count.screens}}</span><i data-lucide="chevron-right" class="chev"></i></a>
+          <a class="rail-row toc-row" href="#layout" data-toc="layout"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Shell, rails, breakpoints</span><span class="t-body-2 t-strong">Layout</span></span><span class="t-caption-1 muted num toc-count">4 breakpoints</span><i data-lucide="chevron-right" class="chev"></i></a>
+        </div>
+        <div class="divider"></div>
+        <div class="sub">
+          <h2 class="t-body-3 t-strong">Commodity</h2>
+          <div class="capsules" role="group" aria-label="Commodity" id="commodity-picker">
+            <button type="button" class="capsule" data-commodity="maize" aria-pressed="true"><i style="background:var(--commodity-maize)"></i>White maize</button>
+            <button type="button" class="capsule" data-commodity="wheat" aria-pressed="false"><i style="background:var(--commodity-wheat)"></i>Wheat</button>
+            <button type="button" class="capsule" data-commodity="soya" aria-pressed="false"><i style="background:var(--commodity-soya)"></i>Soya</button>
+            <button type="button" class="capsule" data-commodity="soya-meal" aria-pressed="false"><i style="background:var(--commodity-soya-meal)"></i>Soya meal</button>
+            <button type="button" class="capsule" data-commodity="fertilizer" aria-pressed="false"><i style="background:var(--commodity-fertilizer)"></i>Fertilizer</button>
+          </div>
+          <p class="t-caption-1 muted">The same switch a trader uses. Share bars, chart lines, the hero card wash and the trade ticket all follow it.</p>
+        </div>
+        <div class="divider"></div>
+        <div class="sub">
+          <h2 class="t-body-3 t-strong">Needs you</h2>
+          <div class="mount" id="demo-rail" style="min-height:0"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="sub">
+          <h2 class="t-body-3 t-strong">For engineers</h2>
+          <div class="files">
+            <a href="styles.css"><code class="tok">styles.css</code><span class="t-caption-1 muted">Imports every token file. Start here.</span></a>
+            <a href="https://github.com/united-african-grain/one-link-design-system/tree/main/project/tokens"><code class="tok">tokens/</code><span class="t-caption-1 muted">Colour, type, shape, motion, spacing</span></a>
+            <a href="https://github.com/united-african-grain/one-link-design-system/tree/main/project/components"><code class="tok">components/</code><span class="t-caption-1 muted">React primitives with .d.ts and usage notes</span></a>
+            <a href="https://github.com/united-african-grain/one-link-design-system/blob/main/project/readme.md"><code class="tok">readme.md</code><span class="t-caption-1 muted">Content rules, foundations, iconography</span></a>
+            <a href="https://github.com/united-african-grain/one-link-design-system/blob/main/project/SKILL.md"><code class="tok">SKILL.md</code><span class="t-caption-1 muted">Skill for coding and design agents</span></a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <footer class="foot t-caption-1">
+    <span>One Link design system, v1. Visual craft adapted from a public light theme; no third-party marks, copy or imagery are used. Sample data is fictional.</span>
+    <span>Icons by <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a> (ISC). Type set in <a href="https://rsms.me/inter/" target="_blank" rel="noopener">Inter</a> and <a href="https://fonts.google.com/specimen/Instrument+Sans" target="_blank" rel="noopener">Instrument Sans</a> (SIL OFL).</span>
+    <span>Charts by <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView</a>. TradingView Lightweight Charts™, Copyright (c) 2025 TradingView, Inc. https://www.tradingview.com/, licensed under the Apache License 2.0.</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const navbar = document.getElementById('navbar');
+
+  // Nav underline + scroll spy
+  const tabs = [...document.querySelectorAll('.tab')];
+  const bar = document.querySelector('.tab-bar');
+  const tocRows = [...document.querySelectorAll('[data-toc]')];
+  const sections = tabs.map((t) => document.getElementById(t.dataset.tab)).filter(Boolean);
+  function setActive(id) {
+    let active = null;
+    tabs.forEach((t) => { if (t.dataset.tab === id) { t.setAttribute('aria-current', 'true'); active = t; } else t.removeAttribute('aria-current'); });
+    tocRows.forEach((r) => (r.dataset.toc === id ? r.setAttribute('aria-current', 'true') : r.removeAttribute('aria-current')));
+    if (active) { bar.style.translate = active.offsetLeft + 'px 0'; bar.style.scale = active.offsetWidth + ' 1'; }
+  }
+  function onScroll() {
+    navbar.toggleAttribute('data-blurred', window.scrollY > 8);
+    let current = sections[0].id;
+    for (const s of sections) if (s.getBoundingClientRect().top - 140 <= 0) current = s.id;
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) current = sections[sections.length - 1].id;
+    setActive(current);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  document.fonts?.ready.then(onScroll);
+  onScroll();
+
+  // Token search: "/" to focus, Enter to jump
+  const input = document.getElementById('search-input');
+  const status = document.getElementById('search-status');
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== input && !/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) { e.preventDefault(); input.focus(); }
+  });
+  input.addEventListener('input', () => { status.textContent = ''; });
+  document.getElementById('search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = input.value.trim().toLowerCase().replace(/^--/, '');
+    if (!q) return;
+    const hit = [...document.querySelectorAll('main .tok')].find((el) => el.textContent.toLowerCase().includes(q));
+    if (!hit) { status.textContent = 'No token matches'; return; }
+    status.textContent = '';
+    const target = hit.closest('tr, .type-row, figure, .dur, li') || hit;
+    target.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'center' });
+    target.classList.remove('flash'); void target.offsetWidth; target.classList.add('flash');
+  });
+
+  // Commodity switch, shared with the live demos
+  const picker = document.getElementById('commodity-picker');
+  picker.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-commodity]'); if (!b) return;
+    picker.querySelectorAll('[data-commodity]').forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+    window.dispatchEvent(new CustomEvent('onelink:commodity', { detail: b.dataset.commodity }));
+  });
+
+  // Easing replay
+  const tracks = document.getElementById('tracks');
+  const sizeTracks = () => tracks.style.setProperty('--track-w', (tracks.querySelector('.rail-line')?.clientWidth || 200) + 'px');
+  sizeTracks();
+  window.addEventListener('resize', sizeTracks);
+  document.getElementById('replay').addEventListener('click', () => { tracks.dataset.run = tracks.dataset.run === 'on' ? 'off' : 'on'; });
+  if (!reduce.matches) setTimeout(() => { tracks.dataset.run = 'on'; }, 400);
+
+  // Screens: load each kit when it nears the viewport, scaled to fit its frame
+  const frames = [...document.querySelectorAll('[data-frame]')];
+  function fit(frame) {
+    const [w, h] = frame.dataset.frame.split('x').map(Number);
+    const iframe = frame.querySelector('iframe');
+    const scale = Math.min(1, frame.clientWidth / w);
+    iframe.style.width = w + 'px'; iframe.style.height = h + 'px'; iframe.style.transform = `scale(${scale})`;
+    frame.style.height = Math.round(h * scale) + 'px';
+  }
+  frames.forEach(fit);
+  window.addEventListener('resize', () => frames.forEach(fit));
+  const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (!en.isIntersecting) return;
+    const iframe = en.target.querySelector('iframe');
+    if (!iframe.src) iframe.src = iframe.dataset.src;
+    io.unobserve(en.target);
+  }), { rootMargin: '400px 0px' });
+  frames.forEach((f) => io.observe(f));
+
+  // Lucide for static markup
+  window.addEventListener('DOMContentLoaded', () => { if (window.lucide) window.lucide.createIcons({ icons: window.lucide.icons, attrs: { 'stroke-width': 2 } }); });
+})();
+</script>
+</body>
+</html>

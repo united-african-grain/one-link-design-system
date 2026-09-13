@@ -6,8 +6,10 @@ export interface CardProps {
   headerRight?: React.ReactNode;
   /** body-3 tertiary footer: "Showing 4 of 72 trades · season 2026". */
   footer?: React.ReactNode;
-  /** Enables the commodity hover wash and conic border. */
+  /** Enables the commodity hover wash (left radial) and conic border. */
   commodityColor?: string;
+  /** Right-side wash / border colour; defaults to commodityColor. */
+  commodityColor2?: string;
   /** Hover/press effects on. */
   interactive?: boolean;
   /** Closed/complete record: title quaternary. */
@@ -20,7 +22,9 @@ export interface CardProps {
   style?: React.CSSProperties;
 }
 export function Card(props: CardProps): JSX.Element;
-export function Dot(): JSX.Element;
+export function Dot(props?: { style?: React.CSSProperties }): JSX.Element;
+/** Segments joined by Dots; a string splits on " · " unless split={false}. */
+export function MetaParts(props: { meta: React.ReactNode | React.ReactNode[]; split?: boolean }): JSX.Element;
 export interface CardRowProps {
   /** 28px Avatar / commodity tile. */
   leading?: React.ReactNode;

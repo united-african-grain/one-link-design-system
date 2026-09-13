@@ -1,5 +1,8 @@
 /** 05 Approval — trade T-0141 (detail page + decision panel). */
 export function Approval({ mobile = false }) {
+  const compact = useCompact(mobile);
+  const sectionGap = useMinWidth(1024) ? 32 : 24;
+  const panelFull = !useMinWidth(1024);
   const [busy, setBusy] = useState(true);
   const wheat = 'var(--commodity-wheat)';
   const price = useMemo(() => Array.from({ length: 26 }, (_, i) => ({ time: '2026-07-' + String(i + 1).padStart(2, '0'), value: 8950 + i * 9 + Math.cos(i / 3) * 70 })), []);
@@ -32,7 +35,7 @@ export function Approval({ mobile = false }) {
   const chart = <Card title="Wheat price" meta="30 days"><ChartCard height={mobile ? 200 : 240} series={[{ type: 'line', color: '#7A6937', name: 'Wheat', format: (v) => Math.round(v).toLocaleString(), data: price }]} priceLines={[{ price: 9150, color: '#7A6937', title: '9,150 sell' }]} style={{ boxShadow: 'none', padding: 0 }} /></Card>;
 
   const panel = (
-    <ActionPanel tile="SL" context="T-0141 · Crest Milling · Wheat" subject="Decision" width={mobile ? '100%' : 350}>
+    <ActionPanel tile="SL" context="T-0141 · Crest Milling · Wheat" subject="Decision" width={mobile || panelFull ? '100%' : 350}>
       <SummaryList items={[{ label: 'Blended margin', value: 'K148,500', strong: true }, { label: 'vs 30d blended', value: <><Icon name="trending-down" size={12} color="var(--content-accent-down)" />3.8%</> }, { label: 'Terms', value: 'pay 7d / receive 30d' }, { label: 'Waiting', value: '1d 4h' }]} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <PressButton kind="large" variant="primary" fullWidth loading={busy} onClick={() => setBusy(true)}>Approve</PressButton>
@@ -50,12 +53,9 @@ export function Approval({ mobile = false }) {
 
   if (mobile) return <>{head}{legs}{figures}{note}{chart}<div style={{ position: 'sticky', bottom: 0, background: 'var(--surface)', paddingTop: 12 }}><PressButton kind="large" variant="primary" fullWidth loading={busy}>Approve</PressButton></div></>;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
       {head}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 350px', gap: 'var(--rail-gap)', alignItems: 'start' }}>
-        <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>{legs}{figures}{note}{chart}</div>
-        <div style={{ position: 'sticky', top: 24 }}>{panel}</div>
-      </div>
+      <WithPanel panel={panel}>{legs}{figures}{note}{chart}</WithPanel>
     </div>
   );
 }

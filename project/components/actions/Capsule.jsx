@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Icon } from '../core/Icon.jsx';
+import { useInteraction } from '../core/Interaction.jsx';
 
-/** Filter chip. Unselected = grouped-light; selected = white with border + 3px halo, weight goes strong over 180ms. */
+/** Filter chip. Unselected = grouped-light; selected = surface fill, 1px border, 1px surface ring + 3px halo, weight 600, colour eases over 180ms. Keyboard focus shows a 4px ring. */
 export function Capsule({ selected = false, count, chevron = false, icon, mobile = false, onClick, children, style }) {
-  const [hover, setHover] = useState(false);
-  const [down, setDown] = useState(false);
-  const bg = selected ? 'var(--elevated)' : hover ? 'color-mix(in srgb, #000000 5%, var(--grouped))' : 'var(--grouped-light)';
+  const { hover, down, focusVisible, handlers } = useInteraction();
+  const bg = selected ? 'var(--surface)' : hover ? 'color-mix(in srgb, #000000 5%, var(--grouped))' : 'var(--grouped-light)';
+  const ring = focusVisible
+    ? '0 0 0 4px color-mix(in srgb, var(--content-primary) 25%, transparent)'
+    : selected ? '0 0 0 1px var(--surface), 0 0 0 3px color-mix(in srgb, var(--border) 50%, transparent)' : 'none';
   return (
-    <button type="button" aria-pressed={selected} onClick={onClick} onMouseEnter={() => setHover(true)} onMouseLeave={() => { setHover(false); setDown(false); }} onMouseDown={() => setDown(true)} onMouseUp={() => setDown(false)}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: mobile ? 36 : 32, padding: '0 12px', borderRadius: 'var(--radius-max)', border: 0, background: bg, cursor: 'pointer', outline: 'none', whiteSpace: 'nowrap',
-        color: selected ? 'var(--content-primary)' : 'var(--content-secondary)', font: 'var(--font-body-3)', fontWeight: selected ? 'var(--weight-strong)' : 'var(--weight-regular)', letterSpacing: 'var(--body-3-tracking)', fontFeatureSettings: 'var(--features-text)', fontVariantNumeric: 'tabular-nums',
-        boxShadow: selected ? '0 0 0 1px var(--border), 0 0 0 2px #ffffff, 0 0 0 5px color-mix(in srgb, var(--border) 50%, transparent)' : 'none',
-        transform: down ? 'scale(var(--scale-press-button))' : 'scale(1)', transition: 'font-weight var(--dur-capsule) var(--ease-default), background var(--dur-default) var(--ease-default), transform var(--dur-default) var(--ease-default), box-shadow var(--dur-default) var(--ease-default)', ...style }}>
+    <button type="button" aria-pressed={selected} onClick={onClick} {...handlers}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: mobile ? 36 : 32, boxSizing: 'border-box', padding: '0 12px', borderRadius: 'var(--radius-max)', border: `1px solid ${selected ? 'var(--border)' : 'transparent'}`, background: bg, cursor: 'pointer', outline: 'none', whiteSpace: 'nowrap',
+        color: selected ? 'var(--content-primary)' : 'var(--content-secondary)', font: 'var(--font-body-3)', fontWeight: selected ? 'var(--weight-strong-heading)' : 'var(--weight-regular)', letterSpacing: 'var(--body-3-tracking)', fontFeatureSettings: 'var(--features-text)', fontVariantNumeric: 'tabular-nums',
+        boxShadow: ring,
+        transform: down ? 'scale(var(--scale-press-button))' : 'scale(1)', transition: 'color var(--dur-capsule) ease-in-out, font-weight var(--dur-capsule) ease-in-out, background var(--dur-default) var(--ease-default), transform var(--dur-default) var(--ease-default)', ...style }}>
       {icon ? <Icon name={icon} size={14} /> : null}
       <span>{children}</span>
       {count != null ? <span style={{ color: 'var(--content-tertiary)', fontWeight: 'var(--weight-regular)' }}>{count}</span> : null}

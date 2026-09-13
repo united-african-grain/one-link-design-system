@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon } from '../core/Icon.jsx';
 import { textStyle } from '../core/Text.jsx';
+import { MetaParts } from '../data/Card.jsx';
 
 /** History timeline: 12px dots on a 1px border line. Compensating entries show rotate-ccw. */
 export function Timeline({ entries = [], style }) {
@@ -12,7 +13,7 @@ export function Timeline({ entries = [], style }) {
           {i < entries.length - 1 ? <span aria-hidden style={{ position: 'absolute', left: 5.5, top: 16, bottom: 0, width: 1, background: 'var(--border)' }} /> : null}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 6, ...textStyle('body-3'), textWrap: 'pretty' }}>{e.compensating ? <Icon name="rotate-ccw" size={14} color="var(--content-secondary)" /> : null}{e.text}</span>
-            <span style={{ ...textStyle('body-4', { tone: 'secondary' }), fontVariantNumeric: 'tabular-nums' }}>{e.actor}{e.actor && e.time ? ' · ' : ''}{e.time}</span>
+            <span style={{ display: 'block', ...textStyle('body-4', { tone: 'secondary' }), fontVariantNumeric: 'tabular-nums' }}><MetaParts meta={[e.actor, e.time]} /></span>
           </div>
         </li>
       ))}

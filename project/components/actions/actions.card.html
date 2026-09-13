@@ -1,14 +1,14 @@
 <!-- @dsCard group="Components" viewport="700x600" subtitle="Button variants and sizes, 3D press buttons, capsules, segmented control, line stepper" name="Actions · Buttons, capsules, segmented, stepper" -->
-<!doctype html><html><head><meta charset="utf-8">
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../../styles.css">
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
-<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
 
 <script src="../../_ds_bundle.js" onerror="void 0"></script>
 <script src="../_loader.js"></script>
-<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:12px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary);min-width:84px;flex:none}</style>
+<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:12px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary);min-width:84px;flex:none} @media (max-width:699px){.g2,.g3{grid-template-columns:minmax(0,1fr)!important}.scroll-x{overflow-x:auto;max-width:100%;scrollbar-width:none}}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
 loadDS('../').then((DS) => {
@@ -24,7 +24,7 @@ function Demo(){
   return <div className="col">
     <div className="row">{L('variants')}<Button variant="brand" icon="plus">New trade</Button><Button variant="primary">Approve</Button><Button variant="outline">Query</Button><Button variant="ghost">Cancel</Button><Button variant="subtle">Export CSV</Button><Button variant="critical">Decline</Button><Button variant="critical-ghost">Decline</Button><Button variant="commodity" commodityColor="var(--commodity-maize)">Create trade</Button></div>
     <div className="row">{L('sizes')}<Button size="xsmall" variant="outline">Review</Button><Button size="small" variant="outline" icon="bell">Digest</Button><Button size="medium" variant="outline" icon="refresh-cw">Sync tickets</Button><Button size="large" variant="primary">Finalise GRN</Button></div>
-    <div className="row">{L('states')}<Button variant="primary" loading>Approve</Button><Button variant="outline" loading>Sync tickets</Button><Button variant="brand" disabled>Raise GRN</Button><Button variant="primary" onClick={()=>setBusy(b=>!b)} loading={busy}>Send</Button><span style={textStyle('caption-1',{tone:'tertiary'})}>← click to toggle busy</span></div>
+    <div className="row">{L('states')}<Button variant="primary" loading>Approve</Button><Button variant="outline" loading>Sync tickets</Button><Button variant="brand" disabled>Raise GRN</Button><Button variant="primary" onClick={()=>setBusy(b=>!b)} loading={busy}>Send</Button><span style={{display:'inline-flex',alignItems:'center',gap:4,...textStyle('caption-1',{tone:'tertiary'})}}><Icon name="arrow-left" size={12}/>click to toggle busy</span></div>
     <div className="row">{L('3D press')}<PressButton kind="figure">53%</PressButton><PressButton kind="figure">25.3%</PressButton><PressButton kind="figure" disabled>—</PressButton><PressButton kind="quick">+100t</PressButton><PressButton kind="quick">+500t</PressButton><PressButton kind="quick">+1,000t</PressButton><PressButton kind="large" variant="primary" loading>Resolve case</PressButton><PressButton kind="large" variant="commodity" commodityColor="var(--commodity-maize)">Create trade</PressButton></div>
     <div className="row">{L('two-up')}<div style={{width:260}}><PressToggle options={['Sell','Buy']} value={side} onChange={setSide} selectedVariant="commodity" commodityColor="var(--commodity-wheat)"/></div><div style={{width:260}}><PressToggle options={['Confirm','Dispute']} value="Confirm" /></div></div>
     <div className="row">{L('capsules')}<CapsuleGroup options={['Today','Week','Month','Quarter','Year','6 months']} value={period} onChange={setPeriod}/></div>

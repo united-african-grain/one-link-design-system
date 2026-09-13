@@ -1,19 +1,19 @@
 <!-- @dsCard group="One Link" viewport="1440x900" subtitle="Interactive click-through: Command Center, Trade Desk, Warehouse, Stock, Farmer Finance" name="One Link — desktop app" -->
 <!-- @startingPoint section="Screens" subtitle="One Link desktop app shell with all owner screens" viewport="1440x900" -->
-<!doctype html><html><head><meta charset="utf-8"><title>One Link</title>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>One Link</title>
 <link rel="stylesheet" href="../../styles.css">
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
-<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
-<script src="https://unpkg.com/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
 <script src="../../_ds_bundle.js" onerror="void 0"></script>
 <script src="../../components/_loader.js"></script>
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
 loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx']).then((K) => {
-  const { Page, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GRNFinalise, GradingDispute, StockBoard, CreditBook, Segmented } = K;
+  const { Page, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GRNFinalise, GradingDispute, StockBoard, CreditBook, Segmented, ScrollRow } = K;
   function App(){
     const [module,setModule]=React.useState('command');
     const [ccState,setCcState]=React.useState('calm');
@@ -24,7 +24,7 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.
     const sync = (module==='warehouse' && whView==='Sync silent') || ccState==='exception' ? 'stalled' : 'live';
     let body=null, controls=null;
     if(module==='command'){ controls=<Segmented options={['Calm','Exception']} value={ccState==='calm'?'Calm':'Exception'} onChange={v=>setCcState(v==='Calm'?'calm':'exception')}/>; body=<CommandCenter state={ccState}/>; }
-    else if(module==='trade'){ controls=<div style={{display:'flex',gap:8}}><Segmented options={['Trade Board','Coverage','Approval']} value={tdView} onChange={setTdView}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}</div>;
+    else if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval']} value={tdView} onChange={setTdView}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}</>;
       body = tdView==='Trade Board' ? <TradeBoard state={tbState}/> : tdView==='Coverage' ? <Coverage/> : <Approval/>; }
     else if(module==='warehouse'){ controls=<Segmented options={['Tickets','Sync silent','Empty','GRN finalise','Dispute']} value={whView} onChange={setWhView}/>;
       body = whView==='GRN finalise' ? <GRNFinalise/> : whView==='Dispute' ? <GradingDispute/> : <Weighbridge state={whView==='Sync silent'?'silent':whView==='Empty'?'empty':'default'}/>; }
@@ -32,7 +32,7 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.
     else if(module==='finance'){ body=<CreditBook/>; }
     else { body=<div style={{padding:'80px 0',textAlign:'center',color:'var(--content-tertiary)'}}>Ask AI is out of scope for this kit.</div>; }
     return <Page module={module} onModule={setModule} sync={sync} syncLabel={sync==='stalled'?'Bridge feed silent · last batch 3h 12m ago':undefined}>
-      {controls?<div style={{display:'flex',justifyContent:'flex-end',marginBottom:16}}>{controls}</div>:null}
+      {controls?<ScrollRow align="flex-end" style={{marginBottom:16}}>{controls}</ScrollRow>:null}
       {body}
     </Page>;
   }

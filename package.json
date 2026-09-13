@@ -1,0 +1,17 @@
+{
+  "name": "one-link-design-system",
+  "private": true,
+  "type": "module",
+  "description": "One Link design system: tokens, components, screens and the published site.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "preview": "node scripts/build.mjs && node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

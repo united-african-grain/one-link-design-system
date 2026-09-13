@@ -2,7 +2,7 @@
    Prefers window.<Namespace> from _ds_bundle.js when available. */
 (function () {
   var FILES = [
-    'core/Icon.jsx', 'core/Text.jsx', 'core/Avatar.jsx', 'core/Logo.jsx',
+    'core/Icon.jsx', 'core/Interaction.jsx', 'core/Text.jsx', 'core/Avatar.jsx', 'core/Logo.jsx',
     'actions/Button.jsx', 'actions/PressButton.jsx', 'actions/Capsule.jsx', 'actions/Segmented.jsx', 'actions/LineStepper.jsx',
     'feedback/StatusMark.jsx', 'feedback/TrustChip.jsx', 'feedback/Banner.jsx', 'feedback/SeverityTag.jsx', 'feedback/EmptyState.jsx', 'feedback/Skeleton.jsx', 'feedback/Dialog.jsx',
     'inputs/SearchField.jsx',

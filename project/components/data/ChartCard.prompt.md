@@ -1,4 +1,4 @@
-Chart card. Requires `<script src="https://unpkg.com/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>`. The TradingView attribution logo stays bottom-left; add `<ChartAttribution/>` in the page footer.
+Chart card. Requires `<script src="https://unpkg.com/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>`. The TradingView attribution logo stays bottom-left; add `<ChartAttribution/>` in the page footer.
 
 ```jsx
 <ChartCard title="Position over the month" ranges={['1M','3M','1Y']} range="1M"

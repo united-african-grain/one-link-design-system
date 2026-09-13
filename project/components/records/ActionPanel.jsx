@@ -5,16 +5,17 @@ import { Avatar } from '../core/Avatar.jsx';
 import { Tabs } from '../navigation/Tabs.jsx';
 import { Banner } from '../feedback/Banner.jsx';
 import { Button } from '../actions/Button.jsx';
+import { MetaParts } from '../data/Card.jsx';
 
 /** The "ticket": 350px white panel, radius 20, shadow minimal-soft. Header (tile, context, subject), optional 44px tab bar, body with 18px gap. */
 export function ActionPanel({ tile, context, subject, tabs, tab, onTab, menu, children, width = 350, error, onRetry, retrying, disabledReason, success, style }) {
   return (
     <aside style={{ width, maxWidth: '100%', background: 'var(--elevated)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-minimal-soft)', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', ...style }}>
       {(tile || context || subject) ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 16px 0' }}>
           {tile ? (typeof tile === 'string' ? <Avatar initials={tile} /> : tile) : null}
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {context ? <span style={textStyle('body-3', { tone: 'secondary' })}>{context}</span> : null}
+            {context ? <span style={textStyle('body-3', { tone: 'secondary' })}><MetaParts meta={context} /></span> : null}
             {subject ? <span style={{ ...textStyle('body-1', { strong: true }), textWrap: 'pretty' }}>{subject}</span> : null}
           </div>
         </div>

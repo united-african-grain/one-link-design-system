@@ -7,6 +7,8 @@ const TRADES = [
 
 /** 03 Trade Board (Trade Desk) — owner, restricted and loading variants. */
 export function TradeBoard({ state = 'default', mobile = false }) {
+  const compact = useCompact(mobile);
+  const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [stage, setStage] = useState('Contracted');
   const [layout, setLayout] = useState('Cards');
   const restricted = state === 'restricted';
@@ -34,7 +36,7 @@ export function TradeBoard({ state = 'default', mobile = false }) {
   );
 
   const cards = (
-    <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : 'repeat(2, minmax(0,1fr))', gap: 16 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(2, minmax(0,1fr))', gap: 16 }}>
       {loading ? [0, 1, 2, 3].map((i) => <CardSkeleton key={i} />) : TRADES.map((t) => (
         <Card key={t.id} interactive commodityColor={t.color} closed={t.closed} onClick={() => {}}
           title={`${t.ref} · ${t.cp}`} meta={[t.com, `${t.mt} MT`, restricted ? `sell ${t.sell}` : `sell ${t.sell} → buy ${t.buy}`]}>
@@ -80,7 +82,7 @@ export function TradeBoard({ state = 'default', mobile = false }) {
 
   if (mobile) return <>{head}<Tabs tabs={['Trade Board', 'Coverage', 'Approvals']} value="Trade Board" />{strip}{needs}{pipeline}</>;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--section-gap-desktop)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
       {head}
       <Tabs tabs={['Trade Board', 'Coverage', 'Approvals']} value="Trade Board" />
       <WithRail rail={needs}>{strip}{pipeline}</WithRail>

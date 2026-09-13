@@ -22,6 +22,8 @@ export interface DataTableProps<Row = any> {
   rowKey?: string;
   /** Optional caption-1-condensed column-group labels above the header: [{label, span}]. */
   groupLabels?: Array<{ label: string; span?: number }>;
+  /** Below this container width (default 80px × columns) the table scrolls in its own overflow-x container. */
+  minWidth?: number;
   style?: React.CSSProperties;
 }
 export function DataTable<Row = any>(props: DataTableProps<Row>): JSX.Element;

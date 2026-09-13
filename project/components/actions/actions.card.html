@@ -1,0 +1,38 @@
+<!-- @dsCard group="Components" viewport="700x600" subtitle="Button variants and sizes, 3D press buttons, capsules, segmented control, line stepper" name="Actions · Buttons, capsules, segmented, stepper" -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:12px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary);min-width:84px;flex:none}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Icon, Text, textStyle, Avatar, Logo, Button, PressButton, PressToggle, Capsule, CapsuleGroup, Segmented, LineStepper, StatusMark, ProvenanceChip, ConfirmationChip, Banner, SeverityTag, EmptyState, Skeleton, CardSkeleton, Dialog, SearchField, Tabs, CommodityTabs, SyncStatus, Header, MobileShell, MODULES, QuantityChip, ShareBar, Figure, Card, CardRow, Dot, RailRow, DataTable, RestrictedCell, DerivedCell, RefCell, ChartCard, ChartAttribution, EvidenceTile, Timeline, ActionPanel, AmountRow, SummaryList, RadioList, ReconcilePanel } = DS;
+const L=(t)=><span className="lbl">{t}</span>;
+
+function Demo(){
+  const [busy,setBusy]=React.useState(true);
+  const [period,setPeriod]=React.useState('Month');
+  const [seg,setSeg]=React.useState('Overview');
+  const [side,setSide]=React.useState('Sell');
+  const [price,setPrice]=React.useState('$400');
+  return <div className="col">
+    <div className="row">{L('variants')}<Button variant="brand" icon="plus">New trade</Button><Button variant="primary">Approve</Button><Button variant="outline">Query</Button><Button variant="ghost">Cancel</Button><Button variant="subtle">Export CSV</Button><Button variant="critical">Decline</Button><Button variant="critical-ghost">Decline</Button><Button variant="commodity" commodityColor="var(--commodity-maize)">Create trade</Button></div>
+    <div className="row">{L('sizes')}<Button size="xsmall" variant="outline">Review</Button><Button size="small" variant="outline" icon="bell">Digest</Button><Button size="medium" variant="outline" icon="refresh-cw">Sync tickets</Button><Button size="large" variant="primary">Finalise GRN</Button></div>
+    <div className="row">{L('states')}<Button variant="primary" loading>Approve</Button><Button variant="outline" loading>Sync tickets</Button><Button variant="brand" disabled>Raise GRN</Button><Button variant="primary" onClick={()=>setBusy(b=>!b)} loading={busy}>Send</Button><span style={textStyle('caption-1',{tone:'tertiary'})}>← click to toggle busy</span></div>
+    <div className="row">{L('3D press')}<PressButton kind="figure">53%</PressButton><PressButton kind="figure">25.3%</PressButton><PressButton kind="figure" disabled>—</PressButton><PressButton kind="quick">+100t</PressButton><PressButton kind="quick">+500t</PressButton><PressButton kind="quick">+1,000t</PressButton><PressButton kind="large" variant="primary" loading>Resolve case</PressButton><PressButton kind="large" variant="commodity" commodityColor="var(--commodity-maize)">Create trade</PressButton></div>
+    <div className="row">{L('two-up')}<div style={{width:260}}><PressToggle options={['Sell','Buy']} value={side} onChange={setSide} selectedVariant="commodity" commodityColor="var(--commodity-wheat)"/></div><div style={{width:260}}><PressToggle options={['Confirm','Dispute']} value="Confirm" /></div></div>
+    <div className="row">{L('capsules')}<CapsuleGroup options={['Today','Week','Month','Quarter','Year','6 months']} value={period} onChange={setPeriod}/></div>
+    <div className="row">{L('')}<Capsule count={4}>Lead</Capsule><Capsule count={6}>Opportunity</Capsule><Capsule count={3}>Approved</Capsule><Capsule count={18} selected>Contracted</Capsule><Capsule count={41}>Complete</Capsule><Capsule chevron>Season 2026</Capsule><Capsule chevron>Site: all</Capsule></div>
+    <div className="row">{L('segmented')}<Segmented options={['Overview','Trends']} value={seg} onChange={setSeg}/><Segmented options={['$','ZMW']} value="$"/><Segmented value="ready" options={[{value:'ready',label:'Ready',icon:'check',count:3},{value:'prob',label:'Problematic',icon:'triangle-alert',count:1},{value:'linked',label:'Linked',icon:'link',count:0},{value:'done',label:'Done',icon:'circle-check',count:0}]}/></div>
+    <div className="row">{L('stepper')}<LineStepper values={['$360','$380','$400','$420']} value={price} onChange={setPrice} activeColor="var(--commodity-wheat)"/><LineStepper values={['0.25','0.5','1.0']} value="0.5"/></div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

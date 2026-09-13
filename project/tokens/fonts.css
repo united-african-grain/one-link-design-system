@@ -1,0 +1,4 @@
+/* One Link webfonts. Inter variable (opsz + wght) from rsms.me; Instrument Sans with the wdth axis from Google Fonts.
+   No font binaries were supplied; these hosted faces are the closest match. Replace with self-hosted @font-face rules when files are provided. */
+@import url("https://rsms.me/inter/inter.css");
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&display=swap");

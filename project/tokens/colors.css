@@ -1,0 +1,72 @@
+:root {
+  /* ---- Semantic (the only tokens components may use) ---- */
+  --surface: #ffffff;
+  --elevated: #ffffff;
+  --grouped: #f4f5f7;
+  --grouped-light: #00153f0b;
+  --grouped-elevated: #f4f5f7;
+  --inverted: #23272d;
+  --overlay: #00000066;
+
+  --content-primary: #00050cdc;
+  --content-secondary: #000c1c94;
+  --content-tertiary: #000f2174;
+  --content-quaternary: #00102a40;
+  --content-disabled: #00152e54;
+  --content-accent-brand: #2563EB;
+  --content-accent-up: #007e26;
+  --content-accent-down: #df0c10;
+  --accent-up-fill: #04af52;
+
+  /* Solid twins for use over photos */
+  --content-primary-solid: #23272d;
+  --content-secondary-solid: #6b727b;
+  --content-tertiary-solid: #8b929b;
+  --content-quaternary-solid: #bfc3ca;
+
+  --info-subtle: #f7fbfe;
+  --info-strong: #0135aa;
+  --success-subtle: #e4ffe9;
+  --success-strong: #006118;
+  --warning-subtle: #fefce8;
+  --warning-strong: #a16207;
+  --error-subtle: #fff6f2;
+  --error-strong: #bc0000;
+
+  --border: #00123719;
+  --border-light: #0000000f;
+  --border-elevated: #00123719;
+
+  --buttons-primary: #23272d;
+  --buttons-brand: #2563EB;
+  --buttons-critical: #df0c10;
+  --buttons-label: #ffffff;
+  --hover-overlay-darker: #0000000d;
+
+  /* Hover rule: light fills mix 5% black, filled buttons mix 10% white */
+  --hover-mix-light: #000000 5%;
+  --hover-mix-filled: #ffffff 10%;
+
+  /* ---- Palettes (never on a component directly) ---- */
+  --gray-50: #ffffff; --gray-100: #f4f5f7; --gray-200: #e6e8ec; --gray-300: #d4d7dc; --gray-400: #bfc3ca; --gray-500: #abb2bb; --gray-600: #8b929b; --gray-700: #6b727b; --gray-800: #454a52; --gray-900: #23272d; --gray-950: #000000;
+  --grayt-50: #ffffff; --grayt-100: #00153f0b; --grayt-200: #00123719; --grayt-300: #0014332b; --grayt-400: #00102a40; --grayt-500: #00152e54; --grayt-600: #000f2174; --grayt-700: #000c1c94; --grayt-800: #000711ba; --grayt-900: #00050cdc; --grayt-950: #000000;
+  --brand-50: #f7fbfe; --brand-100: #cddffb; --brand-200: #a3c2f7; --brand-300: #79a4f4; --brand-400: #4e84f0; --brand-500: #2563EB; --brand-600: #0e4bd1; --brand-700: #0135aa; --brand-800: #002687; --brand-900: #00165c; --brand-950: #000734;
+  --green-50: #e4ffe9; --green-100: #cdf3d7; --green-200: #8fe5a5; --green-300: #3ad26d; --green-400: #04af52; --green-500: #009c39; --green-600: #007e26; --green-700: #006118; --green-800: #00450a; --green-900: #002a01; --green-950: #001200;
+  --red-50: #fff6f2; --red-100: #ffcfc6; --red-200: #ffa597; --red-300: #ff7464; --red-400: #fe3d33; --red-500: #df0c10; --red-600: #bc0000; --red-700: #930000; --red-800: #6b0000; --red-900: #460000; --red-950: #240000;
+  --yellow-50: #fefce8; --yellow-100: #fef9c3; --yellow-200: #fef08a; --yellow-300: #fde047; --yellow-400: #facc15; --yellow-500: #eab308; --yellow-600: #ca8a04; --yellow-700: #a16207; --yellow-800: #854d0e; --yellow-900: #713f12; --yellow-950: #422006;
+  --teal-50: #dfffff; --teal-100: #8ff1ff; --teal-200: #5cd8f9; --teal-300: #3bbcdd; --teal-400: #05a2c2; --teal-500: #0088a7; --teal-600: #006d89; --teal-700: #00546a; --teal-800: #003b4d; --teal-900: #002432; --teal-950: #000f18;
+  --purple-50: #fff7ff; --purple-100: #ebd1ff; --purple-200: #d6a9ff; --purple-300: #c37eff; --purple-400: #aa5bf6; --purple-500: #8f3dd7; --purple-600: #781dbc; --purple-700: #6100a1; --purple-800: #460078; --purple-900: #2d0050; --purple-950: #15002c;
+
+  /* ---- Commodity (entity) colours. Washes: color-mix(in oklab, <colour> 9%, transparent) ---- */
+  --commodity-maize: #C2410C;
+  --commodity-wheat: #7A6937;
+  --commodity-soya: #5A7A1E;
+  --commodity-soya-meal: #8A5A36;
+  --commodity-fertilizer: #7A3FB8;
+  --commodity-wash-amount: 9%;
+  --commodity-tile-amount: 16%;
+
+  /* BETA badge (kept from the reference theme by request) */
+  --beta-fill: #2563EB;
+  --beta-label: #ffffff;
+}

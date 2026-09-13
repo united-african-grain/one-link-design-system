@@ -1,0 +1,23 @@
+:root {
+  --radius-5xs: 2px;   /* small badges */
+  --radius-4xs: 4px;   /* keyboard hint, skeleton text, severity tag */
+  --radius-3xs: 6px;
+  --radius-2xs: 8px;   /* quantity chips, selected segment */
+  --radius-xs: 10px;   /* 32px buttons, stepper */
+  --radius-sm: 12px;   /* 40px buttons, figure buttons, search, segmented track */
+  --radius-sm-h: 14px; /* 48px buttons */
+  --radius-md: 16px;   /* hover rows, tiles, banners, popovers */
+  --radius-lg: 20px;   /* cards, tickets, chart cards, dialogs */
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-max: 999px; /* pills, capsules, avatars */
+
+  --shadow-flat: inset 0 0 0 1px #00123719;
+  --shadow-minimal: 0 0 0 1px rgb(35 39 45 / .06), 0 1px 1px -.5px rgba(0,0,0,.06), 0 3px 3px -1.5px rgba(0,0,0,.06);
+  --shadow-minimal-soft: 0 0 0 1px #0000000f, 0 2px 6px -.5px #00000006, 0 2px 10px 0 #00000006;
+  --shadow-middle: 0 0 0 1px rgb(35 39 45 / .06), 0 1px 1px -.5px rgba(0,0,0,.06), 0 3px 3px -1.5px rgba(0,0,0,.06), 0 6px 6px -3px rgba(0,0,0,.06);
+  --shadow-strong: 0 0 0 1px #0000000f, 0 1px 1px -.5px #00000006, 0 3px 3px -1.5px #00000006, 0 6px 14px -3px #00000006, 0 20px 16px -10px #00000006, 0 5px 24px 0 #0000000a;
+  --shadow-dialog: 0 4px 40px 0 #0000000d, 0 4px 24px 0 #0000000d, 0 2px 12px 0 #0000000d, 0 0 0 1px #0000000f;
+
+  --press-edge: 4px; /* 3D press button edge */
+}

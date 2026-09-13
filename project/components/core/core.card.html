@@ -1,0 +1,30 @@
+<!-- @dsCard group="Components" viewport="700x330" subtitle="Lucide icon sizes, type primitive, avatars and commodity tiles, One Link lockup with BETA" name="Core · Icon, Text, Avatar, Logo" -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:12px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary);min-width:84px;flex:none}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Icon, Text, textStyle, Avatar, Logo, Button, PressButton, PressToggle, Capsule, CapsuleGroup, Segmented, LineStepper, StatusMark, ProvenanceChip, ConfirmationChip, Banner, SeverityTag, EmptyState, Skeleton, CardSkeleton, Dialog, SearchField, Tabs, CommodityTabs, SyncStatus, Header, MobileShell, MODULES, QuantityChip, ShareBar, Figure, Card, CardRow, Dot, RailRow, DataTable, RestrictedCell, DerivedCell, RefCell, ChartCard, ChartAttribution, EvidenceTile, Timeline, ActionPanel, AmountRow, SummaryList, RadioList, ReconcilePanel } = DS;
+const L=(t)=><span className="lbl">{t}</span>;
+
+function Demo(){
+  const icons=['check','circle-check','triangle-alert','circle-alert','octagon-x','clock','contrast','diamond','link','signal-high','trending-up','trending-down','minus','chevron-right','chevron-down','arrow-left','x','info','file-text','receipt','volume-2','camera','pencil','rotate-ccw','refresh-cw','sparkles','search','bell','eye-off','loader-circle'];
+  return <div className="col">
+    <div className="row">{L('logo')}<Logo/><Logo product="One Link"/><Logo showBeta={false}/><Logo size="sm"/></div>
+    <div className="row">{L('icons 20/16/12')}{icons.slice(0,14).map(i=><Icon key={i} name={i} size={20} stroke={1.75} color="var(--content-primary)"/>)}</div>
+    <div className="row">{L('')}{icons.slice(14).map(i=><Icon key={i} name={i} size={16} color="var(--content-secondary)"/>)}<Icon name="loader-circle" size={16} spin color="var(--content-secondary)"/></div>
+    <div className="row">{L('avatars')}<Avatar initials="TM" size={32}/><Avatar initials="SL"/><Avatar initials="KV" commodityColor="var(--commodity-maize)"/><Avatar initials="CM" commodityColor="var(--commodity-wheat)"/><Avatar initials="KF" commodityColor="var(--commodity-soya)"/><Avatar initials="HM" commodityColor="var(--commodity-soya-meal)"/><Avatar initials="IM" commodityColor="var(--commodity-fertilizer)"/><Avatar initials="BB" commodityColor="var(--commodity-maize)" dimmed/></div>
+    <div className="row">{L('text')}<Text variant="heading-1-condensed">ZAM4702 · Kafue Valley Milling</Text><Text variant="body-2" strong>Body-2 strong</Text><Text variant="body-3" tone="secondary">body-3 secondary</Text><Text variant="body-4" tone="tertiary">body-4 tertiary</Text><Text variant="body-4" strong tone="up">+9.4%</Text><Text variant="body-4" strong tone="down">−3.8%</Text></div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

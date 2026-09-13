@@ -1,0 +1,47 @@
+<!-- @dsCard group="Components" viewport="700x720" subtitle="Trade card with commodity hover, figure with derivation popover, quantity chips, rail rows" name="Data · Cards, rows, figures, chips, share bars, rail rows" -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:12px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary);min-width:84px;flex:none}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Icon, Text, textStyle, Avatar, Logo, Button, PressButton, PressToggle, Capsule, CapsuleGroup, Segmented, LineStepper, StatusMark, ProvenanceChip, ConfirmationChip, Banner, SeverityTag, EmptyState, Skeleton, CardSkeleton, Dialog, SearchField, Tabs, CommodityTabs, SyncStatus, Header, MobileShell, MODULES, QuantityChip, ShareBar, Figure, Card, CardRow, Dot, RailRow, DataTable, RestrictedCell, DerivedCell, RefCell, ChartCard, ChartAttribution, EvidenceTile, Timeline, ActionPanel, AmountRow, SummaryList, RadioList, ReconcilePanel } = DS;
+const L=(t)=><span className="lbl">{t}</span>;
+
+function Demo(){
+  return <div className="col" style={{gap:20}}>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+      <Card title="ZAM4702 · Kafue Valley Milling" meta={['White maize','2,000 MT','sell 6,800 → buy 6,600']} commodityColor="var(--commodity-maize)" interactive onClick={()=>{}} footer="Showing 4 of 72 trades · season 2026">
+        <CardRow leading={<Avatar initials="KV" commodityColor="var(--commodity-maize)"/>} name="Delivered" bar={<ShareBar share={0.7} color="var(--commodity-maize)"/>} figure="1,400 / 2,000t" trailing={<><QuantityChip>1,400t</QuantityChip><PressButton kind="figure">K400,000</PressButton></>}/>
+      </Card>
+      <Card title="ZAM4691 · Brightloaf Bakeries" meta={['Maize','2,250 MT','complete']} commodityColor="var(--commodity-maize)" closed>
+        <CardRow closed leading={<Avatar initials="BB" commodityColor="var(--commodity-maize)" dimmed/>} name="Delivered" bar={<ShareBar share={1} color="var(--commodity-maize)" dimmed/>} figure="2,250 / 2,250t" trailing={<><QuantityChip dimmed>2,250t</QuantityChip><PressButton kind="figure" disabled>K540,000</PressButton></>}/>
+      </Card>
+    </div>
+    <Card title="Crest Milling" meta={['target 25,000','window 45d']} commodityColor="var(--commodity-wheat)" interactive>
+      <CardRow leading={<Avatar initials="CM" commodityColor="var(--commodity-wheat)"/>} name="Firm 10,939" sub="declared 2,500" bar={<ShareBar share={0.44} declared={0.1} color="var(--commodity-wheat)"/>} figure="short 11,561" trailing={<><StatusMark kind="flat"/><PressButton kind="figure">54%</PressButton></>}/>
+    </Card>
+    <div className="row" style={{alignItems:'flex-start',gap:40}}>
+      <Figure label="your position right now" value="K125M" size="display-1-condensed" derivation="physical K80M · in-transit K45M" derivationRows={[{label:'Physical stock',value:'K80M'},{label:'In transit',value:'K45M'},{label:'Position',value:'K125M',total:true}]}/>
+      <Figure label="blended margin" value="K11.8M" delta="9.4%"/>
+      <Figure label="in" value="+K8.8M" delta="12 receipts" deltaDirection="up" derivation="month to date"/>
+      <Figure label="site total" value="34,117" unit="MT" size="display-3-condensed" derivation="across 7 stacks and silos"/>
+    </div>
+    <div className="row">{L('chips')}<QuantityChip>28.20t</QuantityChip><QuantityChip>1,400t</QuantityChip><QuantityChip>firm</QuantityChip><QuantityChip tone="warning">set %</QuantityChip><QuantityChip dimmed>2,250t</QuantityChip></div>
+    <div style={{maxWidth:358}}>
+      <RailRow severity="critical" subject="ZAM4702 short 1,400t — Kafue Valley Milling" context="window closes in 12 days · 2d" right={<Button size="xsmall" variant="outline">Find supply</Button>}/>
+      <RailRow severity="high" subject="2 trades awaiting approval" context="T-0142 · T-0141 · 3h / 1d4h" right={<Button size="xsmall" variant="outline">Review</Button>}/>
+      <RailRow subject="GR10000377 · Kapiri Farms" context="30.02t received" status={<StatusMark kind="clean" size="body-4"/>} right={<Text variant="heading-3-condensed">30.02t</Text>}/>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

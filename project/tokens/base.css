@@ -1,0 +1,4 @@
+html, body { background: var(--surface); color: var(--content-primary); font: var(--font-body-3); letter-spacing: var(--body-3-tracking); font-feature-settings: var(--features-text); -webkit-font-smoothing: antialiased; }
+a { color: var(--content-accent-brand); text-decoration: none; }
+a:hover { color: var(--brand-600); }
+button, input { font: inherit; letter-spacing: inherit; }

@@ -1,0 +1,30 @@
+<!-- @dsCard group="Components" viewport="1200x420" subtitle="Desktop header with BETA badge, module tabs, condensed commodity tabs, live/stalled/offline pills" name="Navigation · Header, tabs, commodity tabs, sync status" -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:12px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary);min-width:84px;flex:none}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Icon, Text, textStyle, Avatar, Logo, Button, PressButton, PressToggle, Capsule, CapsuleGroup, Segmented, LineStepper, StatusMark, ProvenanceChip, ConfirmationChip, Banner, SeverityTag, EmptyState, Skeleton, CardSkeleton, Dialog, SearchField, Tabs, CommodityTabs, SyncStatus, Header, MobileShell, MODULES, QuantityChip, ShareBar, Figure, Card, CardRow, Dot, RailRow, DataTable, RestrictedCell, DerivedCell, RefCell, ChartCard, ChartAttribution, EvidenceTile, Timeline, ActionPanel, AmountRow, SummaryList, RadioList, ReconcilePanel } = DS;
+const L=(t)=><span className="lbl">{t}</span>;
+
+function Demo(){
+  const [m,setM]=React.useState('trade'); const [c,setC]=React.useState('wheat-local'); const [t,setT]=React.useState('Coverage');
+  return <div className="col" style={{gap:20}}>
+    <div style={{margin:'-16px -16px 0'}}><Header module={m} onModuleChange={setM} sync="live"/></div>
+    <div style={{margin:'0 -16px'}}><Header module="warehouse" sync="stalled" scrolled showSearch/></div>
+    <div className="row">{L('sub-nav')}<Tabs tabs={['Trade Board','Coverage','Approvals']} value={t} onChange={setT}/></div>
+    <div className="row">{L('commodity')}<CommodityTabs value={c} onChange={setC} tabs={[{value:'white-maize',label:'White maize'},{value:'wheat-local',label:'Wheat (local)'},{value:'soya',label:'Soya'},{value:'se-meal',label:'SE meal'}]}/></div>
+    <div className="row">{L('sync')}<SyncStatus state="live"/><SyncStatus state="stalled"/><SyncStatus state="offline"/></div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

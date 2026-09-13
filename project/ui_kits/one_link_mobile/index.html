@@ -1,0 +1,36 @@
+<!-- @dsCard group="One Link" viewport="390x844" subtitle="390px artboards of every screen inside the mobile shell" name="One Link — mobile app" -->
+<!-- @startingPoint section="Screens" subtitle="One Link mobile shell with every screen at 390" viewport="390x844" -->
+<!doctype html><html><head><meta charset="utf-8"><title>One Link — mobile</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../../components/_loader.js"></script>
+<style>html,body{margin:0;background:var(--grouped)}#root{display:flex;justify-content:center}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadKit('../../components/', '../one_link/', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx']).then((K) => {
+  const { MobileShell, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GradingDispute, StockBoard, CreditBook, SyncStatus } = K;
+  const SCREENS = {
+    command: { title: 'Command Center', tabs: ['Overview','Trends'], render: () => <CommandCenter mobile state="calm"/> },
+    trade: { title: 'Trade Desk', tabs: ['Trade Board','Coverage','Approvals'], render: (t) => t==='Coverage' ? <Coverage mobile/> : t==='Approvals' ? <Approval mobile/> : <TradeBoard mobile/> },
+    warehouse: { title: 'Warehouse', tabs: ['Tickets','Disputes'], render: (t) => t==='Disputes' ? <GradingDispute mobile/> : <Weighbridge mobile/> },
+    stock: { title: 'Stock', tabs: ['Board','Counts'], render: () => <StockBoard mobile/> },
+    finance: { title: 'Farmer Finance', tabs: ['Credit book','Alerts'], render: () => <CreditBook mobile/> },
+  };
+  function App(){
+    const [m,setM]=React.useState('command');
+    const [t,setT]=React.useState(SCREENS.command.tabs[0]);
+    const s=SCREENS[m];
+    return <div style={{boxShadow:'var(--shadow-dialog)',margin:'24px 0',borderRadius:24,overflow:'hidden'}}>
+      <MobileShell subTabs={s.tabs} subTab={t} onSubTabChange={setT} module={m} onModuleChange={(v)=>{ if(!SCREENS[v]) return; setM(v); setT(SCREENS[v].tabs[0]); }} right={<SyncStatus state="live" label="live · 2m"/>}>
+        {s.render(t)}
+      </MobileShell>
+    </div>;
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+});
+</script></body></html>

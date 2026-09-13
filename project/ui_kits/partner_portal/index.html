@@ -1,0 +1,26 @@
+<!-- @dsCard group="Partner Portal" viewport="390x844" subtitle="Counterparty home and confirm-receipt flow — plain language, no module tabs" name="Partner Portal — mobile" -->
+<!-- @startingPoint section="Screens" subtitle="Partner Portal home and confirm receipt" viewport="390x844" -->
+<!doctype html><html><head><meta charset="utf-8"><title>Partner Portal</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../../components/_loader.js"></script>
+<style>html,body{margin:0;background:var(--grouped)}#root{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding:24px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadKit('../../components/', './', ['../one_link/Shell.jsx','PortalHome.jsx']).then((K) => {
+  const { MobileShell, PortalHome, PortalConfirm, Logo, Avatar } = K;
+  function Phone({ children }){ return <div style={{boxShadow:'var(--shadow-dialog)',borderRadius:24,overflow:'hidden'}}>{children}</div>; }
+  function Portal({ initial }){
+    const [screen,setScreen]=React.useState(initial);
+    return <Phone><MobileShell showBottomBar={false} initials="NC" title={null}
+      right={<span style={{font:'var(--font-body-3-strong)',color:'var(--content-secondary)'}}>Partner Portal</span>}>
+      {screen==='home' ? <PortalHome onReview={()=>setScreen('confirm')}/> : <PortalConfirm onBack={()=>setScreen('home')}/>}
+    </MobileShell></Phone>;
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<><Portal initial="home"/><Portal initial="confirm"/></>);
+});
+</script></body></html>

@@ -1,0 +1,35 @@
+<!-- @dsCard group="Components" viewport="900x420" subtitle="Refs as links, right-aligned tabular figures, restricted cell, derived cell, correction row, pagination" name="Data · Data table" -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:12px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary);min-width:84px;flex:none}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Icon, Text, textStyle, Avatar, Logo, Button, PressButton, PressToggle, Capsule, CapsuleGroup, Segmented, LineStepper, StatusMark, ProvenanceChip, ConfirmationChip, Banner, SeverityTag, EmptyState, Skeleton, CardSkeleton, Dialog, SearchField, Tabs, CommodityTabs, SyncStatus, Header, MobileShell, MODULES, QuantityChip, ShareBar, Figure, Card, CardRow, Dot, RailRow, DataTable, RestrictedCell, DerivedCell, RefCell, ChartCard, ChartAttribution, EvidenceTile, Timeline, ActionPanel, AmountRow, SummaryList, RadioList, ReconcilePanel } = DS;
+const L=(t)=><span className="lbl">{t}</span>;
+
+function Demo(){
+  const [restricted,setR]=React.useState(false);
+  const rows=[
+    {id:1,ref:'ZAM4702',cp:'Kafue Valley Milling',com:'White maize',mt:'2,000',sell:'6,800',buy:'6,600',margin:'K400,000',del:'1,400 / 2,000t'},
+    {id:2,ref:'ZAM4698',cp:'Crest Milling',com:'Wheat',mt:'3,000',sell:'9,050',buy:'8,720',margin:'K990,000',del:'2,220 / 3,000t'},
+    {id:3,ref:'ZAM4691',cp:'Brightloaf Bakeries',com:'Maize',mt:'2,250',sell:'6,780',buy:'6,540',margin:'K540,000',del:'2,250 / 2,250t',closed:true},
+    {id:4,ref:'ZAM4688',cp:'Impala Milling',com:'Wheat (import)',mt:'5,200',sell:'506',buy:'488',margin:'K93,600',del:'5,141 / 5,200t',correction:{reason:'Offloaded weight corrected 5,200 → 5,141t',actor:'P. Zulu',time:'3 Aug 09:12'}},
+  ];
+  const cols=[{key:'ref',label:'Ref',width:'110px',render:r=><RefCell>{r.ref}</RefCell>},{key:'cp',label:'Counterparty'},{key:'com',label:'Commodity'},{key:'mt',label:'MT',align:'right'},{key:'sell',label:'Sell',align:'right'},
+    {key:'buy',label:'Buy',align:'right',render:r=>restricted?<RestrictedCell/>:r.buy},
+    {key:'margin',label:'Margin',align:'right',render:r=>restricted?<RestrictedCell/>:<DerivedCell rows={[{label:'Sell × MT',value:'K'+(parseInt(r.sell.replace(/,/g,''))*parseInt(r.mt.replace(/,/g,''))).toLocaleString()},{label:'Buy × MT',value:'−K'+(parseInt(r.buy.replace(/,/g,''))*parseInt(r.mt.replace(/,/g,''))).toLocaleString()},{label:'Margin',value:r.margin,total:true}]}>{r.margin}</DerivedCell>},
+    {key:'del',label:'Delivered',align:'right',tone:'secondary'}];
+  return <div className="col"><div className="row"><Segmented options={[{value:'o',label:'Owner'},{value:'s',label:'Stock Control'}]} value={restricted?'s':'o'} onChange={v=>setR(v==='s')}/><span style={textStyle('caption-1',{tone:'tertiary'})}>{restricted?'Buy and Margin restricted':'Showing buy prices and margins for owner.'}</span></div>
+    <DataTable columns={cols} rows={rows} total={72} pageSize={4} footer="Showing 4 of 72 trades · season 2026"/></div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

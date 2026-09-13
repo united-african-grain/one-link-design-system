@@ -1,0 +1,98 @@
+:root {
+  --font-text: "Inter", "Inter Variable", system-ui, sans-serif;
+  --font-condensed: "Instrument Sans", "Inter", system-ui, sans-serif;
+
+  --weight-regular: 480;
+  --weight-heading: 540;
+  --weight-strong: 580;
+  --weight-strong-heading: 600;
+  --weight-condensed: 700;
+
+  --features-text: "cv02", "cv07", "ss04", "cv15", "calt";
+  --features-heading: "cv02", "cv07", "ss04", "cv15", "calt", "cv09";
+  --features-condensed: "case";
+  --features-condensed-display: "case", "cv09";
+  --variation-heading: "opsz" 14;
+  --numeric: tabular-nums;
+  --condensed-stretch: 75%;
+  --condensed-transform: uppercase;
+
+  /* Inter scale: size / line / tracking */
+  --display-1-size: 80px; --display-1-line: 84px; --display-1-tracking: -1px;
+  --display-4-size: 40px; --display-4-line: 44px; --display-4-tracking: -0.4px;
+  --heading-1-size: 32px; --heading-1-line: 36px; --heading-1-tracking: -0.4px;
+  --heading-2-size: 24px; --heading-2-line: 28px; --heading-2-tracking: -0.3px;
+  --heading-3-size: 20px; --heading-3-line: 24px; --heading-3-tracking: -0.2px;
+  --heading-4-size: 18px; --heading-4-line: 22px; --heading-4-tracking: -0.2px;
+  --body-1-size: 16px; --body-1-line: 22px; --body-1-tracking: -0.16px;
+  --body-2-size: 15px; --body-2-line: 20px; --body-2-tracking: -0.1px;
+  --body-3-size: 14px; --body-3-line: 20px; --body-3-tracking: -0.1px;
+  --body-4-size: 13px; --body-4-line: 16px; --body-4-tracking: -0.06px;
+  --caption-1-size: 12px; --caption-1-line: 16px; --caption-1-tracking: -0.1px;
+  --caption-2-size: 11px; --caption-2-line: 16px; --caption-2-tracking: -0.1px;
+
+  /* font shorthands (weight size/line family) */
+  --font-display-1: 520 80px/84px var(--font-text);
+  --font-display-4: 600 40px/44px var(--font-text);
+  --font-heading-1: 600 32px/36px var(--font-text);
+  --font-heading-2: 540 24px/28px var(--font-text);
+  --font-heading-2-strong: 600 24px/28px var(--font-text);
+  --font-heading-3: 540 20px/24px var(--font-text);
+  --font-heading-3-strong: 600 20px/24px var(--font-text);
+  --font-heading-4: 540 18px/22px var(--font-text);
+  --font-heading-4-strong: 600 18px/22px var(--font-text);
+  --font-body-1: 480 16px/22px var(--font-text);
+  --font-body-1-strong: 580 16px/22px var(--font-text);
+  --font-body-2: 480 15px/20px var(--font-text);
+  --font-body-2-strong: 580 15px/20px var(--font-text);
+  --font-body-3: 480 14px/20px var(--font-text);
+  --font-body-3-strong: 580 14px/20px var(--font-text);
+  --font-body-4: 480 13px/16px var(--font-text);
+  --font-body-4-strong: 580 13px/16px var(--font-text);
+  --font-caption-1: 480 12px/16px var(--font-text);
+  --font-caption-1-strong: 580 12px/16px var(--font-text);
+  --font-caption-2: 480 11px/16px var(--font-text);
+  --font-caption-2-strong: 580 11px/16px var(--font-text);
+
+  /* Condensed (Instrument Sans, 700, 75% width, uppercase) */
+  --font-display-1-condensed: 700 condensed 80px/76px var(--font-condensed); --display-1-condensed-tracking: 0;
+  --font-display-2-condensed: 700 condensed 60px/58px var(--font-condensed); --display-2-condensed-tracking: 0;
+  --font-display-3-condensed: 700 condensed 48px/48px var(--font-condensed); --display-3-condensed-tracking: 0;
+  --font-display-4-condensed: 700 condensed 40px/40px var(--font-condensed); --display-4-condensed-tracking: 0;
+  --font-heading-1-condensed: 700 condensed 32px/32px var(--font-condensed); --heading-1-condensed-tracking: 0.3px;
+  --font-heading-2-condensed: 700 condensed 24px/24px var(--font-condensed); --heading-2-condensed-tracking: 0.1px;
+  --font-heading-3-condensed: 700 condensed 20px/20px var(--font-condensed); --heading-3-condensed-tracking: 0.2px;
+  --font-body-2-condensed: 700 condensed 15px/15px var(--font-condensed); --body-2-condensed-tracking: 0.2px;
+  --font-caption-1-condensed: 700 condensed 12px/12px var(--font-condensed); --caption-1-condensed-tracking: 0.15px;
+  --font-caption-2-condensed: 700 condensed 11px/11px var(--font-condensed); --caption-2-condensed-tracking: 0.15px;
+}
+
+/* Utility text classes (optional; components use the vars inline) */
+.t-display-1{font:var(--font-display-1);letter-spacing:var(--display-1-tracking);font-feature-settings:var(--features-heading);font-variation-settings:var(--variation-heading)}
+.t-display-4{font:var(--font-display-4);letter-spacing:var(--display-4-tracking);font-feature-settings:var(--features-heading);font-variation-settings:var(--variation-heading)}
+.t-heading-1{font:var(--font-heading-1);letter-spacing:var(--heading-1-tracking);font-feature-settings:var(--features-heading);font-variation-settings:var(--variation-heading)}
+.t-heading-2{font:var(--font-heading-2);letter-spacing:var(--heading-2-tracking);font-feature-settings:var(--features-heading);font-variation-settings:var(--variation-heading)}
+.t-heading-3{font:var(--font-heading-3);letter-spacing:var(--heading-3-tracking);font-feature-settings:var(--features-heading);font-variation-settings:var(--variation-heading)}
+.t-heading-4{font:var(--font-heading-4);letter-spacing:var(--heading-4-tracking);font-feature-settings:var(--features-heading);font-variation-settings:var(--variation-heading)}
+.t-body-1{font:var(--font-body-1);letter-spacing:var(--body-1-tracking)}
+.t-body-2{font:var(--font-body-2);letter-spacing:var(--body-2-tracking)}
+.t-body-3{font:var(--font-body-3);letter-spacing:var(--body-3-tracking)}
+.t-body-4{font:var(--font-body-4);letter-spacing:var(--body-4-tracking)}
+.t-caption-1{font:var(--font-caption-1);letter-spacing:var(--caption-1-tracking)}
+.t-caption-2{font:var(--font-caption-2);letter-spacing:var(--caption-2-tracking)}
+.t-strong{font-weight:var(--weight-strong)}
+.t-heading-2.t-strong,.t-heading-3.t-strong,.t-heading-4.t-strong{font-weight:var(--weight-strong-heading)}
+.t-condensed{font-stretch:75%;text-transform:uppercase;font-feature-settings:var(--features-condensed-display);font-variant-numeric:tabular-nums}
+.t-display-1-condensed{font:var(--font-display-1-condensed);letter-spacing:0}
+.t-display-2-condensed{font:var(--font-display-2-condensed);letter-spacing:0}
+.t-display-3-condensed{font:var(--font-display-3-condensed);letter-spacing:0}
+.t-display-4-condensed{font:var(--font-display-4-condensed);letter-spacing:0}
+.t-heading-1-condensed{font:var(--font-heading-1-condensed);letter-spacing:0.3px}
+.t-heading-2-condensed{font:var(--font-heading-2-condensed);letter-spacing:0.1px}
+.t-heading-3-condensed{font:var(--font-heading-3-condensed);letter-spacing:0.2px}
+.t-body-2-condensed{font:var(--font-body-2-condensed);letter-spacing:0.2px}
+.t-caption-1-condensed{font:var(--font-caption-1-condensed);letter-spacing:0.15px}
+.t-caption-2-condensed{font:var(--font-caption-2-condensed);letter-spacing:0.15px}
+[class*="-condensed"]{font-stretch:75%;text-transform:uppercase;font-feature-settings:var(--features-condensed);font-variant-numeric:tabular-nums}
+.t-display-1-condensed,.t-display-2-condensed,.t-display-3-condensed,.t-display-4-condensed,.t-heading-1-condensed,.t-heading-2-condensed,.t-heading-3-condensed{font-feature-settings:var(--features-condensed-display)}
+.t-num{font-variant-numeric:tabular-nums}

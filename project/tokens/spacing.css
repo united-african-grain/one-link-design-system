@@ -1,0 +1,27 @@
+:root {
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-14: 56px;
+
+  --shell-max: 1293px;
+  --shell-pad: 16px;          /* 24px from 1024px */
+  --shell-pad-desktop: 24px;
+  --header-top: 56px;
+  --header-tabs: 48px;
+  --header-mobile: 116px;
+  --header-desktop: 106px;
+  --bottom-tabs: 70px;
+  --rail-w: 358px;            /* 320px from 1152, 358px from 1280 */
+  --rail-w-narrow: 320px;
+  --rail-gap: 40px;
+  --panel-w: 350px;           /* action panel */
+  --carousel-card-w: 350px;
+  --carousel-card-h: 198px;
+  --section-gap: 24px;        /* 32px from 1024px */
+  --section-gap-desktop: 32px;
+  --card-gap: 16px;
+  --card-pad: 16px;
+  --card-inner-gap: 12px;
+  --row-h: 36px;              /* card rows */
+  --rail-row-h: 60px;
+  --table-head-h: 36px;
+  --table-row-h: 48px;
+}

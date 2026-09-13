@@ -1,0 +1,39 @@
+<!-- @dsCard group="Components" viewport="700x640" subtitle="Every status pairs an icon and a word; provenance and confirmation stay separate chips" name="Feedback · Banners, status marks, trust chips, severity, empty, skeleton, dialog" -->
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:12px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary);min-width:84px;flex:none}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Icon, Text, textStyle, Avatar, Logo, Button, PressButton, PressToggle, Capsule, CapsuleGroup, Segmented, LineStepper, StatusMark, ProvenanceChip, ConfirmationChip, Banner, SeverityTag, EmptyState, Skeleton, CardSkeleton, Dialog, SearchField, Tabs, CommodityTabs, SyncStatus, Header, MobileShell, MODULES, QuantityChip, ShareBar, Figure, Card, CardRow, Dot, RailRow, DataTable, RestrictedCell, DerivedCell, RefCell, ChartCard, ChartAttribution, EvidenceTile, Timeline, ActionPanel, AmountRow, SummaryList, RadioList, ReconcilePanel } = DS;
+const L=(t)=><span className="lbl">{t}</span>;
+
+function Demo(){
+  const [open,setOpen]=React.useState(false);
+  return <div className="col" style={{position:'relative'}}>
+    <div className="col" style={{gap:8}}>
+      <Banner tone="success" title="Clean">books match reality · all reconciled</Banner>
+      <Banner tone="warning" title="Attention">1 counterparty dispute open</Banner>
+      <Banner tone="error" title="Weighbridge feed silent">position may look flat. Tickets can still be photographed.</Banner>
+      <Banner tone="info">Kapiri's 300 is declared — non-binding. Approving does not make it firm.</Banner>
+      <Banner tone="error" action={<Button size="xsmall" variant="outline" icon="refresh-cw">Retry</Button>}>Action failed — the approval did not land.</Banner>
+    </div>
+    <div className="row">{L('status')}<StatusMark kind="clean"/><StatusMark kind="attention"/><StatusMark kind="breach"/><StatusMark kind="block"/><StatusMark kind="awaiting"/><StatusMark kind="within"/><StatusMark kind="over"/><StatusMark kind="up"/><StatusMark kind="down"/><StatusMark kind="flat"/><StatusMark kind="rebalance"/></div>
+    <div className="row">{L('provenance')}<ProvenanceChip kind="synced"/><ProvenanceChip kind="bridge"/><ProvenanceChip kind="ocr-high"/><ProvenanceChip kind="ocr-medium"/><ProvenanceChip kind="ocr-low"/><ProvenanceChip kind="typed"/><ProvenanceChip kind="declared"/></div>
+    <div className="row">{L('confirmation')}<ConfirmationChip kind="confirmed"/><ConfirmationChip kind="awaiting"/><ConfirmationChip kind="disputed"/><ConfirmationChip kind="confirm"/></div>
+    <div className="row">{L('severity')}<SeverityTag level="critical"/><SeverityTag level="high"/><SeverityTag level="normal"/></div>
+    <div className="row" style={{alignItems:'flex-start'}}>{L('empty · skeleton')}<div style={{flex:1,background:'var(--elevated)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-minimal-soft)'}}><EmptyState meta="Checked 07:02 · next digest 13:00"/></div><div style={{flex:1}}><CardSkeleton/></div></div>
+    <div className="row">{L('dialog')}<Button variant="outline" onClick={()=>setOpen(true)}>Open dialog</Button></div>
+    <Dialog open={open} contained title="Void batch?" onClose={()=>setOpen(false)} footer={<><Button variant="ghost" onClick={()=>setOpen(false)}>Cancel</Button><Button variant="critical">Void batch</Button></>}>This removes 14 tickets from today's batch. Each ticket keeps its photo and can be re-synced.</Dialog>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

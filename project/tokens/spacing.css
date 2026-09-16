@@ -9,6 +9,7 @@
   --header-mobile: 116px;
   --header-desktop: 106px;
   --bottom-tabs: 70px;
+  --sidebar-w: 260px;         /* signed-in frame sidebar, from 1024px (a 264px drawer below) */
   --rail-w: 358px;            /* 320px from 1152, 358px from 1280 */
   --rail-w-narrow: 320px;
   --rail-gap: 40px;

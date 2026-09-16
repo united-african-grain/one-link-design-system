@@ -1,6 +1,6 @@
 # UI kit — One Link desktop app (1440)
 
-Click-through recreation of the owner-facing platform. `index.html` mounts the shell and switches screens from the module tab row; a Segmented control per module switches that screen's states.
+Click-through recreation of the owner-facing platform. `index.html` mounts the shell and switches screens from the sidebar; a Segmented control per module switches that screen's states.
 
 | Screen | File | States |
 |---|---|---|
@@ -15,6 +15,8 @@ Click-through recreation of the owner-facing platform. `index.html` mounts the s
 | 10 Credit book | `CreditBook.jsx` | planning-price stepper rescoring |
 
 `Shell.jsx` holds the layout parts every screen shares: `Page`, `WithRail`, `PageHead`, `SectionLabel`, `FigureStrip`.
+
+`Page` is the signed-in frame: it renders the design system's `AppShell` (260px sidebar with the modules and the active module's sections, 56px toolbar with breadcrumb, search, sync, digest and the account menu) around the centred content column, with the chart attribution below. `module`, `onModule`, `sync`, `syncLabel` and `children` are all a screen needs; `nav`, `section`, `onSection`, `breadcrumb`, `user`, `menu` and `foot` are optional and default to `MODULES` and the placeholder user, so any kit that reuses `Page` gets the frame without changes.
 
 Every screen composes the published components — no bespoke UI. Pass `mobile` to any screen to get the 390px stacking used by `../one_link_mobile/`.
 

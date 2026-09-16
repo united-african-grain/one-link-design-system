@@ -1,13 +1,18 @@
-/** Desktop page shell: sticky header + centred content column. Side padding 16px, 24px from 1024px. The Header owns its scroll blur. */
-export function Page({ module, onModule, sync = 'live', syncLabel, children }) {
-  const desktop = useMinWidth(1024);
-  const pad = desktop ? 24 : 16;
+/** Desktop page shell: the AppShell frame (260px sidebar with the modules, 56px toolbar with breadcrumb and the account
+    menu) around a centred content column with the chart attribution below it. `module`, `onModule`, `sync`, `syncLabel`
+    and `children` work as they always did; `nav`, `section`, `onSection`, `breadcrumb`, `user`, `menu` and `foot` are
+    optional and default to MODULES and the design system's placeholder user, so every kit screen gets the frame for free. */
+export function Page({ module, onModule, sync = 'live', syncLabel, nav, section, onSection, breadcrumb, user, menu, foot, children }) {
+  const groups = nav || [{ items: MODULES }];
+  const active = groups.flatMap((g) => g.items).find((m) => m.value === module) || groups[0].items[0];
+  const activeSection = active.sections ? active.sections.find((s) => s.value === section) : null;
+  const crumbs = breadcrumb || (activeSection ? [active.label, activeSection.label] : [active.label]);
+  const go = (v) => { if (active.sections && active.sections.some((s) => s.value === v)) { if (onSection) onSection(v); } else if (onModule) onModule(v); };
   return (
-    <div style={{ minHeight: '100%', background: 'var(--surface)' }}>
-      <Header module={module} onModuleChange={onModule} sync={sync} syncLabel={syncLabel} />
-      <main style={{ maxWidth: 'var(--shell-max)', margin: '0 auto', padding: `${desktop ? 32 : 24}px ${pad}px 64px`, boxSizing: 'border-box' }}>{children}</main>
-      <footer style={{ maxWidth: 'var(--shell-max)', margin: '0 auto', padding: `0 ${pad}px 32px`, boxSizing: 'border-box' }}><ChartAttribution /></footer>
-    </div>
+    <AppShell nav={groups} module={active.value} section={section} onNavigate={go} home={groups[0].items[0].value} breadcrumb={crumbs} sync={sync} syncLabel={syncLabel}
+      user={user || { initials: 'TM', name: 'T. Mwila', meta: 'Owner' }} menu={menu} foot={foot} footer={<ChartAttribution />}>
+      {children}
+    </AppShell>
   );
 }
 

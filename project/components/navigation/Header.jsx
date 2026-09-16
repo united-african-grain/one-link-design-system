@@ -17,9 +17,10 @@ export const MODULES = [
   { value: 'ai', label: 'Ask AI', icon: 'sparkles' },
 ];
 
-function IconButton({ icon, label, onClick }) {
+/** Round 36px icon-only button (digest, search, menu). Shared with AppShell; always give it a label. */
+export function IconButton({ icon, label, onClick, style, ...rest }) {
   const { hover, focusVisible, handlers } = useInteraction();
-  return <button type="button" aria-label={label} onClick={onClick} {...handlers} style={{ width: 36, height: 36, flex: 'none', borderRadius: 'var(--radius-max)', border: 0, outline: 'none', background: hover ? 'var(--hover-overlay-darker)' : 'transparent', color: 'var(--content-primary)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: focusVisible ? '0 0 0 4px color-mix(in srgb, var(--content-primary) 25%, transparent)' : 'none', transition: 'background var(--dur-default) var(--ease-default)' }}><Icon name={icon} size={20} stroke={1.75} /></button>;
+  return <button type="button" aria-label={label} title={label} onClick={onClick} {...handlers} {...rest} style={{ ...style, width: 36, height: 36, flex: 'none', borderRadius: 'var(--radius-max)', border: 0, outline: 'none', background: hover ? 'var(--hover-overlay-darker)' : 'transparent', color: 'var(--content-primary)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: focusVisible ? '0 0 0 4px color-mix(in srgb, var(--content-primary) 25%, transparent)' : 'none', transition: 'background var(--dur-default) var(--ease-default)' }}><Icon name={icon} size={20} stroke={1.75} /></button>;
 }
 
 /** Desktop header, sticky at the top (z 30): 2px + 56px top row (logo + BETA, search, sync pill, bell, avatar) + 48px module tab row = 106px (--header-desktop).

@@ -8,7 +8,7 @@ const MILLS = [
   { name: 'Brightloaf Bakeries', target: '2,250', firm: '2,250', declared: '0', short: 'covered', pct: '100%', window: '30d', trend: 'flat', share: 1, dec: 0, closed: true },
 ];
 
-/** 04 Coverage — Wheat (local) (Trade Desk). */
+/** 04 Coverage: Wheat (local) (Trade Desk). */
 export function Coverage({ mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
@@ -45,7 +45,7 @@ export function Coverage({ mobile = false }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <SectionLabel>needs you</SectionLabel>
         <Card padding={4}>
-          <RailRow severity="high" subject="Tembo — 0 of 12 trucks against schedule this week" context="gone quiet · 6d" right={<Button size="xsmall" variant="outline">Call</Button>} style={{ padding: '10px 12px' }} />
+          <RailRow severity="high" subject="Tembo: 0 of 12 trucks against schedule this week" context="gone quiet · 6d" right={<Button size="xsmall" variant="outline">Call</Button>} style={{ padding: '10px 12px' }} />
           <RailRow severity="normal" subject="ZAM4698 window ends in 9 days" context="780t still open · ends 11 Aug" right={<Button size="xsmall" variant="outline">Open</Button>} style={{ padding: '10px 12px' }} />
         </Card>
       </div>
@@ -64,7 +64,7 @@ export function Coverage({ mobile = false }) {
     </PageHead>
   );
 
-  const foot = <Text variant="body-4" tone="tertiary">Firm = signed purchase legs · Declared = expected supply, non-binding — it overlays coverage, it never creates a leg · Short = target − firm − declared, netted across mills.</Text>;
+  const foot = <Text variant="body-4" tone="tertiary">Firm = signed purchase legs · Declared = expected supply, non-binding; it overlays coverage, it never creates a leg · Short = target − firm − declared, netted across mills.</Text>;
 
   if (mobile) return <>{head}{figures}{cards}{rail}{foot}</>;
   return (

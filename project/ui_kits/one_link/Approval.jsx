@@ -1,4 +1,4 @@
-/** 05 Approval — trade T-0141 (detail page + decision panel). */
+/** 05 Approval: trade T-0141 (detail page + decision panel). */
 export function Approval({ mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
@@ -11,7 +11,7 @@ export function Approval({ mobile = false }) {
     <Card title="Sale" meta={['SELL 900 MT @ 9,150', 'Crest Milling']}>
       <CardRow leading={<Avatar initials="CM" commodityColor={wheat} />} name="A · Kabwe 600 MT" bar={<ShareBar share={0.67} color={wheat} />} figure="67% of sale" trailing={<QuantityChip>firm</QuantityChip>} />
       <CardRow leading={<Avatar initials="KF" commodityColor={wheat} />} name="B · Mazabuka ~300 MT" bar={<ShareBar share={0} declared={0.33} color={wheat} />} figure="33% of sale" trailing={<QuantityChip dimmed>declared</QuantityChip>} />
-      <Banner tone="info">Kapiri's 300 is declared — non-binding. Approving does not make it firm.</Banner>
+      <Banner tone="info">Kapiri's 300 is declared and non-binding. Approving does not make it firm.</Banner>
     </Card>
   );
 
@@ -26,8 +26,8 @@ export function Approval({ mobile = false }) {
   const note = (
     <Card>
       <CardRow leading={<Avatar initials="SL" />} name="S. Lungu asks" sub="raised 3 Aug 06:00" />
-      <Text variant="body-3" tone="secondary" style={{ textWrap: 'pretty' }}>Closes part of the Crest gap. Terms sit outside the 14-day receive policy — flagging for sign-off.</Text>
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}><StatusMark kind="attention" label="receive 30d — outside 14d policy" /><ConfirmationChip kind="awaiting" /></div>
+      <Text variant="body-3" tone="secondary" style={{ textWrap: 'pretty' }}>Closes part of the Crest gap. Terms sit outside the 14-day receive policy. Flagging for sign-off.</Text>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}><StatusMark kind="attention" label="receive 30d, outside 14d policy" /><ConfirmationChip kind="awaiting" /></div>
       <Text variant="body-4" tone="tertiary">raised 3 Aug 06:00 · T-0141 · corr ref TR-2026-0141</Text>
     </Card>
   );
@@ -42,7 +42,7 @@ export function Approval({ mobile = false }) {
         <Button variant="outline" fullWidth onClick={() => setBusy(false)}>Query</Button>
         <Button variant="critical-ghost" fullWidth>Decline</Button>
       </div>
-      <Text variant="body-4" tone="tertiary" style={{ textAlign: 'center' }}>{busy ? 'Approving — this stays busy until it lands.' : 'Query returns it to S. Lungu with your note.'}</Text>
+      <Text variant="body-4" tone="tertiary" style={{ textAlign: 'center' }}>{busy ? 'Approving. This stays busy until it lands.' : 'Query returns it to S. Lungu with your note.'}</Text>
     </ActionPanel>
   );
 

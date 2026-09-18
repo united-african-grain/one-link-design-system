@@ -1,4 +1,4 @@
-Headline KPI with delta and derivation. Every figure is derived — show the derivation line under headline figures.
+Headline KPI with delta and derivation. Every figure is derived. Show the derivation line under headline figures.
 
 ```jsx
 <Figure label="your position right now" value="K125M" size="display-1-condensed" derivation="physical K80M · in-transit K45M"

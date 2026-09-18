@@ -5,7 +5,7 @@
 The visual system borrows the craft of a public light-theme teardown (white-on-white elevation, translucent navy greys, physical 3D press buttons, spring motion) but none of its identity. By the owner's request the **BETA badge** and the **colour palettes** from that reference are kept. No other marks, copy or motifs from it appear.
 
 ## Sources
-- The One Link brief (pasted spec, §1–§8) — authoritative for every value here.
+- The One Link brief (pasted spec, §1–§8) is authoritative for every value here.
 - Reference (orientation only): a public light-theme teardown; Inter (rsms.me/inter); Instrument Sans (Google Fonts); Lucide (lucide.dev); TradingView Lightweight Charts v5.
 - **No logo file was supplied.** The mark in `Logo.jsx` is a typographic placeholder (dark rounded square with "OL"). Replace when the asset arrives.
 
@@ -15,17 +15,17 @@ Desktop 1440 (shell max 1293) and mobile 390. Modules: Command Center · Trade D
 ## Content fundamentals
 - **Plain, matter-of-fact, sentence case.** Titles and buttons in sentence case (`New trade`, `Finalise GRN`, `Resolve case`). Uppercase only in condensed type (figures, commodity tabs, detail titles, severity tags).
 - **Lead with what needs attention.** Every screen starts with a banner or "Needs you" rail. Empty is a good state: `Nothing needs your attention · Checked 07:02 · next digest 13:00`.
-- **Every figure is derived, never typed** — say so on screen (`Nobody types a balance.`, `Every number here is derived from the ledger.`). Headline figures carry a derivation line.
+- **Every figure is derived, never typed.** Say so on screen (`Nobody types a balance.`, `Every number here is derived from the ledger.`). Headline figures carry a derivation line.
 - **Status = icon + word**, never colour alone: `circle-check Clean`, `triangle-alert Attention`, `circle-alert Breach`, `octagon-x Hard block`, `clock Awaiting`.
 - **Provenance and confirmation are separate chips**: `contrast Synced` · `diamond check Confirmed`.
-- **Degraded states are loud** but calm: `Weighbridge feed silent — position may look flat. Tickets can still be photographed.` A hard block explains physics (`tare cannot exceed gross`) with no red flood.
+- **Degraded states are loud** but calm: `Weighbridge feed silent: position may look flat. Tickets can still be photographed.` A hard block explains physics (`tare cannot exceed gross`) with no red flood.
 - Refs and IDs verbatim: `ZAM4702`, `GR10000377`, `T-0141`, `WBT10001605`. Meta lines are segments separated by 3px content-quaternary dots with 6px either side (`MetaParts`/`Dot`; a string meta splits on ` · `); `·` stays only inside free sentences. "You/your" addresses the user (`your position right now`). Portal copy is plainer still and never says "GRN" in a heading.
 - **Numbers:** K125M / K11.8M above a million, full digits below (`K174,840`, never `K175k`); USD in farmer finance; tonnes `28.20t` / `2,000 MT`; percentages one decimal; times in CAT `Tue 24 Jun · 07:02`. Arrows between two values are text (`K400 → K360`); leading/trailing arrows are Lucide icons.
 - No emoji. No exclamation marks. No marketing language.
 - **Nothing before sign-in.** A surface shown without a session (a landing page, welcome, sign-in) carries only the lockup, what One Link is in one sentence, who it is for, and the way in. Never counterparty or person names, refs, money, tonnes, prices, sites, dates, seed data or previews of internal screens; "illustrative" is not an exemption. Every screen in these kits is behind sign-in.
 
 ## Visual foundations
-- **Colour.** Page white; cards white on white separated only by soft shadows. Grey (`#f4f5f7` solid, `#00153f0b` translucent) marks secondary or off: search, unselected capsules, disabled fills, skeletons, closed records. Text/hairlines are navy-black at opacities (primary 86%, secondary 58%, tertiary 45% — never for a figure, quaternary 25%) with solid twins for use over photos. Two layers: components use semantic tokens only; those point at 11-step palettes (gray, gray-translucent, brand, green, red, yellow, teal, purple).
+- **Colour.** Page white; cards white on white separated only by soft shadows. Grey (`#f4f5f7` solid, `#00153f0b` translucent) marks secondary or off: search, unselected capsules, disabled fills, skeletons, closed records. Text/hairlines are navy-black at opacities (primary 86%, secondary 58%, tertiary 45%, quaternary 25%; tertiary is never for a figure) with solid twins for use over photos. Two layers: components use semantic tokens only; those point at 11-step palettes (gray, gray-translucent, brand, green, red, yellow, teal, purple).
 - **Brand blue `#2563EB`** for links, active stepper values, focus, entry-point buttons. **Commodity colours** (maize `#C2410C`, wheat `#7A6937`, soya `#5A7A1E`, soya meal `#8A5A36`, fertilizer `#7A3FB8`) take over inside a commodity context: share underlines, chart lines, active commodity tab, trade-ticket action. Decision buttons (Approve, Finalise, Resolve) stay primary dark `#23272d`.
 - **Type.** Inter variable (family `InterVariable`, so 480/520/540/580/600 and opsz resolve) for everything you read (480/540/580/600; features cv02 cv07 ss04 cv15 calt; headings add cv09 + opsz 14). Instrument Sans condensed (700, stretch 75%, uppercase, "case") for headline figures, commodity tabs, detail titles. Every figure `tabular-nums`. No monospace.
 - **Radius.** 2 · 4 · 6 · 8 · 10 · 12 · 14 · 16 · 20 · 24 · 32 · 999. Cards/tickets/dialogs 20; hover rows/tiles/banners 16; 40px buttons and search 12; 32px buttons 10; chips 8; severity tags/kbd 4; pills 999.
@@ -38,7 +38,7 @@ Desktop 1440 (shell max 1293) and mobile 390. Modules: Command Center · Trade D
 - **Layout.** Signed in, every screen sits in the **AppShell** frame: a 260px sidebar (`--sidebar-w`, sticky, brand row 56 then a scrolling nav of 40px module rows with the active module's sections indented under it, a foot slot), a 56px sticky toolbar (burger below 1024, breadcrumb `Product / Current`, search, sync pill, digest bell, then the account block far right whose popover holds identity, product items and Sign out in the critical colour), and the page column. Below 1024 the sidebar is a 264px drawer with a scrim, inert when closed; below 768 the `MobileShell` bottom bar returns. Inside the column: shell 1293 max, padding 16/24. List pages: content + sticky 358px rail (320 from 1152) with 40px gap; below 1152 the rail stacks. Detail pages: content + 350px action panel; below 1024 it becomes a bottom sheet. Sections 24/32 apart, cards 16. The Partner Portal keeps the plain `Header` (56); the mobile kit header is 116; bottom bar 70 + safe area. Toolbar and header turn 80% white + 24px blur when content scrolls under.
 - **Imagery.** Photos only as evidence (slips, probes, farm scale tickets) in 96×72 tiles; no decorative imagery, no illustration, no gradients beyond the commodity hover wash. Use solid grey twins for text over photos.
 - **Charts.** TradingView Lightweight Charts v5 only: white background, dotted horizontal grid `rgba(0,18,55,.10)`, no scale borders, magnet crosshair with `#23272d` labels, attribution logo visible bottom-left. Line 2px in commodity colour (brand for money); area brand with 12% fill; baseline red above / green below a policy line; histogram in `#04af52` / out `#bfc3ca`. End-of-line HTML label: 8px dot + 4px halo, caption-1 name, heading-3-condensed value. Footer link `Charts by TradingView`.
-- **Skeletons** in the exact footprint and radius; **empty states** centred with a green check; **restricted values** are a quaternary dash + eye-off — never blank, zero or loading.
+- **Skeletons** in the exact footprint and radius; **empty states** centred with a green check; **restricted values** are a quaternary dash + eye-off, never blank, zero or loading.
 
 ## Iconography
 - **Lucide only**, loaded from CDN: `https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js`, rendered via `components/core/Icon.jsx` (`<Icon name="triangle-alert" />`). No other set, no emoji, no Unicode glyphs as icons. Icons paint in currentColor.
@@ -49,8 +49,8 @@ Desktop 1440 (shell max 1293) and mobile 390. Modules: Command Center · Trade D
 
 ## Index
 - `styles.css` → `tokens/` (fonts, colors, typography, shape, motion, spacing, base). Typography also ships `.t-*` utility classes.
-- `guidelines/` — foundation specimen cards (Colors, Type, Shape, Motion, Spacing, Icons, Brand).
-- `components/` — React primitives, each with `.d.ts` and `.prompt.md`, one card per directory:
+- `guidelines/`: foundation specimen cards (Colors, Type, Shape, Motion, Spacing, Icons, Brand).
+- `components/` holds React primitives, each with `.d.ts` and `.prompt.md`, one card per directory:
   - `core/` Icon, Interaction (useInteraction, usePrefersReducedMotion, useMediaQuery, useMinWidth, useElementWidth), Text (+textStyle), Avatar (incl. commodity tile), Logo (with BETA)
   - `actions/` Button, PressButton + PressToggle (3D), Capsule + CapsuleGroup, Segmented, LineStepper
   - `inputs/` SearchField
@@ -58,16 +58,16 @@ Desktop 1440 (shell max 1293) and mobile 390. Modules: Command Center · Trade D
   - `feedback/` Banner, StatusMark, ProvenanceChip + ConfirmationChip, SeverityTag, EmptyState, Skeleton + CardSkeleton, Dialog (sheet)
   - `data/` Card + CardRow + Dot + MetaParts, QuantityChip, ShareBar, Figure (derivation popover), RailRow, DataTable (+RestrictedCell, DerivedCell, RefCell), ChartCard (+ChartAttribution)
   - `records/` ActionPanel (+AmountRow, SummaryList, RadioList), ReconcilePanel, EvidenceTile, Timeline
-  - `_loader.js` — card-only helper that loads sources directly when the compiled bundle is absent.
-- `SKILL.md` — agent skill entry point.
-- `ui_kits/one_link/` — desktop app (1440): Command Center (calm/exception), Trade Board (owner/restricted/loading, cards or table), Coverage — Wheat (local), Approval T-0141, Weighbridge tickets (default/silent/empty), GRN finalise (three outcomes), Grading dispute GR10000377, Stock board (Owner/Stock Control), Credit book. `Shell.jsx` holds Page (the AppShell frame around the content column) / Sections / WithRail / WithPanel / PageHead / SectionLabel / FigureStrip / ScrollRow / useCompact. Responsive: side padding 16 (24 from 1024), rail 320 from 1152 and 358 from 1280 (stacks under the page head below 1152), action panel full width below 1024, no horizontal page overflow at 390.
-- `ui_kits/one_link_mobile/` — the same screens at 390 inside `MobileShell` (every screen takes a `mobile` prop).
-- `ui_kits/partner_portal/` — counterparty home and confirm receipt (390).
-- `ui_kits/field_app/` — offline-first delivery proof (390), online and queued.
+  - `_loader.js`: card-only helper that loads sources directly when the compiled bundle is absent.
+- `SKILL.md`: agent skill entry point.
+- `ui_kits/one_link/`, the desktop app (1440): Command Center (calm/exception), Trade Board (owner/restricted/loading, cards or table), Coverage: Wheat (local), Approval T-0141, Weighbridge tickets (default/silent/empty), GRN finalise (three outcomes), Grading dispute GR10000377, Stock board (Owner/Stock Control), Credit book. `Shell.jsx` holds Page (the AppShell frame around the content column) / Sections / WithRail / WithPanel / PageHead / SectionLabel / FigureStrip / ScrollRow / useCompact. Responsive: side padding 16 (24 from 1024), rail 320 from 1152 and 358 from 1280 (stacks under the page head below 1152), action panel full width below 1024, no horizontal page overflow at 390.
+- `ui_kits/one_link_mobile/`: the same screens at 390 inside `MobileShell` (every screen takes a `mobile` prop).
+- `ui_kits/partner_portal/`: counterparty home and confirm receipt (390).
+- `ui_kits/field_app/`: offline-first delivery proof (390), online and queued.
 
 ## Intentional additions
-- `Text`/`textStyle`, `Icon`, `Avatar`, `Logo`, `ShareBar`, `SeverityTag`, `Dot` — small primitives the brief describes inline but does not name; they exist so every screen composes the same parts.
+- `Text`/`textStyle`, `Icon`, `Avatar`, `Logo`, `ShareBar`, `SeverityTag`, `Dot`: small primitives the brief describes inline but does not name; they exist so every screen composes the same parts.
 
 ## External dependencies
-- Inter via rsms.me; Instrument Sans via Google Fonts (wdth axis) — hosted substitutes, no binaries supplied.
+- Inter via rsms.me; Instrument Sans via Google Fonts (wdth axis). Hosted substitutes, no binaries supplied.
 - Lucide 1.39.0 UMD (`https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js`, exposes `window.lucide.icons` + `createElement`); TradingView Lightweight Charts 5.2.1 standalone (`https://unpkg.com/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js`).

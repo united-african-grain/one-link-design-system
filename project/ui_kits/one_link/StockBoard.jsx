@@ -1,6 +1,6 @@
 const STACKS = [
   { id: 'A1', product: 'White maize', grade: 'comm.', owner: 'Own', mt: '8,204', count: '02 Jul', flag: '0.1% variance', flagKind: 'within' },
-  { id: 'A2', product: 'White maize', grade: 'u/g', owner: 'Own', mt: '1,110', count: '02 Jul', flag: 'under-grade — not sellable as comm.', flagKind: 'attention' },
+  { id: 'A2', product: 'White maize', grade: 'u/g', owner: 'Own', mt: '1,110', count: '02 Jul', flag: 'under-grade: not sellable as comm.', flagKind: 'attention' },
   { id: 'A3', product: 'White maize', grade: 'comm.', owner: 'Own', mt: '6,412', count: '02 Jul', flag: '' },
   { id: 'B1', product: 'Soya', grade: 'comm.', owner: 'LEGACY 3P', mt: '2,100', count: '02 Jul', flag: 'storage $4.50/t/mo', flagKind: 'awaiting' },
   { id: 'B2', product: 'Soya', grade: 'comm.', owner: 'Own', mt: '3,894', count: '02 Jul', flag: '' },
@@ -8,7 +8,7 @@ const STACKS = [
   { id: 'C1', product: 'Soya meal', grade: 'comm.', owner: 'Own', mt: '5,917', count: '12 May', flag: 'uncounted 82 days', flagKind: 'attention' },
 ];
 
-/** 09 Stock board — Kafue Road, Lusaka (Stock). Owner and Stock Control views. */
+/** 09 Stock board: Kafue Road, Lusaka (Stock). Owner and Stock Control views. */
 export function StockBoard({ role = 'Owner', mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
@@ -16,7 +16,7 @@ export function StockBoard({ role = 'Owner', mobile = false }) {
   const restricted = role !== 'Owner';
 
   const head = (
-    <PageHead title="Stock — Kafue Road, Lusaka" meta="folded from 41,882 movements · to 03 Aug 2026 · 07:10"
+    <PageHead title="Stock: Kafue Road, Lusaka" meta="folded from 41,882 movements · to 03 Aug 2026 · 07:10"
       right={<><Capsule>Gate price today 6,800 ZMW/t</Capsule><Button variant="outline">Transfer</Button><Button variant="primary">Start count session</Button></>}
       intro="This board is a fold of every movement. There is no stored balance to correct." />
   );
@@ -44,7 +44,7 @@ export function StockBoard({ role = 'Owner', mobile = false }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <SectionLabel>needs attention</SectionLabel>
       <Card padding={4}>
-        <RailRow severity="critical" subject="Negative balance candidate — B2 soya" context="dispatch DN10000441 for 120 t would take B2 to −16 t · movement held" right={<Button size="xsmall" variant="outline">Investigate</Button>} style={{ padding: '10px 12px' }} />
+        <RailRow severity="critical" subject="Negative balance candidate: B2 soya" context="dispatch DN10000441 for 120 t would take B2 to −16 t · movement held" right={<Button size="xsmall" variant="outline">Investigate</Button>} style={{ padding: '10px 12px' }} />
         <RailRow severity="high" subject="C1 soya meal uncounted for 82 days" context="policy is monthly · 5,917 t unverified since 12 May" right={<Button size="xsmall" variant="outline">Count now</Button>} style={{ padding: '10px 12px' }} />
         <RailRow severity="normal" subject="Legacy 3P storage accruing since 14 Jun" context="2,100 t at $4.50/t/mo · $4,410 accrued, unbilled" right={<Button size="xsmall" variant="ghost">View accrual</Button>} style={{ padding: '10px 12px' }} />
       </Card>
@@ -69,7 +69,7 @@ export function StockBoard({ role = 'Owner', mobile = false }) {
         <CapsuleGroup value={owners} onChange={setOwners} options={[{ value: 'All owners', label: 'All owners', count: 7 }, { value: 'Own', label: 'Own', count: 6 }, { value: 'Third party', label: 'Third party', count: 1 }]} />
       </div>
       <Card padding={16}><DataTable columns={cols} rows={STACKS} footer="Showing 7 of 7 stacks · folded from 41,882 movements" /></Card>
-      <Text variant="body-4" tone="tertiary">{restricted ? 'Cost columns and book value are not available to Stock Control. A restricted value is a dash with an eye-off — never zero or blank.' : 'Showing cost and book value for owner.'}</Text>
+      <Text variant="body-4" tone="tertiary">{restricted ? 'Cost columns and book value are not available to Stock Control. A restricted value is a dash with an eye-off, never zero or blank.' : 'Showing cost and book value for owner.'}</Text>
     </div>
   );
 

@@ -12,7 +12,7 @@ const FARMERS = [
   { id: 11, farmer: 'Stonebridge', facility: '$37,000', drawn: '$37,000', ltv: '12.8%' },
 ];
 
-/** 10 Farmer Finance — Credit book (Programmes). */
+/** 10 Farmer Finance: Credit book (Programmes). */
 export function CreditBook({ mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
@@ -20,7 +20,7 @@ export function CreditBook({ mobile = false }) {
   const wheat = 'var(--commodity-wheat)';
   const ltv = useMemo(() => Array.from({ length: 26 }, (_, i) => ({ time: '2026-07-' + String(i + 1).padStart(2, '0'), value: 17.5 + Math.sin(i / 4) * 2.6 + i * 0.28 })), []);
 
-  const head = <PageHead title="Credit book — Winter Wheat 2026" meta="12 farmers · season 2026" right={<Capsule selected>Season 2026</Capsule>} />;
+  const head = <PageHead title="Credit book: Winter Wheat 2026" meta="12 farmers · season 2026" right={<Capsule selected>Season 2026</Capsule>} />;
 
   const figures = <FigureStrip cells={[
     <Figure label="total facility" value="$1,663,250" size="heading-2-condensed" derivation="12 farmers" />,

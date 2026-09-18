@@ -1,4 +1,4 @@
-/** 01 Command Center — Calm and Exception (owner). */
+/** 01 Command Center: Calm and Exception (owner). */
 export function CommandCenter({ state = 'calm', mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;

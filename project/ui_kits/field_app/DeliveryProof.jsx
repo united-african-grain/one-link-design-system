@@ -1,4 +1,4 @@
-/** 12 Field app — Delivery proof (390 only). Online and offline-queued. */
+/** 12 Field app: Delivery proof (390 only). Online and offline-queued. */
 export function DeliveryProof({ offline = false }) {
   const [step, setStep] = useState('Photo');
   const [busy, setBusy] = useState(false);

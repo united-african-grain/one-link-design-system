@@ -17,7 +17,7 @@ export function ReconcilePanel({ columns, outcome = 'within', message, loading =
   const box = React.useRef(null);
   const boxW = useElementWidth(box);
   const stacked = boxW > 0 && boxW < cols.length * 140;
-  const msg = message || (outcome === 'within' ? 'Within tolerance — reconciled clean' : outcome === 'held' ? '1.2t short vs weighed — outside 0.5 MT tolerance · held for Thandiwe' : 'Hard block — tare cannot exceed gross. This is physically impossible.');
+  const msg = message || (outcome === 'within' ? 'Within tolerance: reconciled clean' : outcome === 'held' ? '1.2t short vs weighed, outside 0.5 MT tolerance · held for Thandiwe' : 'Hard block: tare cannot exceed gross. This is physically impossible.');
   return (
     <div style={{ background: 'var(--elevated)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-minimal-soft)', padding: 16, display: 'flex', flexDirection: 'column', gap: 16, ...style }}>
       <div ref={box} style={{ display: 'grid', gridTemplateColumns: stacked ? 'minmax(0,1fr)' : `repeat(${cols.length}, minmax(0,1fr))`, gap: 16 }}>

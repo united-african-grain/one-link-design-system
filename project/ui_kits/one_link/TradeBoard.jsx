@@ -5,7 +5,7 @@ const TRADES = [
   { id: 4, ref: 'ZAM4688', cp: 'Impala Milling', com: 'Wheat (import)', color: 'var(--commodity-wheat)', mt: '5,200', sell: '506', buy: '488', margin: 'K93,600', del: '5,141 / 5,200t offloaded', share: 0.99, chip: '5,141t' },
 ];
 
-/** 03 Trade Board (Trade Desk) — owner, restricted and loading variants. */
+/** 03 Trade Board (Trade Desk): owner, restricted and loading variants. */
 export function TradeBoard({ state = 'default', mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
@@ -28,7 +28,7 @@ export function TradeBoard({ state = 'default', mobile = false }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <SectionLabel>needs you</SectionLabel>
       <Card padding={4}>
-        <RailRow severity="critical" subject="ZAM4702 short 1,400t — Kafue Valley Milling" context="window closes in 12 days · 2d" right={<Button size="xsmall" variant="outline">Find supply</Button>} style={{ padding: '10px 12px' }} />
+        <RailRow severity="critical" subject="ZAM4702 short 1,400t for Kafue Valley Milling" context="window closes in 12 days · 2d" right={<Button size="xsmall" variant="outline">Find supply</Button>} style={{ padding: '10px 12px' }} />
         <RailRow severity="high" subject="2 trades awaiting approval" context="T-0142 · T-0141 · 3h / 1d4h" right={<Button size="xsmall" variant="outline">Review</Button>} style={{ padding: '10px 12px' }} />
         <RailRow severity="high" subject="Tembo Farms gone quiet" context="0 of 12 expected trucks this week · 6d" right={<div style={{ display: 'flex', gap: 6 }}><Button size="xsmall" variant="outline">Call</Button><Button size="xsmall" variant="ghost">Flag</Button></div>} style={{ padding: '10px 12px' }} />
       </Card>

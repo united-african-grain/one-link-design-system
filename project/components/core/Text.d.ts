@@ -11,7 +11,7 @@ export interface TextProps extends React.HTMLAttributes<HTMLElement> {
   strong?: boolean;
   /** Semantic content colour. Never 'tertiary' for a figure. */
   tone?: Tone;
-  /** tabular-nums — required for every figure, ref and timestamp. */
+  /** tabular-nums, required for every figure, ref and timestamp. */
   tabular?: boolean;
   color?: string;
 }

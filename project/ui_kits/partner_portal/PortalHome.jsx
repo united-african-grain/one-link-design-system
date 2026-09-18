@@ -4,7 +4,7 @@ const DELIVERIES = [
   { date: '20 Jun', com: 'Soya Beans', t: '31.50 t', state: 'confirmed', ref: 'GR10000348' },
 ];
 
-/** 11 Partner Portal — home (NORTHSTAR COMMODITIES). */
+/** 11 Partner Portal: home (NORTHSTAR COMMODITIES). */
 export function PortalHome({ onReview, mobile = true }) {
   const maize = 'var(--commodity-maize)';
   return (
@@ -34,7 +34,7 @@ export function PortalHome({ onReview, mobile = true }) {
   );
 }
 
-/** 11 Partner Portal — confirm receipt. */
+/** 11 Partner Portal: confirm receipt. */
 export function PortalConfirm({ onBack }) {
   const [choice, setChoice] = useState('Confirm');
   const [busy, setBusy] = useState(false);
@@ -53,7 +53,7 @@ export function PortalConfirm({ onBack }) {
           <ProvenanceChip kind="synced" />
         </div>
         <SummaryList items={[{ label: 'Weighed in', value: '34.20 t' }, { label: 'Truck tare', value: '6.00 t' }, { label: 'Net booked', value: '28.20 t', strong: true }, { label: 'Reference', value: 'GR10000360' }]} />
-        {done ? <Banner tone="success" title="Confirmed">thank you — we have your confirmation</Banner> : null}
+        {done ? <Banner tone="success" title="Confirmed">thank you, we have your confirmation</Banner> : null}
         <PressToggle options={['Confirm', 'Dispute']} value={choice} onChange={setChoice} selectedVariant={choice === 'Dispute' ? 'critical' : 'primary'} />
         <PressButton kind="large" variant={choice === 'Dispute' ? 'critical' : 'primary'} fullWidth loading={busy}
           onClick={() => { setBusy(true); setTimeout(() => { setBusy(false); setDone(choice === 'Confirm'); }, 1600); }}>

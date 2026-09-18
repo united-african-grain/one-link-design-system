@@ -22,8 +22,8 @@ function Demo(){
       <Banner tone="success" title="Clean">books match reality · all reconciled</Banner>
       <Banner tone="warning" title="Attention">1 counterparty dispute open</Banner>
       <Banner tone="error" title="Weighbridge feed silent">position may look flat. Tickets can still be photographed.</Banner>
-      <Banner tone="info">Kapiri's 300 is declared — non-binding. Approving does not make it firm.</Banner>
-      <Banner tone="error" action={<Button size="xsmall" variant="outline" icon="refresh-cw">Retry</Button>}>Action failed — the approval did not land.</Banner>
+      <Banner tone="info">Kapiri's 300 is declared and non-binding. Approving does not make it firm.</Banner>
+      <Banner tone="error" action={<Button size="xsmall" variant="outline" icon="refresh-cw">Retry</Button>}>Action failed: the approval did not land.</Banner>
     </div>
     <div className="row">{L('status')}<StatusMark kind="clean"/><StatusMark kind="attention"/><StatusMark kind="breach"/><StatusMark kind="block"/><StatusMark kind="awaiting"/><StatusMark kind="within"/><StatusMark kind="over"/><StatusMark kind="up"/><StatusMark kind="down"/><StatusMark kind="flat"/><StatusMark kind="rebalance"/></div>
     <div className="row">{L('provenance')}<ProvenanceChip kind="synced"/><ProvenanceChip kind="bridge"/><ProvenanceChip kind="ocr-high"/><ProvenanceChip kind="ocr-medium"/><ProvenanceChip kind="ocr-low"/><ProvenanceChip kind="typed"/><ProvenanceChip kind="declared"/></div>

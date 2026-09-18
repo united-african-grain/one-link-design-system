@@ -4,7 +4,7 @@ const TICKETS = [
   { ref: 'WBT10001603', cp: 'KALULU TRADING', net: '26.80t', truck: 'CAX4410', driver: 'Musonda', weights: '33.8/7/26.8 MT', inAt: 'in 20 May 09:05', outAt: 'out 20 May 09:50' },
 ];
 
-/** 06 Weighbridge Tickets (Warehouse · Clerk) — default, sync silent, empty. */
+/** 06 Weighbridge Tickets (Warehouse · Clerk): default, sync silent, empty. */
 export function Weighbridge({ state = 'default', mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
@@ -63,7 +63,7 @@ export function Weighbridge({ state = 'default', mobile = false }) {
   return <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>{head}<Tabs tabs={['Tickets', 'Goods received', 'Dispatch']} value="Tickets" /><WithRail rail={rail}>{body}</WithRail></div>;
 }
 
-/** 07 GRN finalise — three outcomes, GR10000356 · Maize (white) · Harvest Co-op. */
+/** 07 GRN finalise: three outcomes, GR10000356 · Maize (white) · Harvest Co-op. */
 export function GRNFinalise({ mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
@@ -76,7 +76,7 @@ export function GRNFinalise({ mobile = false }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
       <PageHead breadcrumb={['Warehouse', 'Goods received']} title="GR10000356 · Maize (white)" meta="Harvest Co-op · ticket weights gross 34.2 · tare 6 · net 28.2 MT"
-        intro="Three outcomes from the same ticket. The clerk never types a net — it is folded from the weighbridge." />
+        intro="Three outcomes from the same ticket. The clerk never types a net. It is folded from the weighbridge." />
       <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(3, minmax(0,1fr))', gap: 16, alignItems: 'start' }}>
         {variants.map((v) => (
           <div key={v.key} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -91,7 +91,7 @@ export function GRNFinalise({ mobile = false }) {
   );
 }
 
-/** 08 Grading dispute — GR10000377 · DSP-0219 (Warehouse). */
+/** 08 Grading dispute: GR10000377 · DSP-0219 (Warehouse). */
 export function GradingDispute({ mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
@@ -128,7 +128,7 @@ export function GradingDispute({ mobile = false }) {
       <DataTable rows={rows} columns={[{ key: 'p', label: 'Parameter' }, { key: 'reading', label: 'Reading', align: 'right' }, { key: 'limit', label: 'Limit', align: 'right' }, { key: 'status', label: 'Status', align: 'right', render: (r) => <StatusMark kind={r.status} size="body-4" /> }]} />
       <Text variant="body-4" tone="tertiary">Spec version v4 · Assessor P. Zulu · Instrument GAC2500 #DJ-114 · Calibrated 2026-06-14 · Reading taken 19:16</Text>
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}><EvidenceTile caption="photo-dsp0219-probe-1" time="19:16" /><EvidenceTile caption="photo-dsp0219-probe-2" time="19:17" /></div>
-      <Text variant="body-3" style={{ textWrap: 'pretty' }}>Both sides are close on weight — 30.0 t claimed against 30.02 t weighed at the bridge. The dispute is not about weighing. It is about whether the 0.32 t deduction was explained on the day.</Text>
+      <Text variant="body-3" style={{ textWrap: 'pretty' }}>Both sides are close on weight: 30.0 t claimed against 30.02 t weighed at the bridge. The dispute is not about weighing. It is about whether the 0.32 t deduction was explained on the day.</Text>
     </Card>
   );
   const panel = (

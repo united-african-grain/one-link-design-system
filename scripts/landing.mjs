@@ -128,7 +128,7 @@ function renderColour(colors) {
 // ---------------------------------------------------------------- type
 const INTER = [
   ['Display', [['display-1', '520', 'K125M'], ['display-4', '600', 'K190,790,400']]],
-  ['Heading', [['heading-1', '600', 'Stock — Kafue Road, Lusaka'], ['heading-2', '600 · 540', 'Credit book — Winter Wheat 2026'], ['heading-3', '600 · 540', 'Needs you'], ['heading-4', '600 · 540', 'Coverage']]],
+  ['Heading', [['heading-1', '600', 'Stock: Kafue Road, Lusaka'], ['heading-2', '600 · 540', 'Credit book: Winter Wheat 2026'], ['heading-3', '600 · 540', 'Needs you'], ['heading-4', '600 · 540', 'Coverage']]],
   ['Body', [['body-1', '580 · 480', 'Amount'], ['body-2', '580 · 480', 'ZAM4702 short 1,400t'], ['body-3', '580 · 480', 'Kafue Valley Milling · window closes in 12 days · 2d'], ['body-4', '580 · 480', 'folded from 41,882 movements · to 03 Aug 2026 · 07:10']]],
   ['Caption', [['caption-1', '580 · 480', 'Showing 4 of 72 trades · season 2026'], ['caption-2', '580 · 480', 'Charts by TradingView']]],
 ];

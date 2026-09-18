@@ -1,4 +1,4 @@
-# UI kit — Partner Portal (390)
+# UI kit: Partner Portal (390)
 
 The same system with no module tab row: header is the One Link lockup, "Partner Portal", and the counterparty avatar. Copy is plainer than the platform's and never says "GRN" in a heading.
 

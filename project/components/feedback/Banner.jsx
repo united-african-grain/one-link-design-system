@@ -15,7 +15,7 @@ export function Banner({ tone = 'info', icon, title, children, action, style }) 
   return (
     <div role={tone === 'error' ? 'alert' : 'status'} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', borderRadius: 'var(--radius-md)', background: t.bg, color: t.fg, ...style }}>
       <Icon name={icon || t.icon} size={16} />
-      <span style={{ flex: 1, minWidth: 0, ...textStyle('body-3', { color: t.fg }), textWrap: 'pretty' }}>{title ? <strong style={{ fontWeight: 'var(--weight-strong)' }}>{title}</strong> : null}{title && children ? ' — ' : null}{children}</span>
+      <span style={{ flex: 1, minWidth: 0, ...textStyle('body-3', { color: t.fg }), textWrap: 'pretty' }}>{title ? <strong style={{ fontWeight: 'var(--weight-strong)' }}>{title}</strong> : null}{title && children ? ': ' : null}{children}</span>
       {action ? <span style={{ flex: 'none' }}>{action}</span> : null}
     </div>
   );

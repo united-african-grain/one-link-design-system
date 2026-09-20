@@ -1,0 +1,45 @@
+<!-- @dsCard group="Components" viewport="1200x760" subtitle="Signed-out frame: the form on the left, the brand panel on the right (eyebrow, claim, one sentence, the commodity tick strip and legend). Below 1024px the panel is removed and the form owns the screen" name="Navigation · Auth shell" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>html,body{margin:0;background:var(--surface)} #root{min-height:100vh}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { AuthShell, Button, PressButton, Text } = DS;
+
+/* The card has no text field component to borrow yet, so the demo draws the two fields from
+   tokens. The frame under test is AuthShell, not the field. */
+function Field({ label, type }) {
+  const id = 'auth-demo-' + label.toLowerCase();
+  return (
+    <label htmlFor={id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <Text variant="body-3" strong>{label}</Text>
+      <input id={id} type={type} style={{ height: 40, boxSizing: 'border-box', padding: '0 12px', border: 0, borderRadius: 'var(--radius-sm)', background: 'var(--grouped)', font: 'var(--font-body-3)', color: 'var(--content-primary)', outline: 'none' }} />
+    </label>
+  );
+}
+
+function Demo(){
+  const [busy, setBusy] = React.useState(false);
+  return (
+    <AuthShell
+      heading="Sign in"
+      sentence="Use the email and password for your United African Grain account."
+      links={<><Button variant="ghost" size="small">Forgot password</Button><Button variant="ghost" size="small">Back to home</Button></>}
+    >
+      <Field label="Email" type="email" />
+      <Field label="Password" type="password" />
+      <PressButton kind="large" variant="primary" fullWidth loading={busy} onClick={() => { setBusy(true); setTimeout(() => setBusy(false), 1600); }}>Sign in</PressButton>
+    </AuthShell>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

@@ -6,7 +6,7 @@
     'actions/Button.jsx', 'actions/PressButton.jsx', 'actions/Capsule.jsx', 'actions/Segmented.jsx', 'actions/LineStepper.jsx',
     'feedback/StatusMark.jsx', 'feedback/TrustChip.jsx', 'feedback/Banner.jsx', 'feedback/SeverityTag.jsx', 'feedback/EmptyState.jsx', 'feedback/Skeleton.jsx', 'feedback/Dialog.jsx',
     'inputs/SearchField.jsx',
-    'navigation/Tabs.jsx', 'navigation/SyncStatus.jsx', 'navigation/Header.jsx', 'navigation/AppShell.jsx', 'navigation/MobileShell.jsx', 'navigation/CommodityTabs.jsx',
+    'navigation/Tabs.jsx', 'navigation/SyncStatus.jsx', 'navigation/Header.jsx', 'navigation/AppShell.jsx', 'navigation/AuthShell.jsx', 'navigation/MobileShell.jsx', 'navigation/CommodityTabs.jsx',
     'data/QuantityChip.jsx', 'data/ShareBar.jsx', 'data/Figure.jsx', 'data/Card.jsx', 'data/RailRow.jsx', 'data/DataTable.jsx', 'data/ChartCard.jsx',
     'records/EvidenceTile.jsx', 'records/Timeline.jsx', 'records/ActionPanel.jsx', 'records/ReconcilePanel.jsx'
   ];

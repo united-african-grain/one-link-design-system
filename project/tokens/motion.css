@@ -17,6 +17,7 @@
   --dur-photo: 300ms;
   --dur-ping: 1.5s;
   --dur-spin: 0.8s;
+  --dur-march: 44s;          /* signed-out panel tick strip, one full wrap */
 
   --scale-press-button: 0.97;
   --scale-press-card: 0.99;
@@ -25,10 +26,13 @@
 @keyframes ol-ping { 0% { transform: scale(.001); opacity: .6 } 100% { transform: scale(3.75); opacity: 0 } }
 @keyframes ol-spin { to { transform: rotate(360deg) } }
 @keyframes ol-reveal { from { opacity: 0 } to { opacity: 1 } }
+/* signed-out panel tick strip: the pattern is rendered twice, so -50% wraps with no seam */
+@keyframes ol-march { to { transform: translateX(-50%) } }
 /* Reduced motion. CSS drops press scales and the ping; components (inline styles) read usePrefersReducedMotion()
    from core/Interaction.jsx and drop the 3D press translate, tab underline glide, sheet slide, loading swap scale
    and ShareBar width transition. Colour/opacity fades stay. */
 @media (prefers-reduced-motion: reduce) {
   :root { --scale-press-button: 1; --scale-press-card: 1; }
   .ol-ping { animation: none !important; }
+  .ol-march { animation: none !important; }
 }

@@ -56,7 +56,7 @@ Desktop 1440 (shell max 1293) and mobile 390. Modules: Command Center · Trade D
   - `inputs/` SearchField
   - `navigation/` AppShell (+MenuRow; the signed-in frame), AuthShell (+authTickPattern; the signed-out frame), Header (+MODULES, IconButton; Partner Portal), Tabs, CommodityTabs (+COMMODITY_COLORS), SyncStatus, MobileShell
   - `feedback/` Banner, StatusMark, ProvenanceChip + ConfirmationChip, SeverityTag, EmptyState, Skeleton + CardSkeleton, Dialog (sheet)
-  - `data/` Card + CardRow + Dot + MetaParts, QuantityChip, ShareBar, Figure (derivation popover), RailRow, DataTable (+RestrictedCell, DerivedCell, RefCell), ChartCard (+ChartAttribution)
+  - `data/` Card + CardRow + Dot + MetaParts, QuantityChip, ShareBar, Figure (derivation popover), RailRow, DataTable (+RestrictedCell, DerivedCell, RefCell), ChartCard (+ChartAttribution), QrCode (renders a boolean matrix; never encodes)
   - `records/` ActionPanel (+AmountRow, SummaryList, RadioList), ReconcilePanel, EvidenceTile, Timeline
   - `_loader.js`: card-only helper that loads sources directly when the compiled bundle is absent.
 - `SKILL.md`: agent skill entry point.

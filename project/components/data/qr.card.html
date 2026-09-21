@@ -1,0 +1,61 @@
+<!-- @dsCard group="Components" viewport="700x420" subtitle="Takes a boolean matrix and renders it: white ground, content-primary modules, four-module quiet zone. It never encodes" name="Data · QR code" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:12px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary)}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Text, QrCode, Card } = DS;
+
+// Hardcoded, on purpose: a 21x21 code for the text "ONE LINK". The design system takes no
+// encoder dependency, so the card carries its own matrix like any other demo value.
+const ROWS = [
+  '111111101001101111111', '100000101001101000001', '101110101010001011101', '101110100011001011101',
+  '101110101000101011101', '100000100001101000001', '111111101010101111111', '000000000101100000000',
+  '100111111100110010111', '011101001110101011110', '101111110110011010110', '100101010001000001100',
+  '011111101010001000001', '000000001111100001111', '111111101000111110100', '100000101011110011001',
+  '101110101101101110011', '101110101011100101100', '101110100110001001111', '100000100000011001010',
+  '111111101101000110010',
+];
+const MATRIX = ROWS.map((r) => [...r].map((c) => c === '1'));
+
+function Demo(){
+  return <div className="col" style={{gap:20}}>
+    <div className="row">
+      <div className="col">
+        <span className="lbl">200, quiet zone 4 (the default)</span>
+        <QrCode matrix={MATRIX} label="Two-step sign-in setup code for One Link" />
+      </div>
+      <div className="col">
+        <span className="lbl">148, quiet zone 2</span>
+        <QrCode matrix={MATRIX} size={148} quietZone={2} label="Two-step sign-in setup code for One Link" />
+      </div>
+      <div className="col">
+        <span className="lbl">96, quiet zone 1</span>
+        <QrCode matrix={MATRIX} size={96} quietZone={1} label="Two-step sign-in setup code for One Link" />
+      </div>
+    </div>
+    <div style={{maxWidth:420}}>
+      <Card title="In use: two-step sign-in">
+        <div className="row" style={{gap:16,alignItems:'center',padding:16}}>
+          <QrCode matrix={MATRIX} size={132} label="Two-step sign-in setup code for One Link" />
+          <div className="col" style={{gap:6,minWidth:0,flex:'1 1 150px'}}>
+            <Text variant="body-3">Scan this with your authenticator app.</Text>
+            <Text variant="body-4" tone="tertiary">Cannot scan it? Type the code instead.</Text>
+            <Text variant="body-3-strong" style={{fontVariantNumeric:'tabular-nums',wordBreak:'break-all'}}>JBSW Y3DP EHPK 3PXP</Text>
+          </div>
+        </div>
+      </Card>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

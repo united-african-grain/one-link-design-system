@@ -18,7 +18,7 @@ const L=(t)=><span className="lbl">{t}</span>;
 function Demo(){
   const icons=['check','circle-check','triangle-alert','circle-alert','octagon-x','clock','contrast','diamond','link','signal-high','trending-up','trending-down','minus','chevron-right','chevron-down','arrow-left','x','info','file-text','receipt','volume-2','camera','pencil','rotate-ccw','refresh-cw','sparkles','search','bell','eye-off','loader-circle'];
   return <div className="col">
-    <div className="row">{L('logo')}<Logo/><Logo product="One Link"/><Logo showBeta={false}/><Logo size="sm"/></div>
+    <div className="row">{L('logo')}<Logo/><Logo product="One Link"/><Logo showBeta={false}/><Logo size="sm"/><Logo markOnly/></div>
     <div className="row">{L('icons 20/16/12')}{icons.slice(0,14).map(i=><Icon key={i} name={i} size={20} stroke={1.75} color="var(--content-primary)"/>)}</div>
     <div className="row">{L('')}{icons.slice(14).map(i=><Icon key={i} name={i} size={16} color="var(--content-secondary)"/>)}<Icon name="loader-circle" size={16} spin color="var(--content-secondary)"/></div>
     <div className="row">{L('avatars')}<Avatar initials="TM" size={32}/><Avatar initials="SL"/><Avatar initials="KV" commodityColor="var(--commodity-maize)"/><Avatar initials="CM" commodityColor="var(--commodity-wheat)"/><Avatar initials="KF" commodityColor="var(--commodity-soya)"/><Avatar initials="HM" commodityColor="var(--commodity-soya-meal)"/><Avatar initials="IM" commodityColor="var(--commodity-fertilizer)"/><Avatar initials="BB" commodityColor="var(--commodity-maize)" dimmed/></div>

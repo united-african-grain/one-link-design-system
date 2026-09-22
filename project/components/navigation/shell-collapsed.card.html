@@ -1,4 +1,4 @@
-<!-- @dsCard group="Components" viewport="1200x720" subtitle="Signed-in frame: 260px sidebar with grouped modules and the active module's sections, a foot of rail links and the collapse toggle, 56px toolbar with breadcrumb, search, sync, digest and the account menu (identity, items, Sign out)" name="Navigation · App shell" -->
+<!-- @dsCard group="Components" viewport="1200x720" subtitle="The same frame with the sidebar collapsed to 64px of module icons: labels kept for a screen reader, counts as dots, and the active module’s sections in a flyout (hover or focus an icon). The toggle is the last row of the foot." name="Navigation · App shell, collapsed" -->
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../../styles.css">
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -41,6 +41,6 @@ function Demo({ startCollapsed = false }){
     </div>
   </AppShell>;
 }
-ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo startCollapsed />);
 });
 </script></body></html>

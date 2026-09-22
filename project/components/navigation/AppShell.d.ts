@@ -52,7 +52,7 @@ export interface AppShellProps {
   menu?: React.ReactNode;
   /** Extra toolbar elements before the sync pill. */
   right?: React.ReactNode;
-  /** Pinned below the sidebar nav, above a hairline. */
+  /** Pinned below the sidebar nav, above a hairline, with the collapse toggle as the last row under it. */
   foot?: React.ReactNode;
   /** Below main, inside the shell column (the chart attribution). */
   footer?: React.ReactNode;
@@ -63,6 +63,24 @@ export interface AppShellProps {
   accountOpen?: boolean;
   /** Force the toolbar's 80% white + 24px blur surface. */
   scrolled?: boolean;
+  /**
+   * Collapse the sidebar to 64px of module icons, with each module's sections in a flyout.
+   * Honoured from 1024px only: below that the sidebar is a drawer and the toggle is not drawn.
+   */
+  collapsed?: boolean;
+  /** The toggle in the rail foot was pressed. Persist it per person; the component also holds it. */
+  onCollapsedChange?: (collapsed: boolean) => void;
   style?: React.CSSProperties;
 }
 export function AppShell(props: AppShellProps): JSX.Element;
+export interface RailLinkProps {
+  /** Lucide icon name (settings, circle-help). */
+  icon?: string;
+  label: string;
+  active?: boolean;
+  /** Draw the icon alone and keep the label for a screen reader. Pass the shell's own collapsed state; the row ignores it below 1024px. */
+  collapsed?: boolean;
+  onSelect?: () => void;
+}
+/** A row for the rail foot slot: Settings, Help, anything that is not a module. */
+export function RailLink(props: RailLinkProps): JSX.Element;

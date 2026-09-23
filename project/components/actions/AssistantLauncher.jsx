@@ -6,9 +6,14 @@ import { useInteraction, usePrefersReducedMotion } from '../core/Interaction.jsx
 /* The way into the assistant, and the only thing it leaves on the screen while it is shut.
  *
  * A 44px pill in the inverted fill, bottom right, carrying an icon and one word. One word rather
- * than a bare circle because a circle with a sparkle in it is a guess: the word says what pressing
- * it gets you. Inverted rather than brand blue because it is not a decision, it is a door, and the
+ * than a bare circle because a circle with a mark in it is a guess: the word says what pressing it
+ * gets you. Inverted rather than brand blue because it is not a decision, it is a door, and the
  * brand fill in One Link belongs to the things that commit something.
+ *
+ * The icon is `message-square`, the chat mark, and not `sparkles`. Sparkles is this system's mark
+ * for a model, and it belongs to Ask AI, which reads the business and answers about it. This is a
+ * conversation about how to use the product, and it says so: what the reader is opening is a place
+ * to ask a question, not a machine.
  *
  * It floats, so it carries shadow-strong: the same elevation as every other large action that sits
  * over the page. It is never fixed by the component itself. Where it goes is the frame's business,
@@ -17,7 +22,7 @@ import { useInteraction, usePrefersReducedMotion } from '../core/Interaction.jsx
  */
 
 /** The assistant's launcher: a 44px inverted pill with an icon and one word. Give it `expanded` while its panel is open. */
-export function AssistantLauncher({ label = 'Guide', icon = 'sparkles', expanded = false, onClick, style, ...rest }) {
+export function AssistantLauncher({ label = 'Guide', icon = 'message-square', expanded = false, onClick, style, ...rest }) {
   const { hover, down, focusVisible, handlers } = useInteraction();
   const reduced = usePrefersReducedMotion();
   const ring = focusVisible ? ', 0 0 0 4px color-mix(in srgb, var(--inverted) 25%, transparent)' : '';

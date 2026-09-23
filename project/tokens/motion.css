@@ -26,7 +26,7 @@
 @keyframes ol-ping { 0% { transform: scale(.001); opacity: .6 } 100% { transform: scale(3.75); opacity: 0 } }
 @keyframes ol-spin { to { transform: rotate(360deg) } }
 @keyframes ol-reveal { from { opacity: 0 } to { opacity: 1 } }
-/* signed-out panel tick strip: the pattern is rendered twice, so -50% wraps with no seam */
+/* signed-out panel tick strip and the bottom ticker: the content is rendered twice, so -50% wraps with no seam */
 @keyframes ol-march { to { transform: translateX(-50%) } }
 /* Reduced motion. CSS drops press scales and the ping; components (inline styles) read usePrefersReducedMotion()
    from core/Interaction.jsx and drop the 3D press translate, tab underline glide, sheet slide, loading swap scale

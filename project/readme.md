@@ -7,7 +7,7 @@ The visual system borrows the craft of a public light-theme teardown (white-on-w
 ## Sources
 - The One Link brief (pasted spec, §1–§8) is authoritative for every value here.
 - Reference (orientation only): a public light-theme teardown; Inter (rsms.me/inter); Instrument Sans (Google Fonts); Lucide (lucide.dev); TradingView Lightweight Charts v5.
-- **The One Link mark** is a single link with two loops, in brand blue #2563EB, supplied 23 Sept 2026 (`assets/one-link-*.svg`). In the product it sits white on a brand-blue tile, the same tile as the app icon. See the Brand card for use, sizes and why it looks the way it does.
+- **The One Link mark** is a single link with two loops, in brand blue #2563EB, supplied 23 Sept 2026 (`assets/one-link-*.svg`). In the product it is always blue on the surface; the white-on-blue tile is only for the app icon and the browser tab. See the Brand card for use, sizes and why it looks the way it does.
 
 ## Surfaces
 Desktop 1440 (shell max 1293) and mobile 390. Modules: Command Center · Trade Desk · Warehouse · Stock · Farmer Finance · Ask AI. Plus Partner Portal (no module row) and Field app (mobile only).

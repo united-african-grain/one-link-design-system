@@ -12,13 +12,22 @@
 </head><body><div id="root"></div>
 <script type="text/babel">
 loadDS('../').then((DS) => {
-const { AppShell, MODULES, MenuRow, RailLink, Text, CardSkeleton, EmptyState, ChartAttribution } = DS;
+const { AppShell, MODULES, MenuRow, RailLink, Text, CardSkeleton, EmptyState, ChartAttribution, Ticker } = DS;
 
 const NAV = [{ items: MODULES.map((m) => m.value === 'trade'
   ? { ...m, count: 3, sections: [{ value: 'board', label: 'Trade Board' }, { value: 'coverage', label: 'Coverage' }, { value: 'approvals', label: 'Approvals', count: 2 }] }
   : m) }];
 const LABEL = Object.fromEntries(MODULES.map((m) => [m.value, m.label]));
 const SECTION = { board: 'Trade Board', coverage: 'Coverage', approvals: 'Approvals' };
+
+const TICK = [
+  { id: 'position', icon: 'gauge', label: 'Your position', value: 'K125M', href: '#' },
+  { id: 'margin', icon: 'trending-up', label: 'Blended margin', value: 'K11.8M', tone: 'good', href: '#' },
+  { id: 'cover', icon: 'arrow-left-right', label: 'Tonnes short on cover', value: '4,120t', tone: 'attention', href: '#' },
+  { id: 'stock', icon: 'warehouse', label: 'Stock held', value: '34,117t', href: '#' },
+  { id: 'credit', icon: 'hand-coins', label: 'Credit book out', value: 'K174,840', href: '#' },
+  { id: 'exceptions', icon: 'triangle-alert', label: 'Open exceptions', value: '6', tone: 'attention', href: '#' },
+];
 
 function Demo({ startCollapsed = false }){
   const [module, setModule] = React.useState('trade');
@@ -33,7 +42,8 @@ function Demo({ startCollapsed = false }){
     menu={<><MenuRow icon="settings" label="Preferences" /><MenuRow icon="eye-off" label="Restricted view preview" /></>}
     signingOut={busy} onSignOut={() => { setBusy(true); setTimeout(() => setBusy(false), 1800); }}
     foot={<><RailLink icon="settings" label="Settings" collapsed={collapsed} /><RailLink icon="circle-help" label="Help" collapsed={collapsed} /></>}
-    footer={<ChartAttribution />}>
+    footer={<ChartAttribution />}
+    ticker={<Ticker anchor={{ icon: 'gauge', text: 'As at 12 March, 08:40' }} items={TICK} onItemClick={(item, e) => e.preventDefault()} />}>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <Text as="h1" variant="heading-1-condensed">{crumbs[crumbs.length - 1]}</Text>
       <EmptyState />

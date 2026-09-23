@@ -1,0 +1,105 @@
+<!-- @dsCard group="Components" viewport="1240x820" subtitle="The in-app assistant: launcher pill, empty state on real help page titles, a turn with citations, the working state, and the phone sheet. A question is a pill, an answer is set text" name="Feedback · Assistant panel, launcher, citation chip" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>
+  body{margin:0;padding:16px;background:var(--grouped)}
+  .col{display:flex;flex-direction:column;gap:8px}
+  .lbl{font:var(--font-caption-1);color:var(--content-tertiary)}
+  .states{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+  .phone{width:min(390px,100%);height:560px;position:relative;overflow:hidden;border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-minimal)}
+  .launchers{display:flex;gap:16px;align-items:center;padding:12px 0}
+</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Text, AssistantPanel, AssistantSuggestion, AssistantQuestion, AssistantAnswer, AssistantWorking, AssistantLauncher, CitationChip } = DS;
+const L = (t) => <span className="lbl">{t}</span>;
+
+// The suggestions are real help page titles, which is the rule: the assistant offers what has been
+// written, never a question somebody invented for it. Nothing here carries a figure, a
+// counterparty or a person: this panel explains the product and never reads the ledger.
+const TITLES = ['Signing in', 'Finding your way around', 'Two-step sign-in'];
+const stop = (e) => e.preventDefault();
+
+function Empty() {
+  return (
+    <AssistantPanel onClose={() => {}} onRestart={() => {}}>
+      <div className="col" style={{gap:10}}>
+        <Text variant="body-2" style={{maxWidth:'34ch'}}>Ask how anything in One Link works. Every answer comes from the help centre, and says which page it came from.</Text>
+        <div className="col" style={{gap:6}}>
+          {TITLES.map((t) => <AssistantSuggestion key={t}>{t}</AssistantSuggestion>)}
+        </div>
+      </div>
+    </AssistantPanel>
+  );
+}
+
+function Conversation() {
+  return (
+    <AssistantPanel value="" onClose={() => {}} onRestart={() => {}}>
+      <AssistantQuestion>Why is my position figure greyed out?</AssistantQuestion>
+      <AssistantAnswer sources={<>
+        <CitationChip label="The modules, and who can open them" href="#" onClick={stop} />
+        <CitationChip label="Finding your way around" href="#" onClick={stop} />
+      </>}>
+        A figure reads as a dash with an eye-off mark when your role may not see it. Position and margin are limited to the roles that carry commercial responsibility, and Stock control is not one of them. The tonnage beside it is not restricted, so you can still work from that.
+      </AssistantAnswer>
+      <AssistantQuestion>And how do I turn on two-step sign-in?</AssistantQuestion>
+      <AssistantWorking />
+    </AssistantPanel>
+  );
+}
+
+function Refusing() {
+  return (
+    <AssistantPanel sending onClose={() => {}} onRestart={() => {}} maxHeight={420}>
+      <AssistantQuestion>What is our maize cover for next quarter?</AssistantQuestion>
+      <AssistantAnswer>
+        The help centre does not cover that yet, so there is nothing here I can answer it from. The list of topics is the best place to look next.
+      </AssistantAnswer>
+    </AssistantPanel>
+  );
+}
+
+function Demo(){
+  return <div className="col" style={{gap:20}}>
+    <div className="col">
+      {L('The launcher, resting and with its panel open. The pill does not change: aria-expanded does, because the panel it opened is the state, and a pill that also changed would be saying it twice. It never positions itself either: the frame decides where it sits, clear of the bottom ticker and of the phone module bar.')}
+      <div className="launchers">
+        <AssistantLauncher />
+        <AssistantLauncher expanded />
+      </div>
+    </div>
+
+    <div className="states">
+      <div className="col">{L('nothing asked yet: one sentence, then real help page titles')}<Empty /></div>
+      <div className="col">{L('a turn, its sources, and the next answer on its way')}<Conversation /></div>
+      <div className="col">{L('nothing retrieved: it says so, rather than guessing')}<Refusing /></div>
+    </div>
+
+    <div className="col">
+      {L('below 768px it is a full-height sheet instead')}
+      <div className="phone">
+        <div style={{position:'absolute',inset:0,padding:16}}><Text variant="body-3" tone="tertiary">the screen behind it</Text></div>
+        <AssistantPanel sheet contained onClose={() => {}} onRestart={() => {}} style={{left:0}}>
+          <div className="col" style={{gap:10}}>
+            <Text variant="body-2">Ask how anything in One Link works. Every answer comes from the help centre, and says which page it came from.</Text>
+            <div className="col" style={{gap:6}}>{TITLES.map((t) => <AssistantSuggestion key={t}>{t}</AssistantSuggestion>)}</div>
+          </div>
+        </AssistantPanel>
+      </div>
+    </div>
+
+    <Text variant="body-4" tone="tertiary">A question is a pill and an answer is set text, never two bubbles facing each other. There is no avatar, no name for the assistant, no typing dots and no rating: the only thing under an answer is where it came from. Under reduced motion the panel fades in rather than rising.</Text>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

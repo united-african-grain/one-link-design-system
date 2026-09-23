@@ -280,7 +280,7 @@ function Breadcrumb({ parts, roomy }) {
     foot). Collapsed, a module's label is kept for a screen reader and its sections move into a flyout, because the
     sections exist nowhere else; a count becomes a dot on the icon and stays a figure in the flyout. Below 1024px
     `collapsed` is ignored and the toggle is not drawn. */
-export function AppShell({ nav = [], module, section, onNavigate, home = 'home', breadcrumb = [], sync = 'live', syncLabel, showSearch = true, searchPlaceholder, showDigest = true, user, signingOut = false, onSignOut, menu, right, foot, footer, children, product = 'One Link', showBeta = true, accountOpen = false, scrolled = false, collapsed = false, onCollapsedChange, style }) {
+export function AppShell({ nav = [], module, section, onNavigate, home = 'home', breadcrumb = [], sync = 'live', syncLabel, showSearch = true, searchPlaceholder, showDigest = true, user, signingOut = false, onSignOut, menu, right, foot, footer, ticker, children, product = 'One Link', showBeta = true, accountOpen = false, scrolled = false, collapsed = false, onCollapsedChange, style }) {
   const desktop = useMinWidth(1024);
   const roomy = useMinWidth(768);
   const reduced = usePrefersReducedMotion();
@@ -377,6 +377,13 @@ export function AppShell({ nav = [], module, section, onNavigate, home = 'home',
         </header>
         <main style={{ flex: 1, width: '100%', maxWidth: 'var(--shell-max)', margin: '0 auto', padding: desktop ? '32px 24px 96px' : '24px 16px 64px', boxSizing: 'border-box', minWidth: 0 }}>{children}</main>
         {footer ? <footer style={{ width: '100%', maxWidth: 'var(--shell-max)', margin: '0 auto', padding: `0 ${pad}px 32px`, boxSizing: 'border-box' }}>{footer}</footer> : null}
+        {/* The ticker row is the one part of the column that is not inset. `main` and `footer` are
+            held to --shell-max with side padding; the Ticker's inverted top corners only read as the
+            bar flowing off the screen if they actually sit on the screen edges, so this row is full
+            bleed: no max-width, no padding, and flex none so it keeps its own height at the foot of
+            a short page instead of being stretched. It is last, after the footer, and in normal flow
+            like everything else in the column. */}
+        {ticker ? <div style={{ flex: 'none', width: '100%', minWidth: 0 }}>{ticker}</div> : null}
       </div>
     </div>
   );

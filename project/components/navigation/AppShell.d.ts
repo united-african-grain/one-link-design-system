@@ -56,6 +56,11 @@ export interface AppShellProps {
   foot?: React.ReactNode;
   /** Below main, inside the shell column (the chart attribution). */
   footer?: React.ReactNode;
+  /**
+   * The last row of the shell column, after the footer: the `Ticker` strip. Full bleed, so its
+   * inverted top corners meet the screen edges. No max-width and no padding, unlike main and footer.
+   */
+  ticker?: React.ReactNode;
   children?: React.ReactNode;
   product?: string;
   showBeta?: boolean;

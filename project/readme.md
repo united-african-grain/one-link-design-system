@@ -7,7 +7,7 @@ The visual system borrows the craft of a public light-theme teardown (white-on-w
 ## Sources
 - The One Link brief (pasted spec, §1–§8) is authoritative for every value here.
 - Reference (orientation only): a public light-theme teardown; Inter (rsms.me/inter); Instrument Sans (Google Fonts); Lucide (lucide.dev); TradingView Lightweight Charts v5.
-- **No logo file was supplied.** The mark in `Logo.jsx` is a typographic placeholder (dark rounded square with "OL"). Replace when the asset arrives. `Logo markOnly` is the mark on its own, named after the product, for the collapsed sidebar.
+- **The One Link mark** is a single link with two loops, in brand blue #2563EB, supplied 23 Sept 2026 (`assets/one-link-*.svg`). In the product it sits white on a brand-blue tile, the same tile as the app icon. See the Brand card for use, sizes and why it looks the way it does.
 
 ## Surfaces
 Desktop 1440 (shell max 1293) and mobile 390. Modules: Command Center · Trade Desk · Warehouse · Stock · Farmer Finance · Ask AI. Plus Partner Portal (no module row) and Field app (mobile only).
@@ -45,7 +45,7 @@ Desktop 1440 (shell max 1293) and mobile 390. Modules: Command Center · Trade D
 - Sizes: 20px in buttons and header (stroke 1.75); 16px inline with body-3 (stroke 2); 12–14px in captions and chips (stroke 2).
 - Vocabulary (one meaning, one icon): check (done/within spec) · circle-check (good) · triangle-alert (attention) · circle-alert (breach) · octagon-x (hard block) · clock (awaiting) · contrast (provenance) · diamond + check/clock/triangle-alert (counterparty confirmation) · link · signal-high/medium/low (OCR confidence) · trending-up/down, minus · chevron-right (breadcrumb) · chevron-down (dropdown) · arrow-left/right · x · info · file-text / receipt / volume-2 / camera · pencil / rotate-ccw / refresh-cw · sparkles (AI) · search · bell (digest) · eye-off (restricted) · loader-circle (spinner).
 - Modules: gauge (Command Center) · arrow-left-right (Trade Desk) · warehouse · package (Stock) · hand-coins (Farmer Finance) · sparkles (Ask AI).
-- No logo or illustration assets were supplied; `assets/` is empty by design.
+- `assets/` holds the One Link mark (blue, white), the tile and the app icon. No illustration assets were supplied.
 
 ## Index
 - `styles.css` → `tokens/` (fonts, colors, typography, shape, motion, spacing, base). Typography also ships `.t-*` utility classes.

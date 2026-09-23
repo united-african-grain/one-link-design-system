@@ -51,7 +51,7 @@ a:focus-visible,summary:focus-visible,button:focus-visible{outline:none;box-shad
 .navbar[data-blurred]{background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
 .nav-top{display:flex;align-items:center;gap:16px;height:var(--header-top)}
 .lockup{display:inline-flex;align-items:center;gap:8px;flex:none}
-.lockup .mark{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:var(--radius-2xs);background:var(--buttons-primary);color:#fff}
+.lockup .mark{display:inline-block;width:28px;height:28px;flex:none}
 .badge{display:inline-flex;align-items:center;height:16px;padding:2px 5px 1px;border-radius:var(--radius-4xs);background:var(--beta-fill);color:var(--beta-label)}
 .nav-search{flex:1;max-width:400px;position:relative}
 .search{display:flex;align-items:center;gap:8px;height:40px;padding-inline:12px;border-radius:var(--radius-sm);background:var(--grouped-light);color:var(--content-secondary);transition:background-color .15s ease-out,box-shadow .15s ease-out}
@@ -263,7 +263,7 @@ td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-alig
   <div class="shell">
     <div class="nav-top">
       <a class="lockup" href="#overview" aria-label="One Link design system, home">
-        <span class="mark t-caption-2-condensed" aria-hidden="true">OL</span>
+        <img class="mark" src="assets/one-link-tile.svg" alt="" aria-hidden="true" width="28" height="28">
         <span class="t-heading-4 t-strong">One Link</span>
         <span class="badge t-caption-2-condensed">Beta</span>
       </a>

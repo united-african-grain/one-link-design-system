@@ -51,7 +51,7 @@ a:focus-visible,summary:focus-visible,button:focus-visible{outline:none;box-shad
 .navbar[data-blurred]{background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
 .nav-top{display:flex;align-items:center;gap:16px;height:var(--header-top)}
 .lockup{display:inline-flex;align-items:center;gap:8px;flex:none}
-.lockup .mark{display:inline-block;width:28px;height:28px;flex:none}
+.lockup .mark{display:block;height:20px;width:auto;flex:none}
 .badge{display:inline-flex;align-items:center;height:16px;padding:2px 5px 1px;border-radius:var(--radius-4xs);background:var(--beta-fill);color:var(--beta-label)}
 .nav-search{flex:1;max-width:400px;position:relative}
 .search{display:flex;align-items:center;gap:8px;height:40px;padding-inline:12px;border-radius:var(--radius-sm);background:var(--grouped-light);color:var(--content-secondary);transition:background-color .15s ease-out,box-shadow .15s ease-out}
@@ -256,6 +256,14 @@ td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-alig
 @media (min-width:56rem){.card-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .foot{display:flex;flex-direction:column;gap:6px;padding-block:24px 40px;color:var(--content-tertiary);box-shadow:inset 0 1px 0 var(--border-light)}
 .foot a{color:var(--content-secondary);text-decoration:underline;text-underline-offset:2px}
+.logo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px}
+.logo-tile{box-sizing:border-box;border-radius:var(--radius-md,16px);box-shadow:inset 0 0 0 1px var(--border);min-height:180px;display:flex;align-items:center;justify-content:center;padding:24px}
+.logo-tile.brand{background:var(--buttons-brand);box-shadow:none}
+.logo-cap{margin-top:8px;color:var(--content-secondary)}
+.logo-sizes{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-top:16px}
+.logo-sizes figure{margin:0;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.logo-list{margin:12px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;color:var(--content-secondary);max-width:68ch}
+.logo-why{margin-top:16px;padding:20px 24px;border-radius:var(--radius-md,16px);background:var(--grouped-light);max-width:76ch;display:flex;flex-direction:column;gap:10px}
 </style>
 </head>
 <body>
@@ -263,7 +271,7 @@ td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-alig
   <div class="shell">
     <div class="nav-top">
       <a class="lockup" href="#overview" aria-label="One Link design system, home">
-        <img class="mark" src="assets/one-link-tile.svg" alt="" aria-hidden="true" width="28" height="28">
+        <img class="mark" src="assets/one-link-mark.svg" alt="" aria-hidden="true" width="33" height="20">
         <span class="t-heading-4 t-strong">One Link</span>
         <span class="badge t-caption-2-condensed">Beta</span>
       </a>
@@ -280,7 +288,7 @@ td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-alig
       <a class="btn btn--outline" href="https://github.com/united-african-grain/one-link-design-system" target="_blank" rel="noopener"><i data-lucide="code-xml"></i><span class="gh-label">Source</span></a>
       <a class="btn btn--brand" href="#screens">Screens</a>
     </div>
-    <nav class="tabs" aria-label="Sections"><a class="tab t-body-3 t-strong" href="#overview" data-tab="overview" aria-current="true">Overview</a><a class="tab t-body-3 t-strong" href="#rules" data-tab="rules">Rules</a><a class="tab t-body-3 t-strong" href="#colour" data-tab="colour">Colour</a><a class="tab t-body-3 t-strong" href="#type" data-tab="type">Type</a><a class="tab t-body-3 t-strong" href="#shape" data-tab="shape">Shape</a><a class="tab t-body-3 t-strong" href="#motion" data-tab="motion">Motion</a><a class="tab t-body-3 t-strong" href="#components" data-tab="components">Components</a><a class="tab t-body-3 t-strong" href="#screens" data-tab="screens">Screens</a><a class="tab t-body-3 t-strong" href="#layout" data-tab="layout">Layout</a><a class="tab t-body-3 t-strong" href="#cards" data-tab="cards">Cards</a><span class="tab-bar" aria-hidden="true"></span></nav>
+    <nav class="tabs" aria-label="Sections"><a class="tab t-body-3 t-strong" href="#overview" data-tab="overview" aria-current="true">Overview</a><a class="tab t-body-3 t-strong" href="#rules" data-tab="rules">Rules</a><a class="tab t-body-3 t-strong" href="#logo" data-tab="logo">Logo</a><a class="tab t-body-3 t-strong" href="#colour" data-tab="colour">Colour</a><a class="tab t-body-3 t-strong" href="#type" data-tab="type">Type</a><a class="tab t-body-3 t-strong" href="#shape" data-tab="shape">Shape</a><a class="tab t-body-3 t-strong" href="#motion" data-tab="motion">Motion</a><a class="tab t-body-3 t-strong" href="#components" data-tab="components">Components</a><a class="tab t-body-3 t-strong" href="#screens" data-tab="screens">Screens</a><a class="tab t-body-3 t-strong" href="#layout" data-tab="layout">Layout</a><a class="tab t-body-3 t-strong" href="#cards" data-tab="cards">Cards</a><span class="tab-bar" aria-hidden="true"></span></nav>
   </div>
 </header>
 
@@ -324,6 +332,44 @@ td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-alig
           <article class="rule"><div class="rule-head"><span class="k"><i data-lucide="loader-circle"></i></span><div><h3 class="t-body-2 t-strong">Every working button shows it is working</h3><p class="t-body-3">The label fades and scales to 0.8 while a spinner takes its place. The button keeps its size and stays busy until the action lands.</p></div></div><div class="example" id="rule-busy"></div></article>
         </div>
         <p class="note t-body-3"><i data-lucide="info"></i><span>Status is always an icon and a word, never colour alone. Icons are Lucide only: no emoji, no Unicode symbols standing in for icons. Charts are TradingView Lightweight Charts.</span></p>
+      </section>
+
+      <section id="logo" aria-labelledby="logo-title">
+        <div class="sec-head">
+          <h2 id="logo-title" class="t-heading-2 t-strong">Logo</h2>
+          <p class="t-body-2">One link with two loops, in One Link blue. In the product it is always the blue mark on a white surface. The white-on-blue tile exists only for the two places that must be a filled square: the app icon and the browser tab.</p>
+        </div>
+        <div class="logo-grid">
+          <div><div class="logo-tile"><img src="assets/one-link-mark.svg" alt="The One Link mark in blue" width="180" height="111"></div><p class="logo-cap t-caption-1">The mark: blue on white. Header, sidebar, collapsed rail, documents.</p></div>
+          <div><div class="logo-tile brand"><img src="assets/one-link-mark-white.svg" alt="The One Link mark in white on blue" width="180" height="111"></div><p class="logo-cap t-caption-1">White on blue: only on a brand-blue surface, never on a commodity colour.</p></div>
+          <div><div class="logo-tile"><img src="assets/one-link-tile.svg" alt="The One Link tile" width="112" height="112"></div><p class="logo-cap t-caption-1">The tile: app icon and browser tab only, where a filled square is required.</p></div>
+        </div>
+        <div class="sub">
+          <div class="sub-head"><h3 class="t-heading-4 t-strong">Why blue on white, and why a tile at all</h3><p class="t-body-3">The mark is about 1.6 times wider than it is tall. Where there is room, which is everywhere inside the product, it sits on its own in One Link blue: the cleanest form of the brand. A phone's home screen and a browser tab are small, square and filled, and a wide mark alone in a square shrinks to a thin line. The tile gives it a square of its own, so it reads at 16 pixels and on any wallpaper.</p></div>
+          <div class="logo-sizes">
+            <figure><img src="assets/one-link-tile.svg" alt="" width="16" height="16"><figcaption class="t-caption-1 muted">16 px tab</figcaption></figure>
+            <figure><img src="assets/one-link-tile.svg" alt="" width="32" height="32"><figcaption class="t-caption-1 muted">32 px</figcaption></figure>
+            <figure><img src="assets/one-link-tile.svg" alt="" width="64" height="64"><figcaption class="t-caption-1 muted">64 px app</figcaption></figure>
+            <figure><img src="assets/one-link-mark.svg" alt="" width="33" height="20"><figcaption class="t-caption-1 muted">20 px high, header</figcaption></figure>
+          </div>
+        </div>
+        <div class="sub">
+          <div class="sub-head"><h3 class="t-heading-4 t-strong">Why it looks like this</h3></div>
+          <div class="logo-why t-body-3">
+            <p>UAG's business is connection. It stands between Zambia's farmers and its mills, and between grain that arrives by sea and the mills that need it. Every tonne UAG handles is a link between someone who grows or ships it and someone who needs it.</p>
+            <p>The mark is one link with two loops: one loop is the farmer, the other the mill, joined in a single unbroken shape, because One Link is one record that both sides and everyone at UAG read. The two openings are shaped like grains, carried inside the link, because grain is what travels along it, one load at a time.</p>
+            <p>It is deliberately bold and simple, so it is recognisable on a farmer's phone in bright sun, on a clerk's screen at the weighbridge, and as a small icon in the app stores. It is one link rather than two interlocking chain links, so it is never mistaken for the link icon used on buttons inside the product.</p>
+          </div>
+        </div>
+        <div class="sub">
+          <div class="sub-head"><h3 class="t-heading-4 t-strong">Using it</h3></div>
+          <ul class="logo-list t-body-3">
+            <li>One colour: One Link blue #2563EB, or white on that blue. Never a commodity colour, a gradient or another blue.</li>
+            <li>Keep clear space of half the mark's height on every side. The mark is never under 20 px high; the tile never under 16 px.</li>
+            <li>Never stretch, rotate, outline, shadow or animate it, and never put letters inside it. Use the Logo component or the files in assets; never redraw it.</li>
+            <li>The stores get one-link-app-icon.svg, full bleed; they round the corners themselves.</li>
+          </ul>
+        </div>
       </section>
 
       <section id="colour" aria-labelledby="colour-title">
@@ -470,6 +516,7 @@ td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-alig
         <div class="rail-block">
           <h2 class="rail-title t-body-3 t-strong">In this design system</h2>
           <a class="rail-row toc-row" href="#rules" data-toc="rules"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Derived figures, trust, restricted values</span><span class="t-body-2 t-strong">Rules</span></span><span class="t-caption-1 muted num toc-count">8 rules</span><i data-lucide="chevron-right" class="chev"></i></a>
+          <a class="rail-row toc-row" href="#logo" data-toc="logo"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">One link, two loops, in One Link blue</span><span class="t-body-2 t-strong">Logo</span></span><span class="t-caption-1 muted num toc-count">4 files</span><i data-lucide="chevron-right" class="chev"></i></a>
           <a class="rail-row toc-row" href="#colour" data-toc="colour"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Roles, palettes, commodity colours</span><span class="t-body-2 t-strong">Colour</span></span><span class="t-caption-1 muted num toc-count">{{count.colour}}</span><i data-lucide="chevron-right" class="chev"></i></a>
           <a class="rail-row toc-row" href="#type" data-toc="type"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Inter + condensed display</span><span class="t-body-2 t-strong">Type</span></span><span class="t-caption-1 muted num toc-count">{{count.type}}</span><i data-lucide="chevron-right" class="chev"></i></a>
           <a class="rail-row toc-row" href="#shape" data-toc="shape"><span class="rail-surface" aria-hidden="true"></span><span class="rail-main"><span class="t-caption-1 muted">Radius and elevation</span><span class="t-body-2 t-strong">Shape</span></span><span class="t-caption-1 muted num toc-count">{{count.shape}}</span><i data-lucide="chevron-right" class="chev"></i></a>

@@ -57,8 +57,12 @@ export interface AppShellProps {
   /** Below main, inside the shell column (the chart attribution). */
   footer?: React.ReactNode;
   /**
-   * The last row of the shell column, after the footer: the `Ticker` strip. Full bleed, so its
-   * inverted top corners meet the screen edges. No max-width and no padding, unlike main and footer.
+   * The `Ticker` strip along the foot of the frame. Not a row of the page column: it spans every
+   * column, under the sidebar as well, because the inverted top corners only read if they meet the
+   * window's own edges. It is sticky rather than fixed, so it stays at the foot of the window while
+   * the page scrolls and still takes its own space at the end of the document. The sidebar is cut
+   * short by its height so the two never overlap, and the page column is padded by it so nothing
+   * ends up underneath. It sits below the mobile drawer and its scrim in the stack.
    */
   ticker?: React.ReactNode;
   children?: React.ReactNode;

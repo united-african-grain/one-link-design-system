@@ -1,0 +1,51 @@
+<!-- @dsCard group="Components" viewport="1200x300" subtitle="Bottom strip of live figures: pinned anchor, seamless -50% marquee, inverted top corners, paused and empty. Hover or focus stops it. Nothing below 768px" name="Data · Ticker" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:6px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary)} .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px} @media (max-width:899px){.two{grid-template-columns:minmax(0,1fr)}}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Text, Ticker } = DS;
+
+// Fictional, like every other card in this system: invented counterparties, invented figures.
+// Numbers follow the system's own rules: K125M above a million, full digits below, tonnes 28.20t.
+const ITEMS = [
+  { id: 'position', icon: 'gauge', label: 'Your position', value: 'K125M', href: '#' },
+  { id: 'margin', icon: 'trending-up', label: 'Blended margin', value: 'K11.8M', tone: 'good', href: '#' },
+  { id: 'maize', icon: 'package', label: 'White maize', value: 'K4,180/t' },
+  { id: 'cover', icon: 'arrow-left-right', label: 'Crest Milling cover', value: '54%', tone: 'attention', href: '#' },
+  { id: 'grn', icon: 'receipt', label: 'GR10000377 Kapiri Farms', value: '28.20t', tone: 'breach', href: '#' },
+  { id: 'site', icon: 'warehouse', label: 'Site total', value: '34,117t' },
+  { id: 'credit', icon: 'hand-coins', label: 'Credit book out', value: 'K174,840' },
+];
+const ANCHOR = { icon: 'gauge', text: 'Season 2026' };
+
+function Demo(){
+  return <div className="col" style={{gap:18}}>
+    <div className="col">
+      <span className="lbl">At the foot of the page column, after the content. Hover or tab into it and the crawl stops. Linked items underline; White maize and Site total are plain text.</span>
+      <Ticker anchor={ANCHOR} items={ITEMS} onItemClick={(item, e) => e.preventDefault()} />
+    </div>
+    <div className="two">
+      <div className="col">
+        <span className="lbl">paused, for a feed that has gone quiet</span>
+        <Ticker anchor={{icon:'triangle-alert', text:'Weighbridge feed silent', tone:'attention'}} items={ITEMS.slice(0,4)} paused onItemClick={(item, e) => e.preventDefault()} />
+      </div>
+      <div className="col">
+        <span className="lbl">nothing to show</span>
+        <Ticker anchor={ANCHOR} items={[]} emptyText="Nothing live right now, next digest at 13:00" />
+      </div>
+    </div>
+    <Text variant="body-4" tone="tertiary">Below 768px the component renders nothing: the mobile shell already has a bottom bar of modules, and two stacked bars at the foot of a phone would be one too many. Under reduced motion the crawl stops and the row becomes a strip you scroll yourself.</Text>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

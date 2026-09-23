@@ -9,6 +9,8 @@
   --header-mobile: 116px;
   --header-desktop: 106px;
   --bottom-tabs: 70px;
+  --ticker-h: 40px;            /* bottom ticker strip, the bar itself (the corners add 14 above it) */
+  --ticker-corner: 14px;       /* ticker inverted top corners: the square's side and its overlay radius */
   --sidebar-w: 260px;         /* signed-in frame sidebar, from 1024px (a 264px drawer below) */
   --sidebar-collapsed-w: 64px; /* the same sidebar collapsed to module icons, from 1024px only */
   --rail-w: 358px;            /* 320px from 1152, 358px from 1280 */

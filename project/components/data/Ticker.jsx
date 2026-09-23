@@ -12,9 +12,11 @@ import { useInteraction, useMinWidth, usePrefersReducedMotion } from '../core/In
  * original hardcodes black and white; here both colours are tokens, so a palette change reaches the
  * corners without anybody remembering they exist.
  *
- * It is a block in normal flow, never `position: fixed`. A fixed bar sits over the bottom of
- * whatever is on the page, and One Link is full of wide tables whose last row is the one somebody
- * is reading, so the bar scrolls with the page like any other element.
+ * The component itself is a plain block and positions nothing: it goes in AppShell's `ticker` slot,
+ * which spans the whole frame and makes that row `position: sticky; bottom: 0`. Never `fixed`. A
+ * fixed bar sits over the bottom of whatever is on the page, and One Link is full of wide tables
+ * whose last row is the one somebody is reading, so the sticky row keeps its own space at the end
+ * of the document and the page is padded to clear it.
  *
  * Two things the originals do not do. Hover or keyboard focus anywhere in the strip stops the
  * crawl, because a figure sliding away as you read it is the whole frustration of a ticker. And

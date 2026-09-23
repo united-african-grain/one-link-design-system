@@ -318,12 +318,16 @@ export function AppShell({ nav = [], module, section, onNavigate, home = 'home',
     onCollapsedChange && onCollapsedChange(next);
   };
 
+  // The strip's full height: the bar plus the band its inverted top corners sit in. The rail is cut
+  // short by it and the page column is padded by it, so nothing is ever under the bar.
+  const tickerH = ticker ? 'calc(var(--ticker-h) + var(--ticker-corner))' : '0px';
+
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: desktop ? `${rail ? 'var(--sidebar-collapsed-w)' : 'var(--sidebar-w)'} minmax(0,1fr)` : 'minmax(0,1fr)', minHeight: '100dvh', background: 'var(--surface)', transition: reduced ? 'none' : 'grid-template-columns var(--dur-capsule) var(--ease-default)', ...style }}>
+    <div style={{ display: 'grid', gridTemplateColumns: desktop ? `${rail ? 'var(--sidebar-collapsed-w)' : 'var(--sidebar-w)'} minmax(0,1fr)` : 'minmax(0,1fr)', gridTemplateRows: 'minmax(0,1fr)', minHeight: '100dvh', background: 'var(--surface)', transition: reduced ? 'none' : 'grid-template-columns var(--dur-capsule) var(--ease-default)', ...style }}>
       {drawer && open ? <div aria-hidden onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 39, background: 'color-mix(in srgb, var(--content-primary) 32%, transparent)' }} /> : null}
       <aside id="ol-app-shell-nav" data-collapsed={rail ? 'true' : undefined} inert={hidden ? '' : undefined} aria-hidden={hidden || undefined} style={drawer
-        ? { position: 'fixed', top: 0, bottom: 0, left: 0, zIndex: 40, width: 264, display: 'flex', flexDirection: 'column', background: 'var(--surface)', boxShadow: open ? 'var(--shadow-strong)' : 'none', transform: open ? 'translateX(0)' : 'translateX(-100%)', transition: reduced ? 'none' : 'transform 180ms var(--ease-default)', overflow: 'hidden' }
-        : { position: 'sticky', top: 0, height: '100dvh', display: 'flex', flexDirection: 'column', background: 'var(--surface)', boxShadow: 'inset -1px 0 0 var(--border)', overflow: 'hidden' }}>
+        ? { gridRow: 1, gridColumn: 1, position: 'fixed', top: 0, bottom: 0, left: 0, zIndex: 40, width: 264, display: 'flex', flexDirection: 'column', background: 'var(--surface)', boxShadow: open ? 'var(--shadow-strong)' : 'none', transform: open ? 'translateX(0)' : 'translateX(-100%)', transition: reduced ? 'none' : 'transform 180ms var(--ease-default)', overflow: 'hidden' }
+        : { gridRow: 1, gridColumn: 1, position: 'sticky', top: 0, height: `calc(100dvh - ${tickerH})`, display: 'flex', flexDirection: 'column', background: 'var(--surface)', boxShadow: 'inset -1px 0 0 var(--border)', overflow: 'hidden' }}>
         <div style={{ flex: 'none', height: 56, display: 'flex', alignItems: 'center', justifyContent: rail ? 'center' : 'flex-start', padding: rail ? 0 : '0 16px', boxShadow: navScrolled ? 'inset 0 -1px 0 var(--border)' : 'none', transition: 'box-shadow var(--dur-default) var(--ease-default)' }}>
           <a href="#" aria-label="Home" onClick={(e) => { e.preventDefault(); go(home); }} style={{ display: 'inline-flex', textDecoration: 'none', color: 'inherit', borderRadius: 'var(--radius-2xs)' }}><Logo product={product} showBeta={showBeta} markOnly={rail} /></a>
         </div>
@@ -356,7 +360,7 @@ export function AppShell({ nav = [], module, section, onNavigate, home = 'home',
         ) : null}
       </aside>
 
-      <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: '100dvh' }}>
+      <div style={{ gridRow: 1, gridColumn: desktop ? 2 : 1, display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: '100dvh', paddingBottom: tickerH, boxSizing: 'border-box' }}>
         <header data-blurred={blurred || undefined} style={{ position: 'sticky', top: 0, zIndex: 30, background: blurred ? 'color-mix(in srgb, var(--surface) 80%, transparent)' : 'var(--surface)', backdropFilter: blurred ? 'blur(24px)' : undefined, WebkitBackdropFilter: blurred ? 'blur(24px)' : undefined, boxShadow: 'inset 0 -1px 0 var(--border)', transition: 'background var(--dur-default) var(--ease-default)' }}>
           <div style={{ height: 'var(--header-top)', display: 'flex', alignItems: 'center', gap: roomy ? 12 : 8, padding: `0 ${pad}px`, minWidth: 0 }}>
             {drawer ? <IconButton icon={open ? 'x' : 'menu'} label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open} aria-controls="ol-app-shell-nav" onClick={() => setOpen((o) => !o)} /> : null}
@@ -377,14 +381,23 @@ export function AppShell({ nav = [], module, section, onNavigate, home = 'home',
         </header>
         <main style={{ flex: 1, width: '100%', maxWidth: 'var(--shell-max)', margin: '0 auto', padding: desktop ? '32px 24px 96px' : '24px 16px 64px', boxSizing: 'border-box', minWidth: 0 }}>{children}</main>
         {footer ? <footer style={{ width: '100%', maxWidth: 'var(--shell-max)', margin: '0 auto', padding: `0 ${pad}px 32px`, boxSizing: 'border-box' }}>{footer}</footer> : null}
-        {/* The ticker row is the one part of the column that is not inset. `main` and `footer` are
-            held to --shell-max with side padding; the Ticker's inverted top corners only read as the
-            bar flowing off the screen if they actually sit on the screen edges, so this row is full
-            bleed: no max-width, no padding, and flex none so it keeps its own height at the foot of
-            a short page instead of being stretched. It is last, after the footer, and in normal flow
-            like everything else in the column. */}
-        {ticker ? <div style={{ flex: 'none', width: '100%', minWidth: 0 }}>{ticker}</div> : null}
       </div>
+
+      {/* The strip runs the full width of the frame, under the sidebar as well as the page, because
+          its inverted top corners only read if they meet the window's own edges. So it is a grid
+          item of its own rather than a row of the page column, spanning every column.
+
+          It is sticky, not fixed, so it stays at the foot of the window on a page long enough to
+          scroll while still taking its own space at the end of the document: a fixed bar sits over
+          the last row of whatever is on screen, and One Link is full of wide tables whose last row
+          is the one somebody is reading. Sticky needs room to move, which is why it spans the whole
+          grid and sits at the end of it rather than living in a row of its own height.
+
+          Below the drawer and its scrim in the stack, so between 768 and 1024 an open sidebar covers
+          the strip rather than the strip sitting on top of the sidebar. */}
+      {ticker ? (
+        <div style={{ gridColumn: '1 / -1', gridRow: '1 / -1', alignSelf: 'end', position: 'sticky', bottom: 0, zIndex: 38, width: '100%', minWidth: 0 }}>{ticker}</div>
+      ) : null}
     </div>
   );
 }

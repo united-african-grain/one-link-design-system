@@ -1,0 +1,64 @@
+<!-- @dsCard group="Brand" viewport="700x980" subtitle="The mark drawn, settled and glinting while the app loads · the still for reduced motion · how an app shows and removes it" name="One Link splash" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../styles.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:var(--surface);font:var(--font-body-3);color:var(--content-primary)}
+h2{font:var(--font-heading-4-strong);margin:28px 0 10px} h2:first-child{margin-top:0}
+p{margin:0 0 10px;max-width:62ch;color:var(--content-secondary)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.cell{display:flex;flex-direction:column;gap:8px}
+.panel{border:1px solid var(--border);border-radius:var(--radius-2xs);min-height:220px;display:flex;align-items:center;justify-content:center;background:var(--surface)}
+.panel img{width:120px;height:auto;display:block}
+.cap{font:var(--font-caption-1);color:var(--content-tertiary)}
+.head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:32px}
+.replay{height:32px;padding:0 12px;border:0;border-radius:var(--radius-xs);background:var(--grouped);color:var(--content-primary);font:var(--font-body-3-strong);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background var(--dur-default) var(--ease-default)}
+.replay:hover{background:color-mix(in srgb,var(--grouped),var(--hover-mix-light))}
+.replay:focus-visible{outline:2px solid var(--content-accent-brand);outline-offset:2px}
+.replay svg{width:16px;height:16px}
+ol,ul{margin:0;padding-left:18px;color:var(--content-secondary);display:flex;flex-direction:column;gap:6px;max-width:64ch}
+code{font:var(--font-caption-1);background:var(--grouped);border-radius:var(--radius-4xs);padding:1px 4px;color:var(--content-primary)}
+.stuck{font:var(--font-body-4);color:var(--content-secondary)}
+</style></head><body>
+
+<h2>The splash</h2>
+<p>The mark, drawn. It is centred on the page surface on every full page load, the first visit and every refresh, until the app is ready, and then it fades away. It never appears for a move inside the app.</p>
+<div class="pair">
+  <div class="cell">
+    <div class="head"><span class="cap">Animated · <code>one-link-splash.svg</code></span>
+      <button type="button" class="replay" id="replay" aria-label="Replay the splash"><i data-lucide="rotate-ccw"></i>Replay</button></div>
+    <div class="panel"><picture><source srcset="../assets/one-link-splash-still.svg" media="(prefers-reduced-motion: reduce)"><img id="splash" src="../assets/one-link-splash.svg" alt="" width="120" height="75"></picture></div>
+  </div>
+  <div class="cell">
+    <div class="head"><span class="cap">Reduced motion · <code>one-link-splash-still.svg</code></span></div>
+    <div class="panel"><img src="../assets/one-link-splash-still.svg" alt="" width="120" height="75"></div>
+  </div>
+</div>
+
+<h2>What it does</h2>
+<ol>
+  <li>0 to 0.7s: a pen draws the outline.</li>
+  <li>From 0.6s: the fill settles in, from 94% to full size.</li>
+  <li>From 0.78s: the outline fades, leaving the mark exactly as the still shows it.</li>
+  <li>From 1.1s: a soft white glint runs round the inside of the loops, once every 1.8s, for as long as the wait lasts. It is clipped to the mark.</li>
+</ol>
+
+<h2>In an app</h2>
+<ul>
+  <li><b>Before any script.</b> The splash is in the page's own HTML, so it is in the very first frame, not after the bundle arrives. Its layout sits in a style block in the page head, not in the main stylesheet, which may still be loading.</li>
+  <li><b>Reduced motion is the page's job.</b> Chrome does not apply the SVG's own <code>prefers-reduced-motion</code> rule to an SVG shown as an image, so the page swaps files: <code>&lt;picture&gt;&lt;source srcset="…still.svg" media="(prefers-reduced-motion: reduce)"&gt;&lt;img src="…splash.svg" alt=""&gt;&lt;/picture&gt;</code>. The two files share a viewBox, and the animated one at rest is pixel identical to the still.</li>
+  <li><b>About 120px wide</b>, centred both ways, with <code>role="status"</code> and the hidden words "Loading One Link".</li>
+  <li><b>At least 900ms, then out.</b> It stays until the first navigation settles and at least 900ms after the page started loading, so a fast load still shows the draw and the settle. Then it fades over <code>--dur-splash-out</code> and is removed from the page.</li>
+  <li><b>Honest when stuck.</b> After <code>--dur-splash-stuck</code> a line appears under the mark, with no script needed: <span class="stuck">Still loading. If this stays, refresh the page.</span></li>
+  <li>Never inline the SVG or redraw it: use the two files. They are written from <code>one-link-mark.svg</code> by <code>scripts/splash.mjs</code>, and the build fails if they drift.</li>
+</ul>
+
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+<script>
+  lucide.createIcons({ attrs: { 'stroke-width': 2 } });
+  // A new URL makes a new image document, so the animation starts again from the pen.
+  let n = 0;
+  document.getElementById('replay').addEventListener('click', () => {
+    document.getElementById('splash').src = '../assets/one-link-splash.svg?replay=' + (++n);
+  });
+</script>
+</body></html>

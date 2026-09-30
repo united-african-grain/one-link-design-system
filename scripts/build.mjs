@@ -21,6 +21,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { transformSync } from 'esbuild';
 import { renderLanding } from './landing.mjs';
+import { checkSplash } from './splash.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'project');
@@ -55,6 +56,13 @@ function jsx(code, file) {
 // Mirrors components/_loader.js: strip import lines, turn `export function|const` into plain declarations.
 const unmodule = (src) => src.replace(/^import[^\n]*$/gm, '').replace(/^export\s+(function|const|let)/gm, '$1');
 const topLevelNames = (src) => [...new Set([...src.matchAll(/^(?:function|const|let)\s+([A-Za-z_]\w*)/gm)].map((m) => m[1]))];
+
+// ---------------------------------------------------------------- 0. the splash is the mark
+// A hand edit to the splash, or a new mark without a regenerated splash, stops the deploy.
+const staleSplash = checkSplash();
+if (staleSplash.length) {
+  throw new Error(`The splash no longer matches the mark: ${staleSplash.join(', ')}. Run \`npm run splash\`; never edit them by hand.`);
+}
 
 // ---------------------------------------------------------------- 1. copy
 rmSync(DIST, { recursive: true, force: true });

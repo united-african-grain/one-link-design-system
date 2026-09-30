@@ -4,15 +4,17 @@
 //   node scripts/splash.mjs           write project/assets/one-link-splash*.svg
 //   node scripts/splash.mjs --check   fail if either file differs from what the mark gives
 //
-// The splash is the mark, animated: a pen draws its outline, the fill settles in, the
-// outline fades, and a soft glint runs round the inside of the loops for as long as the
-// wait lasts. The still is the same mark at rest, in the same viewBox, so an app that
+// The splash is the mark, whole and filled from the very first frame, with a soft white
+// light running round the inside of the loops for as long as the wait lasts. Nothing is
+// drawn or faded in first: the page appearing is the entrance. The light starts at 0.15s,
+// so even a fast load sees it begin. The still is the same mark at rest, in the same
+// viewBox, and the animated file's first frame is pixel identical to it, so an app that
 // swaps one for the other under prefers-reduced-motion never moves the mark.
 //
 // The geometry and the colour are read from assets/one-link-mark.svg, never typed here.
-// The viewBox is the mark's padded by 6 units on every side, so the drawing stroke is not
-// clipped at the edges. `npm run build` runs the check, so a hand edit to either file, or
-// a new mark without a regenerated splash, fails the Pages deploy.
+// The viewBox is the mark's padded by 6 units on every side, the framing the apps already
+// size and centre. `npm run build` runs the check, so a hand edit to either file, or a new
+// mark without a regenerated splash, fails the Pages deploy.
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -35,25 +37,13 @@ export function splashFromMark(markSvg) {
 
   const animated = `${open}
 <style>
-  .draw { fill: none; stroke: ${fill}; stroke-width: 5; stroke-linejoin: round; stroke-linecap: round;
-          stroke-dasharray: 1 1; stroke-dashoffset: 1;
-          animation: draw .7s cubic-bezier(.65,0,.35,1) forwards, out .2s linear .78s forwards; }
-  .fill { fill: ${fill}; opacity: 0; transform-box: fill-box; transform-origin: center;
-          animation: settle .42s cubic-bezier(.2,.75,.25,1) .6s forwards; }
   .glint { fill: none; stroke: #fff; stroke-width: 26; stroke-linecap: round; stroke-dasharray: .05 .95; opacity: 0;
-           animation: glint 1.8s cubic-bezier(.45,.05,.55,.95) 1.1s infinite; }
-  @keyframes draw   { to { stroke-dashoffset: 0; } }
-  @keyframes out    { to { opacity: 0; } }
-  @keyframes settle { 0% { opacity: 0; transform: scale(.94); } 60% { opacity: 1; } 100% { opacity: 1; transform: scale(1); } }
-  @keyframes glint  { 0% { opacity: 0; stroke-dashoffset: 0; } 12% { opacity: .5; } 88% { opacity: .5; } 100% { opacity: 0; stroke-dashoffset: -1; } }
-  @media (prefers-reduced-motion: reduce) {
-    .draw, .glint { display: none; }
-    .fill { animation: none; opacity: 1; transform: none; }
-  }
+           animation: glint 1.8s cubic-bezier(.45,.05,.55,.95) .15s infinite; }
+  @keyframes glint { 0% { opacity: 0; stroke-dashoffset: 0; } 12% { opacity: .5; } 88% { opacity: .5; } 100% { opacity: 0; stroke-dashoffset: -1; } }
+  @media (prefers-reduced-motion: reduce) { .glint { display: none; } }
 </style>
 <defs><clipPath id="ol-splash-clip"><path d="${d}"/></clipPath></defs>
-<path class="draw" pathLength="1" d="${d}"/>
-<path class="fill" d="${d}"/>
+<path fill="${fill}" d="${d}"/>
 <g clip-path="url(#ol-splash-clip)"><path class="glint" pathLength="1" d="${d}"/></g>
 </svg>
 `;

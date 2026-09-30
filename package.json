@@ -5,6 +5,7 @@
   "description": "One Link design system: tokens, components, screens and the published site.",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "splash": "node scripts/splash.mjs",
     "serve": "node scripts/serve.mjs",
     "preview": "node scripts/build.mjs && node scripts/serve.mjs"
   },

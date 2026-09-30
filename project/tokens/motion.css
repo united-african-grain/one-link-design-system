@@ -18,6 +18,8 @@
   --dur-ping: 1.5s;
   --dur-spin: 0.8s;
   --dur-march: 44s;          /* a marching track, one full wrap */
+  --dur-splash-out: 250ms;   /* the splash fading away once the app is ready */
+  --dur-splash-stuck: 12s;   /* the splash says it is still loading */
 
   --scale-press-button: 0.97;
   --scale-press-card: 0.99;

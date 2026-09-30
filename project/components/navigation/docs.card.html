@@ -1,0 +1,45 @@
+<!-- @dsCard group="Components" viewport="1200x760" subtitle="Reading frame outside the app: sticky header (lockup, Help, search, the way back), topics rail, article; below 1024 the topics are a drawer" name="Navigation · Docs shell" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>html,body{margin:0;background:var(--surface)} #root{min-height:100vh}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { DocsShell, SearchField, Button, Text, textStyle } = DS;
+
+const SECTIONS = [
+  { title: 'Getting started', pages: [{ value: 'signing-in', label: 'Signing in' }, { value: 'finding-your-way', label: 'Finding your way around' }, { value: 'two-step-sign-in', label: 'Two-step sign-in' }] },
+  { title: 'Everyday work', pages: [{ value: 'goods-received', label: 'Receiving goods' }, { value: 'loading-orders', label: 'Loading orders' }] },
+];
+const TITLES = Object.fromEntries(SECTIONS.flatMap((s) => s.pages.map((p) => [p.value, p.label])));
+
+function Demo() {
+  const [page, setPage] = React.useState('signing-in');
+  const title = page === 'home' ? 'Help' : TITLES[page];
+  return (
+    <DocsShell
+      sections={SECTIONS}
+      current={page}
+      onNavigate={setPage}
+      search={<SearchField placeholder="Search help" hint={null} maxWidth="none" />}
+      back={<Button variant="outline" size="small" icon="arrow-left">Back to One Link</Button>}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: '72ch' }}>
+        <h1 style={textStyle('heading-1-condensed')}>{title}</h1>
+        <Text variant="body-2" tone="secondary">The article sits here, in the page column. The frame around it is the help centre's own, with one way back to the screen the reader came from.</Text>
+        <h2 style={textStyle('heading-3', { strong: true })}>A section of the page</h2>
+        <Text variant="body-2">Words set for reading. A reader who searches lands on the heading that answered.</Text>
+      </div>
+    </DocsShell>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

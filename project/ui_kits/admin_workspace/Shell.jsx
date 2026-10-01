@@ -30,9 +30,9 @@ export function SetupFrame({ section = 'home', onSection, crumbs = [], shipped, 
   );
 }
 
-/** A count beside a title or in a card header: body-4-strong secondary on grouped, pill. */
+/** The design system's Count, under the name the kit's screens use. */
 export function CountBadge({ children }) {
-  return <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: 20, height: 20, padding: '0 6px', boxSizing: 'border-box', borderRadius: 'var(--radius-max)', background: 'var(--grouped)', ...textStyle('body-4', { strong: true, tone: 'secondary' }), fontVariantNumeric: 'tabular-nums' }}>{children}</span>;
+  return <Count>{children}</Count>;
 }
 
 /** Sentence-case page title with its count, and at most one primary button on the right (UX-04, UX-07). */

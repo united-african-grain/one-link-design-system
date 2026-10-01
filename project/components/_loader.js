@@ -12,7 +12,7 @@
     'records/EvidenceTile.jsx', 'records/Timeline.jsx', 'records/ActionPanel.jsx', 'records/ReconcilePanel.jsx',
     'data/Restricted.jsx', 'data/CommodityMarker.jsx', 'feedback/NotSet.jsx', 'feedback/ConditionBanner.jsx', 'navigation/CaptureStatus.jsx',
     'records/ReconcileCard.jsx', 'records/CalculationDetails.jsx', 'records/ImportPreview.jsx',
-    'inputs/Field.jsx', 'feedback/Refusal.jsx', 'feedback/ReasonDialog.jsx', 'records/RecordHighlights.jsx'
+    'inputs/Field.jsx', 'feedback/Refusal.jsx', 'feedback/ReasonDialog.jsx', 'records/RecordHighlights.jsx', 'data/Count.jsx'
   ];
   function findBundle() {
     try { for (var k in window) { try { var v = window[k]; if (v && typeof v === 'object' && v.Button && v.Icon && v.Text) return v; } catch (e) {} } } catch (e) {}

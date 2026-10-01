@@ -67,6 +67,8 @@ export interface AppShellProps {
   ticker?: React.ReactNode;
   children?: React.ReactNode;
   product?: string;
+  /** A view inside the product, drawn after a hairline beside the logo: "Setup". Hidden while the rail is collapsed. */
+  context?: string;
   showBeta?: boolean;
   /** Start with the account menu open (demos). */
   accountOpen?: boolean;
@@ -93,3 +95,14 @@ export interface RailLinkProps {
 }
 /** A row for the rail foot slot: Settings, Help, anything that is not a module. */
 export function RailLink(props: RailLinkProps): JSX.Element;
+export interface MenuRowProps {
+  /** Lucide icon name (settings for Setup). */
+  icon: string;
+  label: string;
+  tone?: 'default' | 'critical';
+  /** Working: the icon becomes the spinner and the row cannot be pressed again. */
+  busy?: boolean;
+  onClick?: () => void;
+}
+/** A row for the account popover's `menu` slot: Setup, shown only to holders of the Administrator bundle. */
+export function MenuRow(props: MenuRowProps): JSX.Element;

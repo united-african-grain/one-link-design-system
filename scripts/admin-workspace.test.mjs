@@ -151,3 +151,23 @@ describe('[M1.DS.01] the admin workspace kit', () => {
     assert.match(read(join(ROOT, 'dist/index.html')), /ui_kits\/admin_workspace\/index\.html/);
   });
 });
+
+describe('[M1.ID.05] bundles as S10 sets them', () => {
+  const src = read(join(KIT, 'People.jsx'));
+  const bundles = Function(`return (${src.match(/const BUNDLES = (\[[\s\S]*?\n\]);/)[1]});`)();
+
+  test('[M1.ID.05] the ten default bundles carry the price tiers S10 gives them, in tier order, blank for none', () => {
+    assert.deepEqual(Object.fromEntries(bundles.map((b) => [b.name, b.tiers])), {
+      'Managing Director': 'Gate, Contract, Sell, Farmer account', Trading: 'Gate, Contract, Sell', 'Trading support': 'Contract',
+      Finance: 'Gate, Contract, Sell, Farmer account', Operations: 'Gate, Contract, Sell, Farmer account', 'Stock control': 'Gate',
+      Warehouse: '', Clerk: '', 'Field capture': '', Administrator: '',
+    });
+  });
+
+  test('[M1.ID.05] a bundle waiting for Owen names who acts next as the labelled field Waiting for, not inside the banner (UX-23)', () => {
+    const record = src.slice(src.indexOf('export function BundleRecord('), src.indexOf('/* ---', src.indexOf('export function BundleRecord(')));
+    assert.match(record, /label: 'Waiting for'/);
+    const banner = record.match(/<ConditionBanner>([^<]*)<\/ConditionBanner>/)[1];
+    assert.doesNotMatch(banner, /Waiting for/);
+  });
+});

@@ -1,0 +1,44 @@
+<!-- @dsCard group="Components" viewport="1000x1500" subtitle="Setup's pieces: fields with the error under them, radio rows with an unavailable alternative, refusal, the reason dialog, record highlights" name="Setup · Forms, refusal, reason dialog, record highlights (M1.DS.01)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start} .stage{position:relative;height:420px;border-radius:var(--radius-lg);overflow:hidden;background:var(--grouped-light)}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { Field, Input, Select, RadioList, Refusal, ReasonDialog, RecordHighlights, StatusMark, Button, Text } = DS;
+function Demo(){
+  const [tab,setTab]=React.useState('Details');
+  const [method,setMethod]=React.useState('oldest');
+  return <div className="col">
+    <Text variant="caption-1-condensed" tone="tertiary">Fields (UX-21)</Text>
+    <div className="grid">
+      <Field label="Value (kg)" required><Input defaultValue="100" align="right" inputMode="decimal"/></Field>
+      <Field label="Applies to"><Select options={['Default','Commodity form: bagged']}/></Field>
+      <Field label="Effective from" error="Effective from must be now or later."><Input defaultValue="25 Sep 2026, 00:00 CAT" invalid/></Field>
+      <Field label="Reason"><Input multiline defaultValue="Agreed tolerance for the new season"/></Field>
+    </div>
+    <Text variant="caption-1-condensed" tone="tertiary">Alternatives, one unavailable (UX-17)</Text>
+    <RadioList value={method} onChange={setMethod} options={[{value:'oldest',label:'Oldest debt first',hint:'In force'},{value:'largest',label:'Largest debt first'},{value:'smallest',label:'Smallest debt first',disabled:true,reason:'Needs debt ageing, which arrives with Farmer finance.'}]}/>
+    <Text variant="caption-1-condensed" tone="tertiary">Refusal (S57 blocked action)</Text>
+    <Refusal action="Submit for approval" reason="The weighbridge at Chisamba Shed has not reported since 06:10"/>
+    <Text variant="caption-1-condensed" tone="tertiary">Record highlights (UX-19)</Text>
+    <RecordHighlights kind="Setting" title="GRN reconcile tolerance" status={<StatusMark kind="clean" label="Active" size="body-4"/>} tab={tab} onTab={setTab}
+      actions={<><Button variant="outline" size="small">Add override</Button><Button size="small">Schedule change</Button></>}
+      fields={[{label:'In force',value:'80 kg'},{label:'Next change',value:'100 kg from 28 Sep 2026, 00:00 CAT'},{label:'Area',value:'Intake'},{label:'Type',value:'Mass (kg)'},{label:'Owner',value:'Administrator'}]}/>
+    <Text variant="caption-1-condensed" tone="tertiary">Reason dialog (UX-22): Confirm waits for 10 characters, then shows its spinner</Text>
+    <div className="grid">
+      <div className="stage"><ReasonDialog contained>Bag-count tolerance changes from 0 bags to 2 bags, effective 01 Oct 2026, 00:00 CAT.</ReasonDialog></div>
+      <div className="stage"><ReasonDialog contained busy defaultReason="Season start, agreed with the owner">Bag-count tolerance changes from 0 bags to 2 bags, effective 01 Oct 2026, 00:00 CAT.</ReasonDialog></div>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

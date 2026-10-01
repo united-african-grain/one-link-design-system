@@ -67,6 +67,7 @@ Desktop 1440 (shell max 1293) and mobile 390. Modules: Command Center · Trade D
 - `ui_kits/one_link_mobile/`: the same screens at 390 inside `MobileShell` (every screen takes a `mobile` prop).
 - `ui_kits/partner_portal/`: counterparty home and confirm receipt (390).
 - `ui_kits/field_app/`: offline-first delivery proof (390), online and queued.
+- `ui_kits/admin_workspace/`: Setup, the administrator's view (1440 and 390). Settings and governance (M1.DS.01): Setup Home, the user menu with Setup, Settings and a setting's record (schedule, lookup, high-impact confirmation, commercial), scoped values, Switches, Approval steps, Policy methods and Items to approve. Every state opens with `?screen=&state=`. Forms use `Field`; a refused action is `Refusal`, "[Action] is not allowed. [Reason]."; a decision that needs a reason is `ReasonDialog`; a record opens with `RecordHighlights`.
 
 ## Intentional additions
 - `Text`/`textStyle`, `Icon`, `Avatar`, `Logo`, `ShareBar`, `SeverityTag`, `Dot`: small primitives the brief describes inline but does not name; they exist so every screen composes the same parts.

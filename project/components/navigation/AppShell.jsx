@@ -197,7 +197,8 @@ function RailToggle({ collapsed, onToggle }) {
 }
 
 /** Body-3 row in the account popover (8px 12px, radius 8, grouped on hover). critical = the sign out colour. busy swaps the icon for the spinner. */
-function MenuRow({ icon, label, tone = 'default', busy = false, onClick }) {
+/** A row for the account popover's `menu` slot (Setup) and its Sign out: icon 16, body-3, the spinner while busy. */
+export function MenuRow({ icon, label, tone = 'default', busy = false, onClick }) {
   const { hover, focusVisible, handlers } = useInteraction({ inert: busy });
   const color = tone === 'critical' ? 'var(--buttons-critical)' : 'var(--content-primary)';
   return (
@@ -280,7 +281,7 @@ function Breadcrumb({ parts, roomy }) {
     foot). Collapsed, a module's label is kept for a screen reader and its sections move into a flyout, because the
     sections exist nowhere else; a count becomes a dot on the icon and stays a figure in the flyout. Below 1024px
     `collapsed` is ignored and the toggle is not drawn. */
-export function AppShell({ nav = [], module, section, onNavigate, home = 'home', breadcrumb = [], sync = 'live', syncLabel, showSearch = true, searchPlaceholder, showDigest = true, user, signingOut = false, onSignOut, menu, right, foot, footer, ticker, children, product = 'One Link', showBeta = true, accountOpen = false, scrolled = false, collapsed = false, onCollapsedChange, style }) {
+export function AppShell({ nav = [], module, section, onNavigate, home = 'home', breadcrumb = [], sync = 'live', syncLabel, showSearch = true, searchPlaceholder, showDigest = true, user, signingOut = false, onSignOut, menu, right, foot, footer, ticker, children, product = 'One Link', context, showBeta = true, accountOpen = false, scrolled = false, collapsed = false, onCollapsedChange, style }) {
   const desktop = useMinWidth(1024);
   const roomy = useMinWidth(768);
   const reduced = usePrefersReducedMotion();
@@ -330,6 +331,7 @@ export function AppShell({ nav = [], module, section, onNavigate, home = 'home',
         : { gridRow: 1, gridColumn: 1, position: 'sticky', top: 0, height: `calc(100dvh - ${tickerH})`, display: 'flex', flexDirection: 'column', background: 'var(--surface)', boxShadow: 'inset -1px 0 0 var(--border)', overflow: 'hidden' }}>
         <div style={{ flex: 'none', height: 56, display: 'flex', alignItems: 'center', justifyContent: rail ? 'center' : 'flex-start', padding: rail ? 0 : '0 16px', boxShadow: navScrolled ? 'inset 0 -1px 0 var(--border)' : 'none', transition: 'box-shadow var(--dur-default) var(--ease-default)' }}>
           <a href="#" aria-label="Home" onClick={(e) => { e.preventDefault(); go(home); }} style={{ display: 'inline-flex', textDecoration: 'none', color: 'inherit', borderRadius: 'var(--radius-2xs)' }}><Logo product={product} showBeta={showBeta} markOnly={rail} /></a>
+          {context && !rail ? <><span aria-hidden style={{ width: 1, height: 16, margin: '0 10px', background: 'var(--border)', flex: 'none' }} /><span style={textStyle('body-3', { tone: 'secondary' })}>{context}</span></> : null}
         </div>
         <nav aria-label="Modules" onScroll={(e) => setNavScrolled(e.currentTarget.scrollTop > 0)} style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: rail ? '8px 8px 16px' : '8px 12px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {nav.map((group, gi) => (

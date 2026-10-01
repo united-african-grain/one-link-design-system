@@ -22,6 +22,7 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Setting
     switches: { crumbs: ['Switches'], screens: ['SwitchesList', 'SwitchRecord'] },
     steps: { crumbs: ['Approval steps'], screens: ['ApprovalStepsList', 'ApprovalStepRecord'] },
     policies: { crumbs: ['Policy methods'], screens: ['PolicyMethodsList', 'PolicyRecord'] },
+    figures: { crumbs: ['Figures and price tiers'], screens: ['FiguresList', 'FigureRecord'] },
     users: { crumbs: ['Users'], screens: ['UsersList', 'NewUser', 'UserRecord'] },
     bundles: { crumbs: ['Bundles'], screens: ['BundlesList', 'BundleRecord'] },
     audit: { crumbs: ['Audit logs'], screens: ['AccessLog', 'BusinessChanges'] },
@@ -36,7 +37,7 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Setting
     review: { crumbs: ['Access review'], screens: ['AccessReview'] },
   };
   const OUTSIDE = ['UserMenuWithSetup', 'ItemsToApprove', 'SignIn', 'Activate', 'CounterpartiesList', 'CounterpartyRecord', 'LedgerView', 'ContractView'];
-  const LABEL = { SetupHome: 'Setup Home', SettingsList: 'List', SettingRecord: 'Record', ScopedValues: 'Scoped values', SwitchesList: 'List', SwitchRecord: 'Record', ApprovalStepsList: 'List', ApprovalStepRecord: 'Record', PolicyMethodsList: 'List', PolicyRecord: 'Record', UserMenuWithSetup: 'User menu with Setup', ItemsToApprove: 'Items to approve', SignIn: 'Sign in', Activate: 'Activate', UsersList: 'List', NewUser: 'New user', UserRecord: 'Record', BundlesList: 'List', BundleRecord: 'Record', AccessLog: 'Access log', AccessReview: 'Access review', BusinessChanges: 'Business changes', SitesList: 'List', SiteRecord: 'Record', CorridorsList: 'List', ProductsList: 'List', DeliveryPointsList: 'List', OperatingCalendar: 'Calendar', ReferenceList: 'List', TemplateBuilder: 'Template', UploadPreview: 'Import preview', NameResolve: 'Name resolve', CounterpartiesList: 'Counterparties', CounterpartyRecord: 'Counterparty', LedgerView: 'Ledger', ContractView: 'Contract' };
+  const LABEL = { SetupHome: 'Setup Home', SettingsList: 'List', SettingRecord: 'Record', ScopedValues: 'Scoped values', SwitchesList: 'List', SwitchRecord: 'Record', ApprovalStepsList: 'List', ApprovalStepRecord: 'Record', PolicyMethodsList: 'List', PolicyRecord: 'Record', UserMenuWithSetup: 'User menu with Setup', ItemsToApprove: 'Items to approve', SignIn: 'Sign in', Activate: 'Activate', UsersList: 'List', NewUser: 'New user', UserRecord: 'Record', BundlesList: 'List', BundleRecord: 'Record', FiguresList: 'List', FigureRecord: 'Record', AccessLog: 'Access log', AccessReview: 'Access review', BusinessChanges: 'Business changes', SitesList: 'List', SiteRecord: 'Record', CorridorsList: 'List', ProductsList: 'List', DeliveryPointsList: 'List', OperatingCalendar: 'Calendar', ReferenceList: 'List', TemplateBuilder: 'Template', UploadPreview: 'Import preview', NameResolve: 'Name resolve', CounterpartiesList: 'Counterparties', CounterpartyRecord: 'Counterparty', LedgerView: 'Ledger', ContractView: 'Contract' };
   const params = new URLSearchParams(location.search);
   const sectionOf = (screen) => Object.keys(SECTIONS).find((k) => SECTIONS[k].screens.includes(screen));
 
@@ -60,7 +61,7 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Setting
     }
     const section=sectionOf(screen);
     const open=(s)=> (st)=> go(s);
-    const record={ SettingsList:'SettingRecord', SwitchesList:'SwitchRecord', ApprovalStepsList:'ApprovalStepRecord', PolicyMethodsList:'PolicyRecord', UsersList:'UserRecord', BundlesList:'BundleRecord', SitesList:'SiteRecord' }[screen];
+    const record={ SettingsList:'SettingRecord', SwitchesList:'SwitchRecord', ApprovalStepsList:'ApprovalStepRecord', PolicyMethodsList:'PolicyRecord', UsersList:'UserRecord', BundlesList:'BundleRecord', SitesList:'SiteRecord', FiguresList:'FigureRecord' }[screen];
     const crumbs=[...SECTIONS[section].crumbs, ...(screen.endsWith('Record')||screen==='ScopedValues'||screen==='NewUser'||K.recordsTitle(screen, state)?[K.recordTitle(screen, state) || K.peopleTitle(screen, state) || K.recordsTitle(screen, state)]:[])];
     const shipped = screen==='SetupHome' && state==='Before reference data' ? ['home','users','bundles','settings','switches','steps','policies','audit'] : undefined;
     return <SetupFrame section={section} crumbs={crumbs} shipped={shipped} onExit={()=>go('UserMenuWithSetup')}

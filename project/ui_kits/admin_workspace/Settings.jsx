@@ -16,6 +16,8 @@ export const SETTINGS_STATES = {
   PolicyMethodsList: ['All'],
   PolicyRecord: ['In force', 'Alternative chosen', 'Confirm change', 'Unavailable refused'],
   ItemsToApprove: ['Waiting', 'Approving', 'Reject', 'Reject variance hold', 'As the administrator', 'Nothing waiting'],
+  FiguresList: ['All'],
+  FigureRecord: ['Contract', 'Change scheduled', 'Change tier', 'High-impact confirmation'],
 };
 
 /** The record a screen's state shows, for the breadcrumb. */
@@ -25,6 +27,7 @@ export function recordTitle(screen, state) {
   if (screen === 'SwitchRecord') return state === 'Off' ? 'External access' : 'Weight source, Chisamba Shed';
   if (screen === 'ApprovalStepRecord') return state === 'Variance hold' ? 'Variance hold' : 'Gate price';
   if (screen === 'PolicyRecord') return 'Netting order';
+  if (screen === 'FigureRecord') return 'Trade finance rate';
   return null;
 }
 
@@ -509,5 +512,70 @@ export function ItemsToApprove({ state = 'Waiting' }) {
       {state === 'Reject' ? <ReasonDialog title="Reject gate price" label="Comment" minLength={1} confirmLabel="Reject" confirmVariant="critical">Gate price, maize at Chisamba Shed, K4,300 per t, submitted by R. Daka.</ReasonDialog> : null}
       {state === 'Reject variance hold' ? <ReasonDialog title="Reject variance hold" label="Comment" minLength={1} confirmLabel="Reject" confirmVariant="critical">Variance hold on GRN-0412, Lakeview Farms Ltd, 2 bags short at Mpongwe Depot. The load stays held.</ReasonDialog> : null}
     </AppShell>
+  );
+}
+
+/* ------------------------------------------------------------------ Figures and price tiers (M1.ID.04) */
+
+const FIGURE_ROWS = [
+  { id: 'carry', name: 'Storage carry rate', area: 'Pricing', tier: 'Contract', next: '' },
+  { id: 'finance', name: 'Trade finance rate', area: 'Trading', tier: 'Contract', next: '' },
+  { id: 'issuer', name: 'Contract reference issuer', area: 'Trading', tier: 'Contract', next: '' },
+  { id: 'crush', name: 'Soya beans per tonne of meal', area: 'Processing', tier: 'Contract', next: '' },
+  { id: 'buy', name: 'Buy price', area: 'Trading', tier: 'Contract', next: '' },
+  { id: 'ledger', name: 'Ledger amount', area: 'Farmer finance', tier: 'Farmer account', next: '' },
+];
+
+/** The Managing Director's figure catalogue: every price and money figure with the tier that may receive it. A
+    figure with no tier is received by nobody; the list never shows a figure's value, only its tier. */
+export function FiguresList({ onOpen }) {
+  return (
+    <ListView title="Figures and price tiers" objects="figures" search="Search figures" view="Area: All"
+      columns={[
+        { key: 'name', label: 'Figure', render: (r) => <RecordLink onClick={() => onOpen && onOpen(r.id)}>{r.name}</RecordLink> },
+        { key: 'area', label: 'Area', width: '150px' },
+        { key: 'tier', label: 'Price tier', width: '150px' },
+        { key: 'next', label: 'Next change', render: (r) => blank(r.next) },
+      ]} rows={FIGURE_ROWS} />
+  );
+}
+
+export function FigureRecord({ state = 'Contract' }) {
+  const [tab, setTab] = useState('Details');
+  const scheduled = state !== 'Contract';
+  const narrow = useNarrow();
+  const rows = [
+    { id: 't1', tier: 'Contract', from: '', to: scheduled ? '01 Oct 2026, 00:00 CAT' : '', status: ACTIVE },
+    ...(scheduled ? [{ id: 't2', tier: 'Sell', from: '01 Oct 2026, 00:00 CAT', to: '', status: SCHEDULED }] : []),
+  ];
+  return (
+    <Sections>
+      <SetupHead title="Trade finance rate" />
+      <RecordHighlights kind="Figure" title="Trade finance rate" status={ACTIVE} tab={tab} onTab={setTab}
+        actions={<Button size="small">Change tier</Button>}
+        fields={[{ label: 'Price tier', value: 'Contract' }, { label: 'Next change', value: scheduled ? 'Sell from 01 Oct 2026' : '' }, { label: 'Area', value: 'Trading' }, { label: 'Received by', value: 'Managing Director, Trading, Trading support, Finance, Operations' }]} />
+      {tab === 'History' ? <HistoryCard rows={scheduled ? [{ id: 'h1', field: 'Tier, from 01 Oct 2026', user: 'T. Mwila', old: 'Contract', next: 'Sell', date: '26 Sep 2026, 10:05', reason: 'Finance rate follows the sale' }] : []} /> : (
+        <CountCard title="Tiers" objects="tiers" count={rows.length}>
+          <SetupTable rowKey="id" columns={[
+            { key: 'tier', label: 'Price tier', width: '150px' }, { key: 'from', label: 'Effective from', tabular: true },
+            { key: 'to', label: 'Effective to', tabular: true }, { key: 'status', label: 'Status', width: '150px', render: (r) => r.status },
+          ]} rows={rows} />
+        </CountCard>
+      )}
+      {state === 'Change tier' ? (
+        <Dialog title="Change tier" width={480} sheet={narrow}
+          footer={<><Button variant="ghost" size="small">Cancel</Button><Button size="small">Continue</Button></>}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Field label="Price tier" required><RadioList name="tier" value="sell" options={[
+              { value: 'gate', label: 'Gate' }, { value: 'contract', label: 'Contract', hint: 'In force' }, { value: 'sell', label: 'Sell' }, { value: 'farmer-account', label: 'Farmer account' },
+            ]} /></Field>
+            <Field label="Effective from" required><Input defaultValue="01 Oct 2026, 00:00 CAT" /></Field>
+          </div>
+        </Dialog>
+      ) : null}
+      {state === 'High-impact confirmation' ? (
+        <ReasonDialog title="Confirm high-impact change" sheet={false}>Trade finance rate moves from Contract to Sell, effective 01 Oct 2026, 00:00 CAT. Trading support stops receiving it then.</ReasonDialog>
+      ) : null}
+    </Sections>
   );
 }

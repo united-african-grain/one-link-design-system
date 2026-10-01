@@ -224,3 +224,15 @@ describe('[M1.DS.03] records and data', () => {
     for (const name of ['SYN4702', 'Lakeview Farms Ltd', 'Riverbend Milling', 'Chisamba Shed', 'Mpongwe Depot']) assert.ok(src.includes(name), name);
   });
 });
+
+describe('[M1.ID.04] figures and price tiers', () => {
+  const src = read(join(KIT, 'Settings.jsx'));
+  test('[M1.ID.04] the figure catalogue shows each figure\'s tier and never a value, and a tier change is high-impact', () => {
+    const rows = Function(`return (${src.match(/const FIGURE_ROWS = (\[[\s\S]*?\n\]);/)[1]});`)();
+    assert.ok(rows.every((r) => ['Gate', 'Contract', 'Sell', 'Farmer account'].includes(r.tier)), 'every figure has a tier');
+    const words = shownWords(src, 'FiguresList', ['FIGURE_ROWS']).join(' | ');
+    assert.doesNotMatch(words, /USD|ZMW|K\d|\d+\.\d+%|\d+(\.\d+)? per t/, `the catalogue shows a value: ${words}`);
+    const record = src.slice(src.indexOf('export function FigureRecord('));
+    assert.match(record, /<ReasonDialog title="Confirm high-impact change"/);
+  });
+});

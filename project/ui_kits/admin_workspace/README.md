@@ -29,6 +29,8 @@ It reuses `Sections`, `ScrollRow` and `PageHead` from `../one_link/Shell.jsx`.
 | PolicyMethodsList | `Settings.jsx` | All |
 | PolicyRecord | `Settings.jsx` | In force · Alternative chosen · Confirm change · Unavailable refused |
 | ItemsToApprove | `Settings.jsx` | Waiting · Approving · Reject · Reject variance hold · As the administrator · Nothing waiting |
+| FiguresList | `Settings.jsx` | All |
+| FigureRecord | `Settings.jsx` | Contract · Change scheduled · Change tier · High-impact confirmation |
 
 ## People and access (`People.jsx`, M1.DS.02)
 
@@ -86,6 +88,7 @@ The upload and import preview composes `ImportPreview`: a File card, the tiles, 
 ## Rules the screens keep
 
 - Configuration words only: effective date, version, scope, bundle, approver. Never a table or column name.
+- Figures and price tiers (M1.ID.04) is the Managing Director's catalogue of which tier receives each money figure. It shows tiers and who receives them, never a figure's value; a change of tier is high-impact.
 - No commercial value in Setup. A commercial setting shows its name, owner and status (Hired store storage rate: Not set, owner Owner) and no Schedule change.
 - Setup Home has the four cards and no KPI tiles or price figures. Recent changes reads Record, Change, By, Date, newest first.
 - A value that does not exist is a blank cell, never "None". Impact is plain text, never a tag.

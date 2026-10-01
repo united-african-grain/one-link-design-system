@@ -6,7 +6,7 @@
 export const SETUP_NAV = [
   { items: [{ value: 'home', label: 'Setup Home' }] },
   { label: 'Users and access', items: [{ value: 'users', label: 'Users' }, { value: 'bundles', label: 'Bundles' }] },
-  { label: 'Configuration', items: [{ value: 'settings', label: 'Settings' }, { value: 'switches', label: 'Switches' }, { value: 'steps', label: 'Approval steps' }, { value: 'policies', label: 'Policy methods' }] },
+  { label: 'Configuration', items: [{ value: 'settings', label: 'Settings' }, { value: 'switches', label: 'Switches' }, { value: 'steps', label: 'Approval steps' }, { value: 'policies', label: 'Policy methods' }, { value: 'figures', label: 'Figures and price tiers' }] },
   { label: 'Reference data', items: [{ value: 'sites', label: 'Sites and storage units' }, { value: 'corridors', label: 'Corridors and routes' }, { value: 'products', label: 'Products' }, { value: 'points', label: 'Delivery points' }, { value: 'calendars', label: 'Operating calendars' }, { value: 'lists', label: 'Classes, grades and seasons' }] },
   { label: 'Uploads', items: [{ value: 'templates', label: 'Templates' }, { value: 'uploads', label: 'Upload history' }] },
   { label: 'Security and audit', items: [{ value: 'audit', label: 'Audit logs' }, { value: 'review', label: 'Access review' }] },

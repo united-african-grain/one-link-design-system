@@ -20,8 +20,11 @@ export const UPLOAD_STATUS = {
  * any row has an error.
  */
 export function ImportPreview({ file, status = 'ready', tiles = [], columns = [], rows = [], onDiscard, onImport, importing = false, style }) {
-  const st = UPLOAD_STATUS[status] || UPLOAD_STATUS.ready;
   const errors = rows.filter((r) => r.error);
+  // A file with a row to fix is not ready to import, whatever it was told: it says how many rows need fixing.
+  const st = status === 'ready' && errors.length
+    ? { kind: 'breach', word: `${errors.length} ${errors.length === 1 ? 'row' : 'rows'} to fix` }
+    : UPLOAD_STATUS[status] || UPLOAD_STATUS.ready;
   const table = [
     { key: 'row', label: 'Row', align: 'right', width: '64px', tabular: true },
     ...columns,

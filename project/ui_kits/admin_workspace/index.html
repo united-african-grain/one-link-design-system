@@ -41,7 +41,7 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Setting
       {states.length>1?<Segmented options={states} value={state} onChange={setState}/>:null}
     </ScrollRow>;
     if(OUTSIDE.includes(screen)){
-      return <div><div style={{position:'fixed',left:16,bottom:16,zIndex:60,maxWidth:'calc(100vw - 32px)'}}>{controls}</div><Screen state={state} onSetup={()=>go('SetupHome')}/></div>;
+      return <div><div style={{position:'fixed',right:16,bottom:16,zIndex:60,maxWidth:'calc(100vw - 32px)'}}>{controls}</div><Screen state={state} onSetup={()=>go('SetupHome')}/></div>;
     }
     const section=sectionOf(screen);
     const open=(s)=> (st)=> go(s);

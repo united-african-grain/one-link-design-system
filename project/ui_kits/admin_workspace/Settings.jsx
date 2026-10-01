@@ -101,7 +101,7 @@ export function SetupHome({ state = 'Needs attention', onSection }) {
 export function UserMenuWithSetup({ state = 'Administrator', onSetup }) {
   const admin = state === 'Administrator';
   return (
-    <AppShell nav={[{ items: MODULES }]} module="command" breadcrumb={['Command Center']} accountOpen user={admin ? { ...ADMIN, meta: 'Finance, Administrator' } : { ...ADMIN, name: 'L. Mulenga', initials: 'LM', email: 'l.mulenga@example.com', meta: 'Finance' }}
+    <AppShell nav={[{ items: MODULES }]} module="command" breadcrumb={['Command Center']} sync={null} accountOpen user={admin ? { ...ADMIN, meta: 'Finance, Administrator' } : { ...ADMIN, name: 'L. Mulenga', initials: 'LM', email: 'l.mulenga@example.com', meta: 'Finance' }}
       onSignOut={() => {}} menu={admin ? <MenuRow icon="settings" label="Setup" onClick={onSetup} /> : null}>
       <Sections>
         <PageHead title="Command Center" meta="Checked 07:02 · next digest 13:00" />
@@ -475,8 +475,8 @@ export function PolicyRecord({ state = 'In force' }) {
 const ITEMS = [
   { id: 'i1', item: 'Trade SYN4702', type: 'Trade', summary: 'Riverbend Milling, maize, 1,500 t', by: 'J. Tembo', at: '25 Sep 2026, 16:40' },
   { id: 'i2', item: 'Gate price, maize', type: 'Gate price', summary: 'Chisamba Shed, K4,300 per t', by: 'R. Daka', at: '26 Sep 2026, 06:30' },
-  { id: 'i4', item: 'Switch change, Weight source', type: 'Switch change', summary: 'Chisamba Shed, Scanned slip to Weighbridge', by: 'N. Phiri', at: '26 Sep 2026, 07:55' },
-  { id: 'i3', item: 'Variance hold, GRN-0412', type: 'Variance hold', summary: 'Lakeview Farms Ltd, 2 bags short at Mpongwe Depot', by: 'One Link', at: '26 Sep 2026, 09:05' },
+  { id: 'i4', item: 'Switch change, Weight source', type: 'Switch change', summary: 'Chisamba Shed, to Weighbridge', by: 'N. Phiri', at: '26 Sep 2026, 07:55' },
+  { id: 'i3', item: 'Variance hold, GRN-0412', type: 'Variance hold', summary: 'Lakeview Farms Ltd, 2 bags short', by: 'One Link', at: '26 Sep 2026, 09:05' },
 ];
 
 export function ItemsToApprove({ state = 'Waiting' }) {
@@ -488,7 +488,7 @@ export function ItemsToApprove({ state = 'Waiting' }) {
     ? <span style={{ display: 'inline-flex', gap: 8 }}><Button variant="outline" size="xsmall">Release hold</Button><Button variant="critical-ghost" size="xsmall">Reject</Button></span>
     : <span style={{ display: 'inline-flex', gap: 8 }}><Button size="xsmall" loading={approving && r.id === 'i1'}>Approve</Button><Button variant="critical-ghost" size="xsmall" disabled={approving && r.id === 'i1'}>Reject</Button></span>);
   return (
-    <AppShell nav={[{ items: MODULES }]} module="command" breadcrumb={['Command Center', 'Items to approve']} user={admin ? ADMIN : OWNER}>
+    <AppShell nav={[{ items: MODULES }]} module="command" breadcrumb={['Command Center', 'Items to approve']} sync={null} user={admin ? ADMIN : OWNER}>
       <Sections>
         <SetupHead title="Items to approve" count={rows.length} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', justifyContent: 'space-between' }}>
@@ -498,12 +498,11 @@ export function ItemsToApprove({ state = 'Waiting' }) {
         {rows.length ? (
           <SetupTable rowKey="id" columns={[
             { key: 'item', label: 'Item', render: (r) => <RecordLink>{r.item}</RecordLink> },
-            { key: 'type', label: 'Type', width: '150px' },
             { key: 'summary', label: 'Summary' },
-            { key: 'by', label: 'Submitted by', width: '150px' },
-            { key: 'at', label: 'Submitted', width: '170px', tabular: true },
-            { key: 'decide', label: 'Decision', width: '210px', render: decide },
-            { key: 'status', label: 'Status', width: '170px', render: () => PENDING },
+            { key: 'by', label: 'Submitted by', width: '110px' },
+            { key: 'at', label: 'Submitted', width: '150px', tabular: true },
+            { key: 'decide', label: 'Decision', width: '190px', render: decide },
+            { key: 'status', label: 'Status', width: '150px', render: () => PENDING },
           ]} rows={rows} />
         ) : <Card><EmptyState title="No items to display." /></Card>}
       </Sections>

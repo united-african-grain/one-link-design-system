@@ -14,7 +14,13 @@ const KINDS = {
   down: { icon: 'trending-down', word: 'Worsening', color: 'var(--content-accent-down)' },
   flat: { icon: 'minus', word: 'Flat', color: 'var(--content-secondary)' },
   rebalance: { icon: 'arrow-left-right', word: 'Rebalance', color: 'var(--content-secondary)' },
+  // The map's status set (UX-14): one icon and tone per status, everywhere.
+  pending: { icon: 'clock', word: 'Pending', color: 'var(--warning-strong)' },
+  neutral: { icon: 'clock', word: 'Draft', color: 'var(--content-secondary)' },
+  locked: { icon: 'lock', word: 'Locked', color: 'var(--error-strong)' },
+  notSet: { icon: 'triangle-alert', word: 'Not set', color: 'var(--warning-strong)' },
 };
+export const STATUS_KINDS = KINDS;
 
 /** Status = a Lucide icon plus a sentence-case word. Never colour alone. */
 export function StatusMark({ kind = 'clean', label, size = 'body-3', strong = true, style }) {

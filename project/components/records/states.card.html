@@ -1,0 +1,44 @@
+<!-- @dsCard group="Components" viewport="1000x1400" subtitle="The states the map's conventions need, on the current tokens: status, Restricted, Not set, commodity marker, condition banner, Reconcile card, Calculation details, import preview, capture status" name="States · The map's conventions (UX-09 to UX-31)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .col{display:flex;flex-direction:column;gap:16px} .lbl{font:var(--font-caption-1);color:var(--content-tertiary);min-width:120px;flex:none}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { StatusMark, Restricted, NotSet, CommodityMarker, ConditionBanner, ReconcileCard, CalculationDetails, ImportPreview, CaptureStatus, Button } = DS;
+const L=(t)=><span className="lbl">{t}</span>;
+function Demo(){
+  const [open,setOpen]=React.useState(true);
+  return <div className="col">
+    <div className="row">{L('status (UX-14)')}<StatusMark kind="clean" label="Active"/><StatusMark kind="pending" label="Waiting for approval"/><StatusMark kind="attention" label="Warning"/><StatusMark kind="breach" label="Open exception"/><StatusMark kind="locked"/><StatusMark kind="neutral"/></div>
+    <div className="row">{L('restricted (UX-09)')}<Restricted/></div>
+    <div className="row">{L('not set (UX-16)')}<NotSet owner="Administrator"/></div>
+    <div className="row">{L('commodity (UX-27)')}<CommodityMarker commodity="white-maize">White maize</CommodityMarker><CommodityMarker commodity="wheat">Wheat</CommodityMarker><CommodityMarker commodity="soya">Soya</CommodityMarker><CommodityMarker commodity="fertilizer">Urea 50 kg</CommodityMarker></div>
+    <div className="row">{L('capture (UX-31)')}<CaptureStatus online pending={0}/><CaptureStatus online={false} pending={3}/></div>
+    <ConditionBanner>Weighbridge feed offline since 07:40. Tickets can still be photographed.</ConditionBanner>
+    <div className="row" style={{alignItems:'flex-start'}}>
+      <ReconcileCard rows={[{label:'Loaded',value:'32.000 t'},{label:'Offloaded',value:'31.950 t'},{label:'Difference',value:'0.050 t',strong:true},{label:'Allowance',value:'0.100 t'}]} outcome="allowance" style={{width:320}}/>
+      <ReconcileCard rows={[{label:'Ordered',value:'30.000 t'},{label:'Weighed',value:'31.500 t'},{label:'Difference',value:'1.500 t',strong:true},{label:'Tolerance',value:'0.300 t'}]} outcome="beyond" style={{width:320}}/>
+    </div>
+    <ImportPreview file={{name:'Port schedule 14 Oct.xlsx',by:['Ayla Banda','14 Oct 2026 08:12'],rows:3}} status="ready"
+      tiles={[{label:'Rows',value:'3'},{label:'Ready',value:'2'},{label:'Errors',value:'1'}]}
+      columns={[{key:'contract',label:'Contract'},{key:'tonnes',label:'Tonnes',align:'right',tabular:true}]}
+      rows={[{row:2,contract:'ZAM 9101',tonnes:'30.000'},{row:3,contract:'ZAM 9102',tonnes:'29.950'},{row:4,contract:'ZAM 9199',tonnes:'28.500',error:'Unknown contract'}]}/>
+    <div className="row">{L('calculation (UX-18)')}<Button variant="outline" onClick={()=>setOpen(true)}>Open Calculation details</Button></div>
+    <div style={{position:'relative',height:560,borderRadius:'var(--radius-lg)',overflow:'hidden',boxShadow:'var(--shadow-minimal-soft)'}}>
+      <CalculationDetails open={open} contained onClose={()=>setOpen(false)} name="Value at risk" value="USD 63,936.89"
+        components={[{label:'SYN9001 short',value:'230.000 t'},{label:'Sell price',value:'K7,400.00/t'}]} total={{value:'K1,702,000.00'}}
+        basis={[{label:'Exchange rate',value:'26.62 ZMW per USD'},{label:'Rate date',value:'15 Oct 2026'},{label:'Source',value:'Central bank'}]} action={{label:'Open contracts'}}/>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

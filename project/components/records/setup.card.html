@@ -33,7 +33,7 @@ function Demo(){
       actions={<><Button variant="outline" size="small">Add override</Button><Button size="small">Schedule change</Button></>}
       fields={[{label:'In force',value:'80 kg'},{label:'Next change',value:'100 kg from 28 Sep 2026, 00:00 CAT'},{label:'Area',value:'Intake'},{label:'Type',value:'Mass (kg)'},{label:'Owner',value:'Administrator'}]}/>
     <Text variant="caption-1-condensed" tone="tertiary">Checkbox rows: bundles with their price tiers (UX-26)</Text>
-    <CheckboxList values={['Clerk']} options={[{value:'Trading',label:'Trading',hint:'Price tiers: Gate, Contract'},{value:'Clerk',label:'Clerk'},{value:'Administrator',label:'Administrator'}]}/>
+    <CheckboxList values={['Clerk']} options={[{value:'Trading',label:'Trading',hint:'Price tiers: Gate, Contract, Sell'},{value:'Clerk',label:'Clerk'},{value:'Administrator',label:'Administrator'}]}/>
     <Text variant="caption-1-condensed" tone="tertiary">One-time code: the activation code, shown once (S10 A3)</Text>
     <div className="stage" style={{height:300}}><OneTimeCode contained code="7Q4-K9M-2XP" expires="28 Sep 2026, 09:15 CAT"/></div>
     <Text variant="caption-1-condensed" tone="tertiary">Reason dialog (UX-22): Confirm waits for 10 characters, then shows its spinner</Text>

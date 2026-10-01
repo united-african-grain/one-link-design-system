@@ -136,7 +136,7 @@ export function Activate({ state = 'Activation code' }) {
 /* ------------------------------------------------------------------ Users */
 
 const USERS = [
-  { id: 'tm', name: 'T. Mwila', email: 't.mwila@example.com', bundles: 'Managing director', sites: 'All sites', status: 'Active', last: '26 Sep 2026, 06:58' },
+  { id: 'tm', name: 'T. Mwila', email: 't.mwila@example.com', bundles: 'Managing Director', sites: 'All sites', status: 'Active', last: '26 Sep 2026, 06:58' },
   { id: 'jt', name: 'J. Tembo', email: 'j.tembo@example.com', bundles: 'Trading', sites: 'All sites', status: 'Active', last: '26 Sep 2026, 07:40' },
   { id: 'np', name: 'N. Phiri', email: 'n.phiri@example.com', bundles: 'Finance, Administrator', sites: 'All sites', status: 'Active', last: '26 Sep 2026, 07:12' },
   { id: 'rd', name: 'R. Daka', email: 'r.daka@example.com', bundles: 'Warehouse, Trading support', sites: 'All sites', status: 'Active', last: '26 Sep 2026, 07:05' },
@@ -163,8 +163,8 @@ export function UsersList({ state = 'All', onOpen }) {
 }
 
 const BUNDLE_OPTIONS = [
-  { value: 'Managing director', label: 'Managing director', hint: 'Price tiers: Gate, Contract, Sell, Farmer account' },
-  { value: 'Trading', label: 'Trading', hint: 'Price tiers: Gate, Contract' },
+  { value: 'Managing Director', label: 'Managing Director', hint: 'Price tiers: Gate, Contract, Sell, Farmer account' },
+  { value: 'Trading', label: 'Trading', hint: 'Price tiers: Gate, Contract, Sell' },
   { value: 'Trading support', label: 'Trading support', hint: 'Price tiers: Contract' },
   { value: 'Finance', label: 'Finance', hint: 'Price tiers: Gate, Contract, Sell, Farmer account' },
   { value: 'Operations', label: 'Operations', hint: 'Price tiers: Gate, Contract, Sell, Farmer account' },
@@ -271,8 +271,8 @@ export function UserRecord({ state = 'Active' }) {
 /* ------------------------------------------------------------------ Bundles */
 
 const BUNDLES = [
-  { id: 'md', name: 'Managing director', users: 1, tiers: 'Gate, Contract, Sell, Farmer account', status: 'Active' },
-  { id: 'trading', name: 'Trading', users: 1, tiers: 'Gate, Contract', status: 'Active' },
+  { id: 'md', name: 'Managing Director', users: 1, tiers: 'Gate, Contract, Sell, Farmer account', status: 'Active' },
+  { id: 'trading', name: 'Trading', users: 1, tiers: 'Gate, Contract, Sell', status: 'Active' },
   { id: 'support', name: 'Trading support', users: 1, tiers: 'Contract', status: 'Active' },
   { id: 'finance', name: 'Finance', users: 1, tiers: 'Gate, Contract, Sell, Farmer account', status: 'Active' },
   { id: 'operations', name: 'Operations', users: 1, tiers: 'Gate, Contract, Sell, Farmer account', status: 'Active' },
@@ -312,11 +312,12 @@ export function BundleRecord({ state = 'Finance' }) {
   return (
     <Sections>
       <SetupHead title="Finance" />
-      {pending ? <ConditionBanner>Change to Finance submitted for approval by N. Phiri, 26 Sep 2026, 07:30 CAT. Waiting for T. Mwila.</ConditionBanner> : null}
+      {pending ? <ConditionBanner>Change to Finance submitted for approval by N. Phiri, 26 Sep 2026, 07:30 CAT.</ConditionBanner> : null}
       {state === 'Own bundle refused' ? <Refusal action="Submit for approval" reason="You hold the Finance bundle, and no one changes their own access" /> : null}
       <RecordHighlights kind="Bundle" title="Finance" status={pending ? <StatusMark kind="pending" label="Pending approval" size="body-4" /> : PEOPLE_ACTIVE} tab={tab} onTab={setTab}
         actions={pending ? null : editing ? <><Button variant="ghost" size="small" disabled={busy}>Cancel</Button><Button size="small" loading={busy}>Submit for approval</Button></> : <Button variant="outline" size="small">Edit</Button>}
-        fields={[{ label: 'Users', value: '1' }, { label: 'Price tiers', value: 'Gate, Contract, Sell, Farmer account' }, { label: 'Capabilities', value: '8' }, { label: 'Last approved by', value: 'T. Mwila' }, { label: 'Last approved', value: '02 Sep 2026, 10:05' }]} />
+        fields={[{ label: 'Users', value: '1' }, { label: 'Price tiers', value: 'Gate, Contract, Sell, Farmer account' }, { label: 'Capabilities', value: '8' },
+          ...(pending ? [{ label: 'Waiting for', value: 'T. Mwila' }] : []), { label: 'Last approved by', value: 'T. Mwila' }, { label: 'Last approved', value: '02 Sep 2026, 10:05' }]} />
       {editing ? (
         <Card title="Edit bundle" padding={16}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>

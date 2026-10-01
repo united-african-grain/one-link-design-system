@@ -15,12 +15,18 @@ const read = (p) => readFileSync(p, 'utf8');
 const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [join(dir, n)]));
 const topLevel = (src) => [...src.matchAll(/^(?:export\s+)?(?:function|const|let)\s+([A-Za-z_]\w*)/gm)].map((m) => m[1]);
 
-/** The SETTINGS_STATES literal from Settings.jsx: screen name to its states. */
-export function screenStates(src) {
-  const m = src.match(/export const SETTINGS_STATES = (\{[\s\S]*?\n\});/);
-  assert.ok(m, 'Settings.jsx exports SETTINGS_STATES');
+/** A section's STATES literal (SETTINGS_STATES, PEOPLE_STATES): screen name to its states. */
+export function screenStates(src, name = 'SETTINGS_STATES') {
+  const m = src.match(new RegExp(`export const ${name} = (\\{[\\s\\S]*?\\n\\});`));
+  assert.ok(m, `the section exports ${name}`);
   return Function(`return (${m[1]});`)();
 }
+
+/** The kit's sections: each file, its states literal and the card that drew it. */
+export const SECTIONS = [
+  { file: 'Settings.jsx', states: 'SETTINGS_STATES', card: 'M1.DS.01' },
+  { file: 'People.jsx', states: 'PEOPLE_STATES', card: 'M1.DS.02' },
+];
 
 /** The README's settings and governance table: screen to { file, states }. */
 export function readmeRows(md) {
@@ -49,7 +55,7 @@ export const SYSTEM_WORDS = ['sync', 'feed', 'batch', 'queue', 'payload', 'null'
 /** The words a screen shows: string literals and JSX text inside the named function and the constants it reads. */
 export function shownWords(src, fn, constants = []) {
   const body = (name, kind) => {
-    const start = src.indexOf(kind === 'fn' ? `export function ${name}(` : `const ${name} = `);
+    const start = src.indexOf(kind === 'fn' ? `function ${name}(` : `const ${name} = `);
     assert.ok(start >= 0, `${name} is in the source`);
     const next = src.indexOf('\n/* ---', start + 1);
     const end = kind === 'fn' ? (next < 0 ? src.length : next) : src.indexOf('];', start) + 2;
@@ -69,28 +75,56 @@ export function vocabularyProblems(words) {
   return problems;
 }
 
+function readmeMatches(section) {
+  const states = screenStates(read(join(KIT, section.file)), section.states);
+  const rows = readmeRows(read(join(KIT, 'README.md')));
+  for (const [screen, list] of Object.entries(states)) {
+    assert.ok(rows[screen], `${screen} has a README row`);
+    assert.equal(rows[screen].file, section.file, `${screen} names its file`);
+    assert.deepEqual(rows[screen].states, list, `${screen} lists its states in order`);
+    assert.match(read(join(KIT, section.file)), new RegExp(`export function ${screen}\\(`), `${screen} is exported`);
+  }
+}
+
 const tokens = new Set(walk(join(ROOT, 'project/tokens')).filter((p) => p.endsWith('.css')).flatMap((p) => [...read(p).matchAll(/(--[a-z0-9-]+)\s*:/g)].map((m) => m[1])));
 const loader = read(join(ROOT, 'project/components/_loader.js'));
 const dsFiles = JSON.parse(loader.match(/var FILES = (\[[\s\S]*?\]);/)[1].replace(/'/g, '"'));
 const published = new Set(dsFiles.flatMap((f) => topLevel(read(join(ROOT, 'project/components', f)))));
-const kitFiles = ['Shell.jsx', 'Settings.jsx'].map((f) => join(KIT, f));
+const kitFiles = ['Shell.jsx', ...SECTIONS.map((x) => x.file)].map((f) => join(KIT, f));
 const kitNames = new Set([...kitFiles, join(ROOT, 'project/ui_kits/one_link/Shell.jsx')].flatMap((p) => topLevel(read(p))));
 const components = new Set([...published, ...kitNames, 'React']);
 
 describe('[M1.DS.01] the admin workspace kit', () => {
   test('[M1.DS.01] the admin workspace README lists every settings and governance screen with its file and states', () => {
-    const states = screenStates(read(join(KIT, 'Settings.jsx')));
+    readmeMatches(SECTIONS[0]);
+  });
+
+  test('[M1.DS.02] the admin workspace README lists every people and access screen with its file and states', () => {
+    readmeMatches(SECTIONS[1]);
+  });
+
+  test('the README lists no screen a section does not draw', () => {
     const rows = readmeRows(read(join(KIT, 'README.md')));
-    assert.deepEqual(Object.keys(rows).sort(), Object.keys(states).sort(), 'one README row per screen');
-    for (const [screen, list] of Object.entries(states)) {
-      assert.equal(rows[screen].file, 'Settings.jsx', `${screen} names its file`);
-      assert.deepEqual(rows[screen].states, list, `${screen} lists its states in order`);
-      assert.match(read(join(KIT, 'Settings.jsx')), new RegExp(`export function ${screen}\\(`), `${screen} is exported`);
+    const drawn = SECTIONS.flatMap((x) => Object.keys(screenStates(read(join(KIT, x.file)), x.states)));
+    assert.deepEqual(Object.keys(rows).sort(), drawn.sort());
+  });
+
+  test('[M1.DS.02] every people and access screen composes published components only and adds no token', () => {
+    assert.deepEqual(compositionProblems(read(join(KIT, 'People.jsx')), { tokens, components }), []);
+  });
+
+  test('[M1.DS.02] the signed-out screens show nothing before sign-in: no person, reference, figure or preview', () => {
+    const src = read(join(KIT, 'People.jsx'));
+    for (const fn of ['SignIn', 'Activate']) {
+      const words = [...shownWords(src, fn), ...shownWords(src, 'SignedOutLinks')].join(' | ');
+      assert.doesNotMatch(words, /\b[A-Z]\. [A-Z][a-z]+|@example\.com|SYN\d|GRN-|\bK\d|\d+(\.\d+)? ?(t|kg)\b|Lakeview|Riverbend|Chisamba|Mpongwe/, `${fn} shows business data: ${words}`);
+      assert.match(words, /Forgot password/, `${fn} keeps the current ways back`);
+      assert.doesNotMatch(words, /Create (an )?account|Sign up|Register/i, `${fn} offers self-registration`);
     }
   });
 
   test('[M1.DS.01] every settings and governance screen composes published components only and adds no token', () => {
-    for (const file of kitFiles) assert.deepEqual(compositionProblems(read(file), { tokens, components }), [], file);
+    for (const file of kitFiles.filter((f) => !f.endsWith('People.jsx'))) assert.deepEqual(compositionProblems(read(file), { tokens, components }), [], file);
   });
 
   test('the composition audit fails on a defined token, an unknown token, a literal colour and an unknown component', () => {
@@ -113,7 +147,7 @@ describe('[M1.DS.01] the admin workspace kit', () => {
     assert.match(page, /ui_kits_admin_workspace_index\.kit\.js/);
     assert.doesNotMatch(page, /babel/i, 'precompiled, no Babel in the browser');
     const bundle = read(join(ROOT, 'dist/ui_kits/admin_workspace/ui_kits_admin_workspace_index.kit.js'));
-    for (const screen of Object.keys(screenStates(read(join(KIT, 'Settings.jsx'))))) assert.ok(bundle.includes(screen), `${screen} is compiled`);
+    for (const x of SECTIONS) for (const screen of Object.keys(screenStates(read(join(KIT, x.file)), x.states))) assert.ok(bundle.includes(screen), `${screen} is compiled`);
     assert.match(read(join(ROOT, 'dist/index.html')), /ui_kits\/admin_workspace\/index\.html/);
   });
 });

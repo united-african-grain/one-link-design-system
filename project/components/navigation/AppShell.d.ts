@@ -22,8 +22,10 @@ export interface AppShellUser {
   initials: string;
   name: string;
   email?: string;
-  /** The line under the name in the toolbar, and the tag in the popover (the role). */
+  /** The line under the name in the toolbar, and the tag in the popover (the role, or the bundles). */
   meta?: string;
+  /** A line in the popover under the email: "Last sign-in 26 Sep 2026, 07:12 CAT, Lusaka" (S57, S08 J1). */
+  detail?: string;
 }
 export interface AppShellProps {
   nav?: AppShellGroup[];

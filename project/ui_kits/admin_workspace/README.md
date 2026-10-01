@@ -38,6 +38,7 @@ People and access (`People.jsx`, M1.DS.02) and records and data (`Records.jsx`, 
 - `ReasonDialog` (feedback): the high-impact confirmation and Reject with a mandatory comment. Confirm waits for the reason.
 - `Refusal` (feedback): "[Action] is not allowed. [Reason]."
 - `RecordHighlights` (records): the highlights panel with the Details, Related and History tabs.
+- `Count` (data): the count beside a title or in a card header. The kit's `CountBadge` is this.
 - `MenuRow` and AppShell's `context` (navigation): the Setup row in the user menu, and "Setup" beside the product name.
 
 ## Rules the screens keep

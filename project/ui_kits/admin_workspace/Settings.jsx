@@ -101,7 +101,7 @@ export function SetupHome({ state = 'Needs attention', onSection }) {
 export function UserMenuWithSetup({ state = 'Administrator', onSetup }) {
   const admin = state === 'Administrator';
   return (
-    <AppShell nav={[{ items: MODULES }]} module="command" breadcrumb={['Command Center']} sync={null} accountOpen user={admin ? { ...ADMIN, meta: 'Finance, Administrator' } : { ...ADMIN, name: 'L. Mulenga', initials: 'LM', email: 'l.mulenga@example.com', meta: 'Finance' }}
+    <AppShell nav={[{ items: MODULES }]} module="command" breadcrumb={['Command Center']} sync={null} accountOpen user={admin ? { ...ADMIN, meta: 'Finance, Administrator', detail: 'Last sign-in 26 Sep 2026, 07:12 CAT, Lusaka' } : { ...ADMIN, name: 'L. Mulenga', initials: 'LM', email: 'l.mulenga@example.com', meta: 'Finance', detail: 'Last sign-in 26 Sep 2026, 07:40 CAT, Lusaka' }}
       onSignOut={() => {}} menu={admin ? <MenuRow icon="settings" label="Setup" onClick={onSetup} /> : null}>
       <Sections>
         <PageHead title="Command Center" meta="Checked 07:02 · next digest 13:00" />

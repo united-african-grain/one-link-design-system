@@ -240,6 +240,7 @@ function Account({ user, roomy, menu, signingOut, onSignOut, open, setOpen }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
               <span style={textStyle('body-3', { strong: true })}>{user.name}</span>
               {user.email ? <span style={{ overflowWrap: 'anywhere', ...textStyle('body-4', { tone: 'secondary' }) }}>{user.email}</span> : null}
+              {user.detail ? <span style={{ ...textStyle('body-4', { tone: 'tertiary' }), fontVariantNumeric: 'tabular-nums' }}>{user.detail}</span> : null}
               {user.meta ? <span style={{ alignSelf: 'flex-start', marginTop: 3, padding: '3px 6px', borderRadius: 'var(--radius-2xs)', background: 'var(--grouped)', ...textStyle('caption-1-condensed', { tone: 'secondary' }) }}>{user.meta}</span> : null}
             </div>
           </div>

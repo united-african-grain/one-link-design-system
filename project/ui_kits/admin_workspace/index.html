@@ -12,8 +12,9 @@
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Settings.jsx']).then((K) => {
-  const { SetupFrame, Segmented, ScrollRow, SETTINGS_STATES, DrawnElsewhere } = K;
+loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Settings.jsx','People.jsx']).then((K) => {
+  const { SetupFrame, Segmented, ScrollRow, DrawnElsewhere } = K;
+  const STATES = { ...K.SETTINGS_STATES, ...K.PEOPLE_STATES };
   // Each Setup navigation item opens its screens; a record's screens sit beside its list.
   const SECTIONS = {
     home: { crumbs: [], screens: ['SetupHome'] },
@@ -21,20 +22,24 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Setting
     switches: { crumbs: ['Switches'], screens: ['SwitchesList', 'SwitchRecord'] },
     steps: { crumbs: ['Approval steps'], screens: ['ApprovalStepsList', 'ApprovalStepRecord'] },
     policies: { crumbs: ['Policy methods'], screens: ['PolicyMethodsList', 'PolicyRecord'] },
+    users: { crumbs: ['Users'], screens: ['UsersList', 'NewUser', 'UserRecord'] },
+    bundles: { crumbs: ['Bundles'], screens: ['BundlesList', 'BundleRecord'] },
+    audit: { crumbs: ['Audit logs'], screens: ['AccessLog'] },
+    review: { crumbs: ['Access review'], screens: ['AccessReview'] },
   };
-  const OUTSIDE = ['UserMenuWithSetup', 'ItemsToApprove'];
-  const LABEL = { SetupHome: 'Setup Home', SettingsList: 'List', SettingRecord: 'Record', ScopedValues: 'Scoped values', SwitchesList: 'List', SwitchRecord: 'Record', ApprovalStepsList: 'List', ApprovalStepRecord: 'Record', PolicyMethodsList: 'List', PolicyRecord: 'Record', UserMenuWithSetup: 'User menu with Setup', ItemsToApprove: 'Items to approve' };
-  const ELSEWHERE = { users: ['Users', 'M1.DS.02'], bundles: ['Bundles', 'M1.DS.02'], audit: ['Audit logs', 'M1.DS.03'], sites: ['Sites and storage units', 'M1.DS.03'], corridors: ['Corridors and routes', 'M1.DS.03'], products: ['Products', 'M1.DS.03'], points: ['Delivery points', 'M1.DS.03'], calendars: ['Operating calendars', 'M1.DS.03'] };
+  const OUTSIDE = ['UserMenuWithSetup', 'ItemsToApprove', 'SignIn', 'Activate'];
+  const LABEL = { SetupHome: 'Setup Home', SettingsList: 'List', SettingRecord: 'Record', ScopedValues: 'Scoped values', SwitchesList: 'List', SwitchRecord: 'Record', ApprovalStepsList: 'List', ApprovalStepRecord: 'Record', PolicyMethodsList: 'List', PolicyRecord: 'Record', UserMenuWithSetup: 'User menu with Setup', ItemsToApprove: 'Items to approve', SignIn: 'Sign in', Activate: 'Activate', UsersList: 'List', NewUser: 'New user', UserRecord: 'Record', BundlesList: 'List', BundleRecord: 'Record', AccessLog: 'Access log', AccessReview: 'Access review' };
+  const ELSEWHERE = { sites: ['Sites and storage units', 'M1.DS.03'], corridors: ['Corridors and routes', 'M1.DS.03'], products: ['Products', 'M1.DS.03'], points: ['Delivery points', 'M1.DS.03'], calendars: ['Operating calendars', 'M1.DS.03'] };
   const params = new URLSearchParams(location.search);
   const sectionOf = (screen) => Object.keys(SECTIONS).find((k) => SECTIONS[k].screens.includes(screen));
 
   function App(){
     const [screen,setScreen]=React.useState(params.get('screen') || 'SetupHome');
-    const [state,setState]=React.useState(params.get('state') || (SETTINGS_STATES[params.get('screen') || 'SetupHome'] || [])[0]);
+    const [state,setState]=React.useState(params.get('state') || (STATES[params.get('screen') || 'SetupHome'] || [])[0]);
     const [other,setOther]=React.useState(null);
-    const go=(s,st)=>{ setOther(null); setScreen(s); setState(st || SETTINGS_STATES[s][0]); };
+    const go=(s,st)=>{ setOther(null); setScreen(s); setState(st || STATES[s][0]); };
     const Screen=K[screen];
-    const states=SETTINGS_STATES[screen] || [];
+    const states=STATES[screen] || [];
     const controls=<ScrollRow align="flex-end" style={{marginBottom:16}}>
       <Segmented options={[...(sectionOf(screen)? SECTIONS[sectionOf(screen)].screens : [screen]).map((s)=>LABEL[s]), ...OUTSIDE.filter((s)=>s!==screen).map((s)=>LABEL[s])]} value={LABEL[screen]}
         onChange={(l)=>go(Object.keys(LABEL).find((k)=>LABEL[k]===l && (OUTSIDE.includes(k) || SECTIONS[sectionOf(screen)||'home'].screens.includes(k))) || 'SetupHome')}/>
@@ -45,8 +50,8 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Setting
     }
     const section=sectionOf(screen);
     const open=(s)=> (st)=> go(s);
-    const record={ SettingsList:'SettingRecord', SwitchesList:'SwitchRecord', ApprovalStepsList:'ApprovalStepRecord', PolicyMethodsList:'PolicyRecord' }[screen];
-    const crumbs=other? [ELSEWHERE[other][0]] : [...SECTIONS[section].crumbs, ...(screen.endsWith('Record')||screen==='ScopedValues'?[K.recordTitle(screen, state)]:[])];
+    const record={ SettingsList:'SettingRecord', SwitchesList:'SwitchRecord', ApprovalStepsList:'ApprovalStepRecord', PolicyMethodsList:'PolicyRecord', UsersList:'UserRecord', BundlesList:'BundleRecord' }[screen];
+    const crumbs=other? [ELSEWHERE[other][0]] : [...SECTIONS[section].crumbs, ...(screen.endsWith('Record')||screen==='ScopedValues'||screen==='NewUser'?[K.recordTitle(screen, state) || K.peopleTitle(screen, state)]:[])];
     const shipped = screen==='SetupHome' && state==='Before reference data' ? ['home','users','bundles','settings','switches','steps','policies','audit'] : undefined;
     return <SetupFrame section={other || section} crumbs={crumbs} shipped={shipped} onExit={()=>go('UserMenuWithSetup')}
       onSection={(v)=>{ if(SECTIONS[v]) go(SECTIONS[v].screens[0]); else setOther(v); }}>

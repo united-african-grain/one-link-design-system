@@ -8,7 +8,7 @@ export const SETUP_NAV = [
   { label: 'Users and access', items: [{ value: 'users', label: 'Users' }, { value: 'bundles', label: 'Bundles' }] },
   { label: 'Configuration', items: [{ value: 'settings', label: 'Settings' }, { value: 'switches', label: 'Switches' }, { value: 'steps', label: 'Approval steps' }, { value: 'policies', label: 'Policy methods' }] },
   { label: 'Reference data', items: [{ value: 'sites', label: 'Sites and storage units' }, { value: 'corridors', label: 'Corridors and routes' }, { value: 'products', label: 'Products' }, { value: 'points', label: 'Delivery points' }, { value: 'calendars', label: 'Operating calendars' }] },
-  { label: 'Security and audit', items: [{ value: 'audit', label: 'Audit logs' }] },
+  { label: 'Security and audit', items: [{ value: 'audit', label: 'Audit logs' }, { value: 'review', label: 'Access review' }] },
 ];
 
 export const ADMIN = { initials: 'NP', name: 'N. Phiri', email: 'n.phiri@example.com', meta: 'Administrator' };

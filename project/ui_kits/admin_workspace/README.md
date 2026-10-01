@@ -30,7 +30,23 @@ It reuses `Sections`, `ScrollRow` and `PageHead` from `../one_link/Shell.jsx`.
 | PolicyRecord | `Settings.jsx` | In force · Alternative chosen · Confirm change · Unavailable refused |
 | ItemsToApprove | `Settings.jsx` | Waiting · Approving · Reject · Reject variance hold · As the administrator · Nothing waiting |
 
-People and access (`People.jsx`, M1.DS.02) and records and data (`Records.jsx`, M1.DS.03) add their own tables here.
+## People and access (`People.jsx`, M1.DS.02)
+
+| Screen | File | States |
+|---|---|---|
+| SignIn | `People.jsx` | Email and password · Incorrect credentials · Account locked · Session expired · Code · Wrong code · Signing in |
+| Activate | `People.jsx` | Activation code · Wrong code · Code expired · Choose a password · Set up two-step sign-in · Wrong two-step code |
+| UsersList | `People.jsx` | All · Locked · No match |
+| NewUser | `People.jsx` | Form · Missing fields · Saving · Code shown once |
+| UserRecord | `People.jsx` | Active · Invited · Code expired · Locked · Reissued code · Reset authenticator · Deactivated · Deactivated for inactivity · Own record · Only administrator |
+| BundlesList | `People.jsx` | All |
+| BundleRecord | `People.jsx` | Finance · Edit · Submitting · Pending approval · Own bundle refused |
+| AccessLog | `People.jsx` | Access log · Exporting · No match |
+| AccessReview | `People.jsx` | Who holds what · Exporting |
+
+The signed-out screens, Sign in and Activate, keep the app's current design and wording (Henry's ruling of 30 Sep 2026 on this card). That means the AuthShell frame, a heading and one sentence, Forgot password and Back to home. They show nothing before sign-in: no name, reference, figure or preview. The user menu's "Last sign-in" line is AppShell's `user.detail`, drawn in Settings' UserMenuWithSetup.
+
+Records and data (`Records.jsx`, M1.DS.03) add their own table here.
 
 ## Components this section introduced
 
@@ -40,6 +56,9 @@ People and access (`People.jsx`, M1.DS.02) and records and data (`Records.jsx`, 
 - `RecordHighlights` (records): the highlights panel with the Details, Related and History tabs.
 - `Count` (data): the count beside a title or in a card header. The kit's `CountBadge` is this.
 - `MenuRow` and AppShell's `context` (navigation): the Setup row in the user menu, and "Setup" beside the product name.
+- `OneTimeCode` (feedback): the activation code, shown once, with Copy and its expiry (M1.DS.02).
+- `CheckboxList` (inputs/Field) and Input's `size="large"`: bundles and sites, and the signed-out fields (M1.DS.02).
+- AppShell's `user.detail`: "Last sign-in" in the user menu (M1.DS.02).
 
 ## Rules the screens keep
 

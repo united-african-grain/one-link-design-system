@@ -26,6 +26,7 @@ export function screenStates(src, name = 'SETTINGS_STATES') {
 export const SECTIONS = [
   { file: 'Settings.jsx', states: 'SETTINGS_STATES', card: 'M1.DS.01' },
   { file: 'People.jsx', states: 'PEOPLE_STATES', card: 'M1.DS.02' },
+  { file: 'Records.jsx', states: 'RECORDS_STATES', card: 'M1.DS.03' },
 ];
 
 /** The README's settings and governance table: screen to { file, states }. */
@@ -103,6 +104,10 @@ describe('[M1.DS.01] the admin workspace kit', () => {
     readmeMatches(SECTIONS[1]);
   });
 
+  test('[M1.DS.03] the admin workspace README lists every records and data screen with its file and states', () => {
+    readmeMatches(SECTIONS[2]);
+  });
+
   test('the README lists no screen a section does not draw', () => {
     const rows = readmeRows(read(join(KIT, 'README.md')));
     const drawn = SECTIONS.flatMap((x) => Object.keys(screenStates(read(join(KIT, x.file)), x.states)));
@@ -169,5 +174,53 @@ describe('[M1.ID.05] bundles as S10 sets them', () => {
     assert.match(record, /label: 'Waiting for'/);
     const banner = record.match(/<ConditionBanner>([^<]*)<\/ConditionBanner>/)[1];
     assert.doesNotMatch(banner, /Waiting for/);
+  });
+});
+
+describe('[M1.DS.03] records and data', () => {
+  const src = read(join(KIT, 'Records.jsx'));
+  const fn = (name) => src.slice(src.indexOf(`export function ${name}(`), src.indexOf('\n/* ---', src.indexOf(`export function ${name}(`)) + 1 || undefined);
+
+  test('[M1.DS.03] every records and data screen composes published components only and adds no token', () => {
+    assert.deepEqual(compositionProblems(src, { tokens, components }), []);
+  });
+
+  test('[M1.DS.03] a site offers Deactivate and never Delete, and a refused Deactivate reads in the blocked pattern', () => {
+    const site = fn('SiteRecord');
+    assert.match(site, />Deactivate</);
+    assert.doesNotMatch(site, />Delete</);
+    assert.match(site, /<Refusal action="Deactivate" reason="[^"]+"/);
+  });
+
+  test('[M1.DS.03] a permanent record draws no Edit and offers Reverse with the S57 destructive confirmation', () => {
+    const ledger = fn('LedgerView');
+    assert.doesNotMatch(ledger, />Edit</);
+    assert.match(ledger, />Reverse</);
+    assert.match(ledger, /<ReverseDialog record="JE-2026-000412"/);
+    const dialog = read(join(ROOT, 'project/components/records/ReverseDialog.jsx'));
+    assert.match(dialog, /title=\{`Reverse \$\{record\}\?`\}/);
+    assert.match(dialog, /A reversal entry will be created\./);
+    assert.match(dialog, /confirmLabel="Reverse"/);
+  });
+
+  test('[M1.DS.03] without the contract tier, price and margin are the Restricted mark, never a dash, a blank or a zero', () => {
+    const contract = fn('ContractView');
+    assert.match(contract, /const money = \(v\) => \(tier \? v : <Restricted \/>\)/);
+    for (const field of ["'Price', money(", "'Margin', money("]) assert.ok(contract.includes(field), `${field} goes through the restricted treatment`);
+    assert.match(read(join(ROOT, 'project/components/data/Restricted.jsx')), /Restricted/);
+  });
+
+  test('[M1.DS.03] a refused upload says why in the S57 pattern, and Import stays disabled while a row has an error', () => {
+    const refused = Function(`return (${src.match(/const REFUSED = (\{[\s\S]*?\n\});/)[1]});`)();
+    assert.deepEqual(Object.keys(refused), ['Wrong type', 'Too large', 'Protected', 'Empty', 'Wrong sheet']);
+    for (const message of Object.values(refused)) assert.match(message, /^(File|Sheet) must [^.]+\.( \(\.xlsx\)\.)?$|^File must be an Excel workbook \(\.xlsx\)\.$/);
+    const preview = read(join(ROOT, 'project/components/records/ImportPreview.jsx'));
+    assert.match(preview, /disabled=\{errors\.length > 0/);
+    assert.match(preview, /to fix/, 'a file with a row error never says Ready to import');
+  });
+
+  test('[M1.DS.03] sample data is the golden synthetic set: no real customer and no pack reference', () => {
+    assert.doesNotMatch(src, /National Milling|Zambeef|ZAMACE|NMC|FRA\b/);
+    for (const name of ['SYN4702', 'Lakeview Farms Ltd', 'Riverbend Milling', 'Chisamba Shed', 'Mpongwe Depot']) assert.ok(src.includes(name), name);
   });
 });

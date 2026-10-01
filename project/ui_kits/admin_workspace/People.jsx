@@ -358,7 +358,7 @@ export function AccessLog({ state = 'Access log' }) {
     <Sections>
       <SetupHead title="Audit logs" />
       <Tabs tabs={['Access log', 'Business changes', 'Cloud activity']} value={tab} onChange={setTab} height={44} variant="panel" />
-      {tab !== 'Access log' ? <DrawnElsewhere title={tab} card="M1.DS.03" /> : (
+      {tab === 'Business changes' ? <BusinessChangesLog /> : tab === 'Cloud activity' ? <DrawnElsewhere title={tab} card="M1.PLT.03" /> : (
         <>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap', justifyContent: 'space-between' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, flex: '1 1 480px' }}>

@@ -8,7 +8,7 @@ export interface ImportRow {
 }
 export interface ImportPreviewProps {
   file: { name: React.ReactNode; by?: React.ReactNode | React.ReactNode[]; byLabel?: React.ReactNode; rows?: number };
-  /** validating · ready · imported · failed */
+  /** validating · ready · imported · failed. A ready file with row errors shows "1 row to fix" instead of Ready to import. */
   status?: 'validating' | 'ready' | 'imported' | 'failed';
   tiles?: Array<{ label: React.ReactNode; value: React.ReactNode }>;
   /** The file's own columns, between Row and Result. */

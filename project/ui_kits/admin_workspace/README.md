@@ -46,7 +46,29 @@ It reuses `Sections`, `ScrollRow` and `PageHead` from `../one_link/Shell.jsx`.
 
 The signed-out screens, Sign in and Activate, keep the app's current design and wording (Henry's ruling of 30 Sep 2026 on this card). That means the AuthShell frame, a heading and one sentence, Forgot password and Back to home. They show nothing before sign-in: no name, reference, figure or preview. The user menu's "Last sign-in" line is AppShell's `user.detail`, drawn in Settings' UserMenuWithSetup.
 
-Records and data (`Records.jsx`, M1.DS.03) add their own table here.
+## Records and data (`Records.jsx`, M1.DS.03)
+
+| Screen | File | States |
+|---|---|---|
+| SitesList | `Records.jsx` | All · Inactive · No match |
+| SiteRecord | `Records.jsx` | Details · Related · History · Edit · Effective-dated change · Deactivate refused |
+| CorridorsList | `Records.jsx` | All |
+| ProductsList | `Records.jsx` | All |
+| DeliveryPointsList | `Records.jsx` | All |
+| OperatingCalendar | `Records.jsx` | Week · Holiday added |
+| ReferenceList | `Records.jsx` | Counterparty classes · Grades · Seasons |
+| CounterpartiesList | `Records.jsx` | All · Flagged · No match |
+| CounterpartyRecord | `Records.jsx` | Details · Related · History · Without the contacts capability · Same name |
+| NameResolve | `Records.jsx` | Suggestions · Remembered match · No match · Re-point |
+| UploadPreview | `Records.jsx` | Validating · Preview with errors · Preview clean · Imported · Failed · Duplicate file · Without the price tier · Wrong type · Too large · Protected · Empty · Wrong sheet |
+| TemplateBuilder | `Records.jsx` | Columns · Who may upload · Versions |
+| BusinessChanges | `Records.jsx` | Business changes · Without the price tier · Exporting · No match |
+| LedgerView | `Records.jsx` | Entries · Posted entry · Reverse · Reversed |
+| ContractView | `Records.jsx` | With the contract tier · Without the contract tier |
+
+Reference data (sites and storage units, corridors and routes, products, delivery points with their capture mode, operating calendars in Zambian time, and counterparty classes, grades and seasons) uses one list view and record page. A site never offers Delete: it offers Deactivate, refused in the blocked pattern while stock remains, and a change takes effect from a date and time. The counterparty register, the counterparty record, the ledger and the contract view draw outside Setup, in One Link's own frame. The Business changes log is also the Audit logs page's second tab.
+
+The upload and import preview composes `ImportPreview`: a File card, the tiles, the rows with Row and Result, and Import disabled while any row has an error. A file refused before it is read says why under the File field, in the S57 "[Field] [requirement]." pattern. A price column is left out for a viewer without its tier. A price shown on a shared layout, such as a contract or a Business changes row, is the `Restricted` mark: a lock, no value, and the tooltip Restricted.
 
 ## Components this section introduced
 
@@ -59,6 +81,7 @@ Records and data (`Records.jsx`, M1.DS.03) add their own table here.
 - `OneTimeCode` (feedback): the activation code, shown once, with Copy and its expiry (M1.DS.02).
 - `CheckboxList` (inputs/Field) and Input's `size="large"`: bundles and sites, and the signed-out fields (M1.DS.02).
 - AppShell's `user.detail`: "Last sign-in" in the user menu (M1.DS.02).
+- `ReverseDialog` (records): "Reverse [record]? A reversal entry will be created." with a required reason, for a permanent record, which never draws Edit (M1.DS.03). It composes `ReasonDialog`; the restricted figure is the existing `Restricted`, and the import preview is the existing `ImportPreview`.
 
 ## Rules the screens keep
 

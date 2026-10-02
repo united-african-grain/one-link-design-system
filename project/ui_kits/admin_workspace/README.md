@@ -53,7 +53,7 @@ The signed-out screens, Sign in and Activate, keep the app's current design and 
 | Screen | File | States |
 |---|---|---|
 | SitesList | `Records.jsx` | All · Inactive · No match |
-| SiteRecord | `Records.jsx` | Details · Related · History · Edit · Effective-dated change · Deactivate refused |
+| SiteRecord | `Records.jsx` | Details · Related · History · Edit · Conflict on save · Effective-dated change · Deactivate refused |
 | CorridorsList | `Records.jsx` | All |
 | ProductsList | `Records.jsx` | All |
 | DeliveryPointsList | `Records.jsx` | All |

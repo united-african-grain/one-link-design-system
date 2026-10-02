@@ -7,7 +7,7 @@
 
 export const RECORDS_STATES = {
   SitesList: ['All', 'Inactive', 'No match'],
-  SiteRecord: ['Details', 'Related', 'History', 'Edit', 'Effective-dated change', 'Deactivate refused'],
+  SiteRecord: ['Details', 'Related', 'History', 'Edit', 'Conflict on save', 'Effective-dated change', 'Deactivate refused'],
   CorridorsList: ['All'],
   ProductsList: ['All'],
   DeliveryPointsList: ['All'],
@@ -109,23 +109,25 @@ export function SiteRecord({ state = 'Details' }) {
   const initial = state === 'Related' ? 'Related' : state === 'History' ? 'History' : 'Details';
   const [tab, setTab] = useState(initial);
   useEffect(() => setTab(initial), [state]);
-  const editing = state === 'Edit';
+  const conflict = state === 'Conflict on save';
+  const editing = state === 'Edit' || conflict;
   const scheduled = state === 'Effective-dated change';
   return (
     <Sections>
       <SetupHead title="Chisamba Shed" />
       {scheduled ? <ConditionBanner>Owner changes from United African Grain to Riverbend Milling on 01 Oct 2026, 00:00 CAT.</ConditionBanner> : null}
       {state === 'Deactivate refused' ? <Refusal action="Deactivate" reason="Chisamba Shed holds 1,240 t in 5 storage units. Move or count the stock out first" /> : null}
+      {conflict ? <ConflictOnSave user="L. Mulenga" time="26 Sep 2026, 09:10 CAT" yours={[{ label: 'Owner', value: 'Lakeview Farms Ltd' }, { label: 'Weighbridge', value: 'No' }]} /> : null}
       <RecordHighlights kind="Site" title="Chisamba Shed" status={R_ACTIVE} tab={tab} onTab={setTab}
         actions={editing ? <><Button variant="ghost" size="small">Cancel</Button><Button size="small">Save</Button></> : <><Button variant="outline" size="small">Deactivate</Button><Button variant="outline" size="small">Edit</Button></>}
-        fields={[{ label: 'Type', value: 'Warehouse' }, { label: 'Owner', value: 'United African Grain' }, { label: 'Storage units', value: '7' }, { label: 'Weighbridge', value: 'Yes' }, { label: 'Operating calendar', value: 'Chisamba Shed' }]} />
+        fields={[{ label: 'Type', value: 'Warehouse' }, { label: 'Owner', value: conflict ? 'Riverbend Milling' : 'United African Grain' }, { label: 'Storage units', value: '7' }, { label: 'Weighbridge', value: 'Yes' }, { label: 'Operating calendar', value: 'Chisamba Shed' }]} />
       {editing ? (
         <Card title="Edit site" padding={16}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
             <Field label="Site" required><Input defaultValue="Chisamba Shed" /></Field>
             <Field label="Type" required><Select options={['Warehouse', 'Depot', 'Hired store', 'Collection point']} /></Field>
-            <Field label="Owner" required><Select options={['United African Grain', 'Riverbend Milling', 'Lakeview Farms Ltd']} /></Field>
-            <Field label="Weighbridge" required><Select options={['Yes', 'No']} /></Field>
+            <Field label="Owner" required><Select options={['United African Grain', 'Riverbend Milling', 'Lakeview Farms Ltd']} defaultValue={conflict ? 'Lakeview Farms Ltd' : undefined} /></Field>
+            <Field label="Weighbridge" required><Select options={['Yes', 'No']} defaultValue={conflict ? 'No' : undefined} /></Field>
             <Field label="Effective from" required hint="A change takes effect at this date and time, never earlier."><Input defaultValue="01 Oct 2026, 00:00 CAT" /></Field>
             <Field label="Reason" required><Input multiline defaultValue="Lease transfers with the new season" /></Field>
           </div>

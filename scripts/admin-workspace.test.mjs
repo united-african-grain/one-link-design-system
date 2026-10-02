@@ -192,6 +192,15 @@ describe('[M1.DS.03] records and data', () => {
     assert.match(site, /<Refusal action="Deactivate" reason="[^"]+"/);
   });
 
+  test('[M1.AUD.01] a save made after someone else\'s keeps the person\'s values and says who changed it and when, in the S57 pattern', () => {
+    const site = fn('SiteRecord');
+    assert.match(site, /const editing = state === 'Edit' \|\| conflict;/, 'the form stays open with the person\'s values');
+    assert.match(site, /<ConflictOnSave user="[^"]+" time="\d{2} [A-Z][a-z]{2} \d{4}, \d{2}:\d{2} CAT" yours=\{/);
+    const c = read(join(ROOT, 'project/components/feedback/ConflictOnSave.jsx'));
+    assert.match(c, /`This record was changed by \$\{user\} at \$\{time\}\. Reload to see the latest version\.`/);
+    assert.match(c, />Reload</);
+  });
+
   test('[M1.DS.03] a permanent record draws no Edit and offers Reverse with the S57 destructive confirmation', () => {
     const ledger = fn('LedgerView');
     assert.doesNotMatch(ledger, />Edit</);

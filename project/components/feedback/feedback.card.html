@@ -12,7 +12,7 @@
 </head><body><div id="root"></div>
 <script type="text/babel">
 loadDS('../').then((DS) => {
-const { Icon, Text, textStyle, Avatar, Logo, Button, PressButton, PressToggle, Capsule, CapsuleGroup, Segmented, LineStepper, StatusMark, ProvenanceChip, ConfirmationChip, Banner, SeverityTag, EmptyState, Skeleton, CardSkeleton, Dialog, SearchField, Tabs, CommodityTabs, SyncStatus, Header, MobileShell, MODULES, QuantityChip, ShareBar, Figure, Card, CardRow, Dot, RailRow, DataTable, RestrictedCell, DerivedCell, RefCell, ChartCard, ChartAttribution, EvidenceTile, Timeline, ActionPanel, AmountRow, SummaryList, RadioList, ReconcilePanel } = DS;
+const { Icon, Text, textStyle, Avatar, Logo, Button, PressButton, PressToggle, Capsule, CapsuleGroup, Segmented, LineStepper, StatusMark, ProvenanceChip, ConfirmationChip, Banner, SeverityTag, EmptyState, Skeleton, CardSkeleton, Dialog, SearchField, Tabs, CommodityTabs, SyncStatus, Header, MobileShell, MODULES, QuantityChip, ShareBar, Figure, Card, CardRow, Dot, RailRow, DataTable, RestrictedCell, DerivedCell, RefCell, ChartCard, ChartAttribution, EvidenceTile, Timeline, ActionPanel, AmountRow, SummaryList, RadioList, ReconcilePanel, ConflictOnSave } = DS;
 const L=(t)=><span className="lbl">{t}</span>;
 
 function Demo(){
@@ -24,6 +24,7 @@ function Demo(){
       <Banner tone="error" title="Weighbridge feed silent">position may look flat. Tickets can still be photographed.</Banner>
       <Banner tone="info">Kapiri's 300 is declared and non-binding. Approving does not make it firm.</Banner>
       <Banner tone="error" action={<Button size="xsmall" variant="outline" icon="refresh-cw">Retry</Button>}>Action failed: the approval did not land.</Banner>
+      <ConflictOnSave user="L. Mulenga" time="26 Sep 2026, 09:10 CAT" yours={[{label:'Owner',value:'Lakeview Farms Ltd'},{label:'Weighbridge',value:'No'}]}/>
     </div>
     <div className="row">{L('status')}<StatusMark kind="clean"/><StatusMark kind="attention"/><StatusMark kind="breach"/><StatusMark kind="block"/><StatusMark kind="awaiting"/><StatusMark kind="within"/><StatusMark kind="over"/><StatusMark kind="up"/><StatusMark kind="down"/><StatusMark kind="flat"/><StatusMark kind="rebalance"/></div>
     <div className="row">{L('provenance')}<ProvenanceChip kind="synced"/><ProvenanceChip kind="bridge"/><ProvenanceChip kind="ocr-high"/><ProvenanceChip kind="ocr-medium"/><ProvenanceChip kind="ocr-low"/><ProvenanceChip kind="typed"/><ProvenanceChip kind="declared"/></div>

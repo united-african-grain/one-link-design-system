@@ -203,6 +203,16 @@ describe('[M2.DS.01] weighbridge continuity screens', () => {
     assert.ok(rows.every((r) => (r.inForce === 'Scanned slip' ? r.connection === '' : ['Connected', 'Delayed', 'Offline'].includes(r.connection))), 'a weighbridge site shows its Connection status, a slip site none');
   });
 
+  test('[M2.DS.01] text in the new tables wraps and is never cut mid-word', () => {
+    const table = read(join(COMPONENTS, 'data/DataTable.jsx'));
+    assert.match(table, /const fit = c\.wrap \? \{ padding: '8px 12px', overflow: 'visible', whiteSpace: 'normal'/, 'a wrapping column lets its text run onto more lines');
+    assert.match(table, /height: wraps \? undefined : 48, minHeight: 48/, 'and its rows grow');
+    assert.match(tickets, /const columns = given\.map\(\(c\) => \(\{ wrap: c\.align !== 'right', width: c\.width \|\| 'minmax\(160px, 1fr\)', \.\.\.c \}\)\);/, 'every kit table wraps its wording');
+    const list = read(join(COMPONENTS, 'records/ExceptionList.jsx'));
+    for (const key of ['type', 'title', 'record', 'owner']) assert.match(list, new RegExp(`key: '${key}'[^}]*wrap: true`), `${key} wraps`);
+    assert.match(read(join(ROOT, 'project/ui_kits/admin_workspace/Settings.jsx')), /key: 'pending', label: 'Pending change', wrap: true/);
+  });
+
   test('[M2.DS.01] no price or money appears on any weighbridge screen', () => {
     const words = shown(tickets).join(' | ');
     assert.doesNotMatch(words, /\bUSD\b|\bZMW\b|\bK\d|\bprice\b|value at risk|margin/i);

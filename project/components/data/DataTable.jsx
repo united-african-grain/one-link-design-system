@@ -37,9 +37,12 @@ export function DataTable({ columns, rows, footer, total, page = 1, pageSize, on
   const tableMin = minWidth != null ? minWidth : columns.length * 80;
   const scroll = outerW > 0 && outerW < tableMin;
   const grid = columns.map((c) => c.width || (c.align === 'right' ? 'max-content' : 'minmax(0,1fr)')).join(' ');
+  // A column with `wrap` lets long words run onto more lines instead of being cut, and its rows grow from 48px.
+  const wraps = columns.some((c) => c.wrap);
   const cell = (c, r, i) => {
     const v = c.render ? c.render(r, i) : r[c.key];
-    return <div key={c.key} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: c.align === 'right' ? 'flex-end' : 'flex-start', padding: '0 12px', minWidth: 0, textAlign: c.align || 'left', ...textStyle('body-3', { tone: c.tone || 'primary', tabular: c.align === 'right' || c.tabular }), overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v}</div>;
+    const fit = c.wrap ? { padding: '8px 12px', overflow: 'visible', whiteSpace: 'normal', overflowWrap: 'anywhere', textWrap: 'pretty' } : { padding: '0 12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' };
+    return <div key={c.key} data-wrap={c.wrap || undefined} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: c.align === 'right' ? 'flex-end' : 'flex-start', minWidth: 0, textAlign: c.align || 'left', ...textStyle('body-3', { tone: c.tone || 'primary', tabular: c.align === 'right' || c.tabular }), ...fit }}>{c.wrap ? <span style={{ minWidth: 0 }}>{v}</span> : v}</div>;
   };
   return (
     <div ref={outer} style={{ width: '100%', ...style }}>
@@ -51,7 +54,7 @@ export function DataTable({ columns, rows, footer, total, page = 1, pageSize, on
       </div>
       {rows.map((r, i) => (
         <React.Fragment key={r[rowKey] != null ? r[rowKey] : i}>
-          <div role="row" onMouseEnter={() => setHoverI(i)} onMouseLeave={() => setHoverI(-1)} style={{ position: 'relative', display: 'grid', gridTemplateColumns: grid, height: 48, boxShadow: r.correction ? 'none' : 'inset 0 -1px 0 var(--border-light)', opacity: r.closed ? 0.6 : 1 }}>
+          <div role="row" onMouseEnter={() => setHoverI(i)} onMouseLeave={() => setHoverI(-1)} style={{ position: 'relative', display: 'grid', gridTemplateColumns: grid, height: wraps ? undefined : 48, minHeight: 48, boxShadow: r.correction ? 'none' : 'inset 0 -1px 0 var(--border-light)', opacity: r.closed ? 0.6 : 1 }}>
             <span aria-hidden style={{ position: 'absolute', inset: '2px -8px', borderRadius: 'var(--radius-md)', background: 'var(--grouped)', opacity: hoverI === i ? 1 : 0, transition: 'opacity var(--dur-default) var(--ease-default)', pointerEvents: 'none' }} />
             {columns.map((c) => cell(c, r, i))}
           </div>

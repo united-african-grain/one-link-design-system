@@ -33,7 +33,8 @@ export function ticketsFrame(screen, state) {
   if (screen === 'ClerkHome') return { module: 'home', breadcrumb: ['Home'] };
   if (screen === 'ScannedSlip') return { module: 'logistics', section: 'tickets', breadcrumb: [...crumbs, 'Scanned slip'] };
   if (screen === 'TicketRecord') return { module: 'logistics', section: 'tickets', breadcrumb: [...crumbs, ticketRecordRef(state)] };
-  if (screen === 'FeedHealth') return { module: 'logistics', section: 'tickets', breadcrumb: [...crumbs, 'Chisamba Shed weighbridge'] };
+  // The last crumb is the phone toolbar's title, so it stays short: the page title names the site's weighbridge.
+  if (screen === 'FeedHealth') return { module: 'logistics', section: 'tickets', breadcrumb: [...crumbs, 'Feed health'] };
   return { module: 'logistics', section: 'tickets', breadcrumb: crumbs };
 }
 
@@ -87,8 +88,12 @@ function WbFilters({ view, filters, search }) {
   );
 }
 
-/** A table inside a titled card, edge to edge, scrolling on a phone; nothing to show reads "No [objects] to display." */
-function WbTable({ title, count, objects, action, columns, rows }) {
+/** A table inside a titled card, edge to edge, scrolling on a phone; text wraps and is never cut; nothing to show reads
+    "No [objects] to display." */
+function WbTable({ title, count, objects, action, columns: given, rows }) {
+  // Wording, names and references wrap rather than being cut; figures stay on one line.
+  // A flexible column keeps the 160px floor the scroll width assumes, so wrapped words are never squeezed to letters.
+  const columns = given.map((c) => ({ wrap: c.align !== 'right', width: c.width || 'minmax(160px, 1fr)', ...c }));
   const min = columns.reduce((n, c) => n + (c.width && /px$/.test(c.width) ? parseInt(c.width, 10) : 160), 0);
   const table = rows.length ? <DataTable rowKey="id" columns={columns} rows={rows} minWidth={min} /> : <EmptyState title={`No ${objects} to display.`} style={{ padding: '16px 0 8px' }} />;
   if (!title) return <Card padding={rows.length ? 4 : 16}>{table}</Card>;
@@ -415,7 +420,7 @@ export function TicketRecord({ state = 'Ready' }) {
       ) : (
         <>
           <WbTable title="Weighings" count={weighings.filter((w) => !w.total).length} objects="weighings" columns={[
-            { key: 'weighing', label: 'Weighing', render: (r) => (r.corrected ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>{r.weighing}<StatusMark kind="flat" label="Corrected from photo" size="body-4" /></span> : wbStrong(r, r.weighing)) },
+            { key: 'weighing', label: 'Weighing', render: (r) => (r.corrected ? <span style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px 8px' }}><span>{r.weighing}</span><StatusMark kind="flat" label="Corrected from photo" size="body-4" /></span> : wbStrong(r, r.weighing)) },
             { key: 'weight', label: 'Weight (t)', width: '120px', align: 'right', render: (r) => wbStrong(r, r.weight) },
             { key: 'time', label: 'Time (CAT)', width: '180px', tabular: true },
             { key: 'source', label: 'Source', width: '140px' },

@@ -318,7 +318,7 @@ export function SwitchesList({ state = 'All', onOpen }) {
           { key: 'name', label: 'Switch', width: '150px', render: (r) => <RecordLink onClick={() => onOpen && onOpen(r.id)}>{r.name}</RecordLink> },
           { key: 'scope', label: 'Site', width: '150px' },
           { key: 'inForce', label: 'In force', width: '130px' },
-          { key: 'pending', label: 'Pending change' },
+          { key: 'pending', label: 'Pending change', wrap: true },
           { key: 'connection', label: 'Connection status', width: '160px', render: (r) => (r.connection ? <StatusMark kind={CONNECTION[r.connection]} label={r.connection} size="body-4" /> : '') },
           { key: 'approver', label: 'Approver', width: '110px' },
           { key: 'status', label: 'Status', width: '170px', render: (r) => r.status },

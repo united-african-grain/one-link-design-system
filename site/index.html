@@ -263,6 +263,8 @@ td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-alig
 .logo-sizes{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-top:16px}
 .logo-sizes figure{margin:0;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .logo-list{margin:12px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;color:var(--content-secondary);max-width:68ch}
+.hero-splash{display:block;width:96px;height:auto;margin-bottom:20px}
+.logo-tile.splash img{width:180px;height:auto}
 .logo-why{margin-top:16px;padding:20px 24px;border-radius:var(--radius-md,16px);background:var(--grouped-light);max-width:76ch;display:flex;flex-direction:column;gap:10px}
 </style>
 </head>
@@ -298,6 +300,7 @@ td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-alig
       <section id="overview" aria-labelledby="overview-title">
         <div class="hero">
           <div class="hero-copy">
+            <picture><source srcset="assets/one-link-splash-still.svg" media="(prefers-reduced-motion: reduce)"><img class="hero-splash" src="assets/one-link-splash.svg" alt="One Link" width="96" height="60"></picture>
             <p class="t-body-4 muted">Light theme · web and mobile · v1</p>
             <h1 id="overview-title" class="t-heading-1">The One Link design system</h1>
             <p class="t-body-2">One Link runs a grain and fertilizer business: trades and mill coverage, weighbridge intake, stock, and farmer input finance, with a portal for counterparties and a field app for drivers. Every screen leads with what needs attention, and every figure is derived, never typed.</p>
@@ -359,6 +362,13 @@ td{padding:8px 16px 8px 0;border-top:1px solid var(--border-light);vertical-alig
             <p>UAG's business is connection. It stands between Zambia's farmers and its mills, and between grain that arrives by sea and the mills that need it. Every tonne UAG handles is a link between someone who grows or ships it and someone who needs it.</p>
             <p>The mark is two links joined into one. One side is the farmer, the other the mill. Where they meet, the overlap forms a single grain kernel. The grain sits at the exact point where the two join, because that is what UAG does: it sits in the middle and makes the connection work, one load at a time. It is also what One Link does, turning many spreadsheets, phone calls and workbooks into one record that everyone reads.</p>
             <p>The shape is deliberately simple. It has to be recognisable on a farmer's phone screen in bright sun, on a clerk's screen at the weighbridge, and as a small icon in the app store. It uses One Link's own blue, and every commodity keeps its own colour inside the product, so the logo never competes with the wheat, maize, soya and fertiliser it serves.</p>
+          </div>
+        </div>
+        <div class="sub">
+          <div class="sub-head"><h3 class="t-heading-4 t-strong">The splash</h3><p class="t-body-3">The mark's one animation: the mark, there at once, with a light running round its loops while the app loads. It shows on every full page load and fades once the app is ready. With reduced motion it is the still. The full rules are on the <a href="guidelines/brand-splash.html">Splash card</a>.</p></div>
+          <div class="logo-grid">
+            <div><div class="logo-tile splash"><picture><source srcset="assets/one-link-splash-still.svg" media="(prefers-reduced-motion: reduce)"><img src="assets/one-link-splash.svg" alt="The One Link splash, a light running round the mark" width="180" height="112"></picture></div><p class="logo-cap t-caption-1">Animated: <code>one-link-splash.svg</code>. Full page loads only, never a move inside the app.</p></div>
+            <div><div class="logo-tile splash"><img src="assets/one-link-splash-still.svg" alt="The One Link splash, still" width="180" height="112"></div><p class="logo-cap t-caption-1">Reduced motion: <code>one-link-splash-still.svg</code>, the same frame with no light.</p></div>
           </div>
         </div>
         <div class="sub">

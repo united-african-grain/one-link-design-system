@@ -27,8 +27,8 @@ function Demo(){
       <ConflictOnSave user="L. Mulenga" time="26 Sep 2026, 09:10 CAT" yours={[{label:'Owner',value:'Lakeview Farms Ltd'},{label:'Weighbridge',value:'No'}]}/>
     </div>
     <div className="row">{L('status')}<StatusMark kind="clean"/><StatusMark kind="attention"/><StatusMark kind="breach"/><StatusMark kind="block"/><StatusMark kind="awaiting"/><StatusMark kind="within"/><StatusMark kind="over"/><StatusMark kind="up"/><StatusMark kind="down"/><StatusMark kind="flat"/><StatusMark kind="rebalance"/></div>
-    <div className="row">{L('provenance')}<ProvenanceChip kind="synced"/><ProvenanceChip kind="bridge"/><ProvenanceChip kind="ocr-high"/><ProvenanceChip kind="ocr-medium"/><ProvenanceChip kind="ocr-low"/><ProvenanceChip kind="typed"/><ProvenanceChip kind="declared"/></div>
-    <div className="row">{L('confirmation')}<ConfirmationChip kind="confirmed"/><ConfirmationChip kind="awaiting"/><ConfirmationChip kind="disputed"/><ConfirmationChip kind="confirm"/></div>
+    <div className="row">{L('provenance')}<ProvenanceChip kind="synced"/><ProvenanceChip kind="ocr-verified"/><ProvenanceChip kind="unverified"/><ProvenanceChip kind="declared"/></div>
+    <div className="row">{L('confirmation')}<ConfirmationChip kind="confirmed"/><ConfirmationChip kind="awaiting"/><ConfirmationChip kind="disputed"/><ConfirmationChip kind="confirm"/><ConfirmationChip kind="pending"/></div>
     <div className="row">{L('severity')}<SeverityTag level="critical"/><SeverityTag level="high"/><SeverityTag level="normal"/></div>
     <div className="row" style={{alignItems:'flex-start'}}>{L('empty · skeleton')}<div style={{flex:1,background:'var(--elevated)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-minimal-soft)'}}><EmptyState meta="Checked 07:02 · next digest 13:00"/></div><div style={{flex:1}}><CardSkeleton/></div></div>
     <div className="row">{L('dialog')}<Button variant="outline" onClick={()=>setOpen(true)}>Open dialog</Button></div>

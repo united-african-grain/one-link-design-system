@@ -153,7 +153,7 @@
       <Stack>
         <Row label="Status"><StatusMark kind="clean" /><StatusMark kind="attention" /><StatusMark kind="breach" /><StatusMark kind="block" /><StatusMark kind="awaiting" /></Row>
         <Row label="Trend"><StatusMark kind="up" label="Improving" /><StatusMark kind="down" label="Worsening" /><StatusMark kind="flat" /><StatusMark kind="rebalance" /></Row>
-        <Row label="Provenance"><ProvenanceChip kind="synced" /><ProvenanceChip kind="bridge" /><ProvenanceChip kind="ocr-high" /><ProvenanceChip kind="typed" /><ProvenanceChip kind="declared" /></Row>
+        <Row label="Provenance"><ProvenanceChip kind="synced" /><ProvenanceChip kind="ocr-verified" /><ProvenanceChip kind="unverified" /><ProvenanceChip kind="declared" /></Row>
         <Row label="Confirmation"><ConfirmationChip kind="confirmed" /><ConfirmationChip kind="awaiting" /><ConfirmationChip kind="disputed" /></Row>
         <Row label="Severity"><SeverityTag level="critical" /><SeverityTag level="high" /><SeverityTag level="normal" /></Row>
         <Row label="Sync"><SyncStatus state="live" /><SyncStatus state="stalled" /></Row>
@@ -276,7 +276,7 @@
         <Segmented value={outcome} onChange={setOutcome} options={[{ value: 'within', label: 'Within', icon: 'check' }, { value: 'held', label: 'Held', icon: 'triangle-alert' }, { value: 'block', label: 'Hard block', icon: 'octagon-x' }]} />
         <ReconcilePanel outcome={outcome} loading={busy} onAction={run}
           columns={outcome === 'block'
-            ? [{ label: 'Gross', value: '6.00', unit: 't', provenance: 'typed' }, { label: 'Tare', value: '7.50', unit: 't', provenance: 'synced' }, { label: 'Net', value: '—', unit: '' }]
+            ? [{ label: 'Gross', value: '6.00', unit: 't', provenance: 'unverified' }, { label: 'Tare', value: '7.50', unit: 't', provenance: 'synced' }, { label: 'Net', value: '—', unit: '' }]
             : [{ label: 'Weighed in', value: '30.02', unit: 't', provenance: 'synced' }, { label: 'Deduction', value: outcome === 'held' ? '1.20' : '0.32', unit: 't', provenance: 'ocr-medium' }, { label: 'Applied', value: outcome === 'held' ? '28.82' : '29.70', unit: 't' }]}
           evidence={<><EvidenceTile kind="receipt" caption="slip-gr10000356" time="14:22" /><EvidenceTile kind="photo" caption="photo-probe-1" time="19:16" /></>} />
       </Stack>

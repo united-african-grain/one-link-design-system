@@ -1,0 +1,48 @@
+<!-- @dsCard group="Components" viewport="1000x1300" subtitle="Weighbridge continuity: readiness apart from source, the slip photo with zoom and fingerprint, the field check, the second confirmation, the exceptions list" name="Weighbridge · Readiness, evidence viewer, field check, exceptions (M2.DS.01)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px;align-items:start}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { ReadinessChip, READINESS_KINDS, ProvenanceChip, ConfirmationChip, EvidenceViewer, FieldCheck, fieldsReady, SecondConfirmation, ExceptionList, RecordHighlights, Card, Button, Text } = DS;
+const FIELDS = [
+  { key: 'vehicle', label: 'Vehicle', read: 'ABZ 4610', value: 'ABZ 4610' },
+  { key: 'gross', label: 'Gross (t)', read: '45.900', value: '45.900', numeric: true },
+  { key: 'tare', label: 'Tare (t)', read: '13.380', value: '13.380', numeric: true, doubtful: true },
+  { key: 'net', label: 'Printed net (t)', read: '32.520', value: '32.020', numeric: true, doubtful: true },
+];
+const ROWS = [
+  { id: 'EXC-000192', type: 'Intake', title: 'Weighbridge offline', record: 'Chisamba Shed weighbridge', business: 'Chisamba Shed weighbridge is offline since 09:10 CAT.', businessRecord: 'Chisamba Shed', value: '', owner: 'Clerk, Chisamba Shed', age: '2 h', status: 'open' },
+  { id: 'EXC-000191', type: 'Intake', title: 'Weighed in, not weighed out', record: 'WBT10001599', recordLink: true, business: 'Delivery not completed', businessRecord: 'Cameron Estates, maize', businessRecordLink: true, value: '9,640', owner: 'Clerk, Chisamba Shed', age: '3 h', status: 'acknowledged' },
+];
+function Demo(){
+  const [fields,setFields]=React.useState(FIELDS);
+  const change=(k,p)=>setFields((fs)=>fs.map((f)=>f.key===k?{...f,...p}:f));
+  return <div className="col">
+    <Text variant="caption-1-condensed" tone="tertiary">Readiness (a ticket's status) and provenance (S57 words)</Text>
+    <div className="row">{READINESS_KINDS.map((k)=><ReadinessChip key={k} kind={k}/>)}</div>
+    <div className="row"><ProvenanceChip kind="synced"/><ProvenanceChip kind="ocr-verified"/><ProvenanceChip kind="unverified"/><ProvenanceChip kind="declared"/><ConfirmationChip kind="confirmed"/><ConfirmationChip kind="disputed"/><ConfirmationChip kind="pending"/></div>
+    <RecordHighlights kind="Weighbridge ticket" title="WBT10001606" status={<ReadinessChip kind="ready"/>} actions={<Button size="small">Receive</Button>} tabs={[]}
+      fields={[{label:'Truck',value:'ABZ 4412'},{label:'Direction',value:'Inbound'},{label:'Gross',value:'46.280 t'},{label:'Tare',value:'14.140 t'},{label:'Net',value:'32.140 t'},{label:'Source',value:'Weighbridge'}]}/>
+    <Text variant="caption-1-condensed" tone="tertiary">Slip photo beside the field check</Text>
+    <div className="grid">
+      <Card title="Slip photo"><EvidenceViewer src="../../assets/samples/slip-chisamba-10001614.svg" fingerprint="7C4E 19A2 D0B3 B21A" height={300}/></Card>
+      <Card title="Weights" headerRight={<Button size="xsmall" disabled={!fieldsReady(fields)}>Confirm weights</Button>}><div style={{margin:'0 -16px'}}><FieldCheck fields={fields} onChange={change} evidence="7C4E 19A2 D0B3 B21A"/></div></Card>
+    </div>
+    <SecondConfirmation field="Tare (t)" reading="13.380" entered="13.880" firstBy="S. Banda" firstAt="26 Sep 2026, 09:58 CAT" viewer="S. Banda"/>
+    <Text variant="caption-1-condensed" tone="tertiary">Exceptions: the clerk's wording, then the owner's with the price tier</Text>
+    <Card padding={4}><ExceptionList rows={ROWS} variant="clerk"/></Card>
+    <Card padding={4}><ExceptionList rows={ROWS} variant="owner" priceTier/></Card>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

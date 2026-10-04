@@ -12,7 +12,7 @@ export function ReconcilePanel({ columns, outcome = 'within', message, loading =
   const cols = columns || [
     { label: 'Weighed in', value: '28.20', unit: 't', provenance: 'synced' },
     { label: 'Deduction', value: '0.00', unit: 't', provenance: 'ocr-medium' },
-    { label: 'Applied', value: '28.20', unit: 't', provenance: 'typed' },
+    { label: 'Applied', value: '28.20', unit: 't', provenance: 'unverified' },
   ];
   const box = React.useRef(null);
   const boxW = useElementWidth(box);

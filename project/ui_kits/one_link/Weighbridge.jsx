@@ -25,7 +25,7 @@ export function Weighbridge({ state = 'default', mobile = false }) {
       <SectionLabel>needs attention</SectionLabel>
       <Card style={{ background: 'var(--warning-subtle)', boxShadow: 'none' }} title="WBT10001606 · SUNRISE GRAIN" meta={['Moses', 'BLX2290ZM']}
         headerRight={<Button size="xsmall" variant="primary">Complete</Button>}>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}><ProvenanceChip kind="bridge" /><Text variant="body-3" tone="secondary">weighed in 11/05 · never weighed out → no net</Text></div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}><ReadinessChip kind="weighed-in-only" /><Text variant="body-3" tone="secondary">weighed in 11/05 · never weighed out → no net</Text></div>
       </Card>
     </div>
   );
@@ -69,9 +69,9 @@ export function GRNFinalise({ mobile = false }) {
   const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [busy, setBusy] = useState(false);
   const variants = [
-    { key: 'within', outcome: 'within', label: 'Within tolerance', cols: [{ label: 'Weighed in', value: '28.20', unit: 't', provenance: 'synced' }, { label: 'Deduction', value: '0.00', unit: 't', provenance: 'ocr-medium' }, { label: 'Applied', value: '28.20', unit: 't', provenance: 'typed' }] },
-    { key: 'held', outcome: 'held', label: 'Held for review', cols: [{ label: 'Weighed in', value: '28.20', unit: 't', provenance: 'synced' }, { label: 'Deduction', value: '1.20', unit: 't', provenance: 'ocr-medium', color: 'var(--warning-strong)' }, { label: 'Applied', value: '27.00', unit: 't', provenance: 'typed' }] },
-    { key: 'block', outcome: 'block', label: 'Hard block', cols: [{ label: 'Gross', value: '34.20', unit: 't', provenance: 'synced' }, { label: 'Tare', value: '36.00', unit: 't', provenance: 'typed', color: 'var(--error-strong)' }, { label: 'Net', value: '—', provenance: 'typed' }] },
+    { key: 'within', outcome: 'within', label: 'Within tolerance', cols: [{ label: 'Weighed in', value: '28.20', unit: 't', provenance: 'synced' }, { label: 'Deduction', value: '0.00', unit: 't', provenance: 'ocr-medium' }, { label: 'Applied', value: '28.20', unit: 't', provenance: 'unverified' }] },
+    { key: 'held', outcome: 'held', label: 'Held for review', cols: [{ label: 'Weighed in', value: '28.20', unit: 't', provenance: 'synced' }, { label: 'Deduction', value: '1.20', unit: 't', provenance: 'ocr-medium', color: 'var(--warning-strong)' }, { label: 'Applied', value: '27.00', unit: 't', provenance: 'unverified' }] },
+    { key: 'block', outcome: 'block', label: 'Hard block', cols: [{ label: 'Gross', value: '34.20', unit: 't', provenance: 'synced' }, { label: 'Tare', value: '36.00', unit: 't', provenance: 'unverified', color: 'var(--error-strong)' }, { label: 'Net', value: '—', provenance: 'unverified' }] },
   ];
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>

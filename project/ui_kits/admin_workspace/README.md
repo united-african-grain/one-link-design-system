@@ -22,7 +22,7 @@ It reuses `Sections`, `ScrollRow` and `PageHead` from `../one_link/Shell.jsx`.
 | SettingsList | `Settings.jsx` | All · High impact · Not set · No match |
 | SettingRecord | `Settings.jsx` | Change scheduled · No change scheduled · Schedule change · Value in the past · Scheduling · High-impact confirmation · Lookup · History · Commercial |
 | ScopedValues | `Settings.jsx` | Bagged at Chisamba Shed · Default case |
-| SwitchesList | `Settings.jsx` | All · No match |
+| SwitchesList | `Settings.jsx` | All · No match · Weight source per site |
 | SwitchRecord | `Settings.jsx` | On · Off · Propose change · Submitting · Pending approval · Rejected · Precondition not met |
 | ApprovalStepsList | `Settings.jsx` | All |
 | ApprovalStepRecord | `Settings.jsx` | Gate price · Variance hold · Edit · Saving |

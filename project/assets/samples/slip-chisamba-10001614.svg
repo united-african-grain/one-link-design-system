@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img" aria-label="Sample weighbridge slip, fictional">
+  <rect width="480" height="360" fill="#e7e5e0"/>
+  <g transform="rotate(-2 240 180)">
+    <rect x="70" y="34" width="340" height="296" rx="4" fill="#faf8f3" stroke="#d6d2c8"/>
+    <g font-family="'Courier New', Courier, monospace" fill="#2b2a28" font-size="12.5">
+      <text x="240" y="64" text-anchor="middle" font-weight="700" font-size="14">CHISAMBA SHED</text>
+      <text x="240" y="82" text-anchor="middle">WEIGHBRIDGE TICKET</text>
+      <text x="240" y="96" text-anchor="middle" font-size="10">SAMPLE, FICTIONAL DATA</text>
+      <text x="92" y="124">Ticket no:  10001614</text>
+      <text x="92" y="142">Direction:  IN</text>
+      <text x="92" y="160">Vehicle:    ABZ 4610</text>
+      <text x="92" y="178">Driver:     P. DAKA</text>
+      <text x="92" y="196">Supplier:   LAKEVIEW FARMS</text>
+      <text x="92" y="214">Date:       26/09/2026</text>
+      <text x="92" y="238">Gross:  45 900 kg   09:31</text>
+      <text x="92" y="256">Tare:   13 880 kg   09:52</text>
+      <text x="92" y="274">Net:    32 020 kg</text>
+      <text x="92" y="306" font-size="10">Operator ______    Driver ______</text>
+    </g>
+  </g>
+</svg>

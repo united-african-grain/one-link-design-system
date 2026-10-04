@@ -1,5 +1,5 @@
 /** @startingPoint section="Records" subtitle="GRN reconcile: within tolerance / held for review / hard block" viewport="560x360" */
-export interface ReconcileColumn { label: string; value: string; unit?: string; sub?: string; color?: string; provenance?: 'synced' | 'bridge' | 'ocr-high' | 'ocr-medium' | 'ocr-low' | 'typed' | 'declared'; }
+export interface ReconcileColumn { label: string; value: string; unit?: string; sub?: string; color?: string; provenance?: 'synced' | 'ocr-verified' | 'unverified' | 'declared' | 'ocr-high' | 'ocr-medium' | 'ocr-low'; }
 export interface ReconcilePanelProps {
   /** Defaults to Weighed in / Deduction / Applied. */
   columns?: ReconcileColumn[];

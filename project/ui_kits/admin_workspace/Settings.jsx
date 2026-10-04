@@ -9,7 +9,7 @@ export const SETTINGS_STATES = {
   SettingsList: ['All', 'High impact', 'Not set', 'No match'],
   SettingRecord: ['Change scheduled', 'No change scheduled', 'Schedule change', 'Value in the past', 'Scheduling', 'High-impact confirmation', 'Lookup', 'History', 'Commercial'],
   ScopedValues: ['Bagged at Chisamba Shed', 'Default case'],
-  SwitchesList: ['All', 'No match'],
+  SwitchesList: ['All', 'No match', 'Weight source per site'],
   SwitchRecord: ['On', 'Off', 'Propose change', 'Submitting', 'Pending approval', 'Rejected', 'Precondition not met'],
   ApprovalStepsList: ['All'],
   ApprovalStepRecord: ['Gate price', 'Variance hold', 'Edit', 'Saving'],
@@ -301,7 +301,30 @@ const SWITCHES = [
   { id: 'external', name: 'External access', scope: 'All counterparties', inForce: 'Off', status: ACTIVE, approver: 'Owner' },
 ];
 
+// The Weight source switch at each site (M2.DS.01, S10): the value in force, any pending change, and the weighbridge's
+// Connection status (S57 Integrations: Connected, Delayed, Offline). A site on Scanned slip has no connection to show.
+const WEIGHT_SOURCES = [
+  { id: 'w1', name: 'Weight source', scope: 'Chisamba Shed', inForce: 'Weighbridge', pending: '', connection: 'Connected', status: ACTIVE, approver: 'Owner' },
+  { id: 'w2', name: 'Weight source', scope: 'Mpongwe Depot', inForce: 'Scanned slip', pending: 'Weighbridge, waiting for T. Mwila', connection: '', status: PENDING, approver: 'Owner' },
+  { id: 'w3', name: 'Weight source', scope: 'Site A gate', inForce: 'Weighbridge', pending: '', connection: 'Delayed', status: ACTIVE, approver: 'Owner' },
+];
+const CONNECTION = { Connected: 'clean', Delayed: 'pending', Offline: 'breach' };
+
 export function SwitchesList({ state = 'All', onOpen }) {
+  if (state === 'Weight source per site') {
+    return (
+      <ListView title="Switches" objects="switches" search="Search switches" view="Weight source by site"
+        columns={[
+          { key: 'name', label: 'Switch', width: '150px', render: (r) => <RecordLink onClick={() => onOpen && onOpen(r.id)}>{r.name}</RecordLink> },
+          { key: 'scope', label: 'Site', width: '150px' },
+          { key: 'inForce', label: 'In force', width: '130px' },
+          { key: 'pending', label: 'Pending change', wrap: true },
+          { key: 'connection', label: 'Connection status', width: '160px', render: (r) => (r.connection ? <StatusMark kind={CONNECTION[r.connection]} label={r.connection} size="body-4" /> : '') },
+          { key: 'approver', label: 'Approver', width: '110px' },
+          { key: 'status', label: 'Status', width: '170px', render: (r) => r.status },
+        ]} rows={WEIGHT_SOURCES} />
+    );
+  }
   return (
     <ListView title="Switches" objects="switches" search="Search switches" view="All switches"
       columns={[

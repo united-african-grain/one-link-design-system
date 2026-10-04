@@ -8,6 +8,8 @@ export interface DataColumn<Row = any> {
   width?: string;
   tone?: 'primary' | 'secondary' | 'tertiary';
   tabular?: boolean;
+  /** Long text wraps onto more lines instead of being cut; the row grows from 48px. For names, wording and references. */
+  wrap?: boolean;
   render?: (row: Row, index: number) => React.ReactNode;
 }
 export interface DataTableProps<Row = any> {

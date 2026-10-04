@@ -46,9 +46,9 @@ function Demo(){
       <div className="col" style={{gap:16}}>
         <div className="g2" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
           <ReconcilePanel outcome="within" evidence={<EvidenceTile caption="slip-gr10000356" time="14:22"/>}/>
-          <ReconcilePanel outcome="held" columns={[{label:'Weighed in',value:'28.20',unit:'t',provenance:'synced'},{label:'Deduction',value:'1.20',unit:'t',provenance:'ocr-medium',color:'var(--warning-strong)'},{label:'Applied',value:'27.00',unit:'t',provenance:'typed'}]}/>
+          <ReconcilePanel outcome="held" columns={[{label:'Weighed in',value:'28.20',unit:'t',provenance:'synced'},{label:'Deduction',value:'1.20',unit:'t',provenance:'ocr-medium',color:'var(--warning-strong)'},{label:'Applied',value:'27.00',unit:'t',provenance:'unverified'}]}/>
         </div>
-        <ReconcilePanel outcome="block" columns={[{label:'Gross',value:'34.20',unit:'t',provenance:'synced'},{label:'Tare',value:'36.00',unit:'t',provenance:'typed',color:'var(--error-strong)'},{label:'Net',value:'—',provenance:'typed'}]}/>
+        <ReconcilePanel outcome="block" columns={[{label:'Gross',value:'34.20',unit:'t',provenance:'synced'},{label:'Tare',value:'36.00',unit:'t',provenance:'unverified',color:'var(--error-strong)'},{label:'Net',value:'—',provenance:'unverified'}]}/>
       </div>
     </div>
     <div className="row" style={{alignItems:'flex-start',gap:32}}>

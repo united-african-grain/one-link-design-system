@@ -27,6 +27,7 @@ export const SECTIONS = [
   { file: 'Settings.jsx', states: 'SETTINGS_STATES', card: 'M1.DS.01' },
   { file: 'People.jsx', states: 'PEOPLE_STATES', card: 'M1.DS.02' },
   { file: 'Records.jsx', states: 'RECORDS_STATES', card: 'M1.DS.03' },
+  { file: 'Data.jsx', states: 'DATA_STATES', card: 'M3.DS.01' },
 ];
 
 /** The README's settings and governance table: screen to { file, states }. */

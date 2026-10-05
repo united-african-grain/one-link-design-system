@@ -12,25 +12,27 @@
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx']).then((K) => {
+loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx']).then((K) => {
   const { Page, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GRNFinalise, GradingDispute, StockBoard, CreditBook, Segmented, ScrollRow } = K;
   // The weighbridge continuity screens (M2.DS.01) open in the Clerk's frame, or the owner's for his Exceptions view.
   // Every state opens directly with ?screen=<Screen>&state=<State>, which the screenshot review uses at 1440 and 390.
-  const STATES = { ...K.TICKETS_STATES, ...K.EXCEPTIONS_STATES };
-  const LABEL = { ClerkHome: 'Clerk Home', TicketsList: 'Weighbridge tickets', ScannedSlip: 'Scanned slip', TicketRecord: 'Ticket record', FeedHealth: 'Feed health', ExceptionsList: 'Exceptions', ExceptionRecord: 'Exception record' };
+  const STATES = { ...K.TICKETS_STATES, ...K.EXCEPTIONS_STATES, ...K.COUNTERPARTIES_STATES };
+  const LABEL = { ClerkHome: 'Clerk Home', TicketsList: 'Weighbridge tickets', ScannedSlip: 'Scanned slip', TicketRecord: 'Ticket record', FeedHealth: 'Feed health', ExceptionsList: 'Exceptions', ExceptionRecord: 'Exception record', CounterpartyFind: 'Find a counterparty', CounterpartyView: 'Counterparty', CounterpartyGroup: 'Group' };
   const params = new URLSearchParams(location.search);
   function Continuity({ initial, onLeave }){
     const [screen,setScreen]=React.useState(initial);
     const [state,setState]=React.useState(params.get('screen')===initial && params.get('state') || STATES[initial][0]);
     const go=(s,st)=>{ setScreen(s); setState(st || STATES[s][0]); };
     const Screen=K[screen];
-    const frame = K.TICKETS_STATES[screen] ? K.ticketsFrame(screen, state) : K.exceptionsFrame(screen, state);
+    const frame = K.TICKETS_STATES[screen] ? K.ticketsFrame(screen, state) : K.EXCEPTIONS_STATES[screen] ? K.exceptionsFrame(screen, state) : K.counterpartiesFrame(screen, state);
     const controls=<ScrollRow align="flex-end" style={{marginBottom:16}}>
       <Segmented options={['Owner screens', ...Object.keys(STATES).map((s)=>LABEL[s])]} value={LABEL[screen]} onChange={(l)=> l==='Owner screens' ? onLeave() : go(Object.keys(LABEL).find((k)=>LABEL[k]===l))}/>
       {STATES[screen].length>1?<Segmented options={STATES[screen]} value={state} onChange={setState}/>:null}
     </ScrollRow>;
-    const open=(ref)=> String(ref).startsWith('EXC') ? go('ExceptionRecord') : go('TicketRecord', ref==='WBT10001606' ? 'Ready' : ref==='WBT10001599' ? 'Closed' : 'From scanned slip');
+    const open=(ref)=> ref==='riverbend' ? go('CounterpartyView') : String(ref).startsWith('EXC') ? go('ExceptionRecord') : go('TicketRecord', ref==='WBT10001606' ? 'Ready' : ref==='WBT10001599' ? 'Closed' : 'From scanned slip');
     const body=<Screen state={state} onOpen={open}/>;
+    // Owen's Counterparties module (M3.DS.01) opens in his frame, with Counterparties in the navigation.
+    if(frame.module==='counterparties') return <Page nav={K.OWEN_NAV} module="counterparties" breadcrumb={frame.breadcrumb} user={K.OWEN} sync={null}>{controls}{body}</Page>;
     if(frame.owner) return <Page module={frame.module} breadcrumb={frame.breadcrumb} sync={null}>{controls}{body}</Page>;
     return <Page nav={K.CLERK_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.CLERK} sync={null}
       onModule={(v)=>{ if(v==='home') go('ClerkHome'); }} onSection={(v)=>{ if(v==='tickets') go('TicketsList'); }}>{controls}{body}</Page>;
@@ -47,7 +49,7 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.
     if(continuity) return <Continuity initial={continuity} onLeave={()=>setContinuity(null)}/>;
     let body=null, controls=null;
     if(module==='command'){ controls=<Segmented options={['Calm','Exception']} value={ccState==='calm'?'Calm':'Exception'} onChange={v=>setCcState(v==='Calm'?'calm':'exception')}/>; body=<CommandCenter state={ccState}/>; }
-    else if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval']} value={tdView} onChange={setTdView}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}</>;
+    else if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval','Counterparties']} value={tdView} onChange={(v)=> v==='Counterparties' ? setContinuity('CounterpartyFind') : setTdView(v)}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}</>;
       body = tdView==='Trade Board' ? <TradeBoard state={tbState}/> : tdView==='Coverage' ? <Coverage/> : <Approval/>; }
     else if(module==='warehouse'){ controls=<Segmented options={['Tickets','Sync silent','Empty','GRN finalise','Dispute','Clerk screens']} value={whView} onChange={(v)=> v==='Clerk screens' ? setContinuity('ClerkHome') : setWhView(v)}/>;
       body = whView==='GRN finalise' ? <GRNFinalise/> : whView==='Dispute' ? <GradingDispute/> : <Weighbridge state={whView==='Sync silent'?'silent':whView==='Empty'?'empty':'default'}/>; }

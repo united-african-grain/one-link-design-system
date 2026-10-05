@@ -53,3 +53,25 @@ Rules these screens keep:
 - The look is this system's current one (Henry's ruling of 30 Sep 2026): the canvases give layout, content and flow; buttons, radii, shadows and type are the published ones.
 
 Components this card introduced: `ReadinessChip`, `EvidenceViewer`, `FieldCheck` (with `fieldOpen`, `fieldCorrected`, `fieldsReady`), `SecondConfirmation` and `ExceptionList` (with `ExceptionStatus`), all in `components/records`. `ProvenanceChip` renamed `typed` to `unverified`, dropped `bridge` (now `ReadinessChip` Weighed in only) and reads in S57 words only; `ConfirmationChip` gained `pending` for Counterparty status Pending.
+
+## Counterparties for Owen (M3.DS.01)
+
+Owen's Counterparties module (S08 J7, canvas AB-OWEN-NMC), in his frame with Counterparties added to the navigation (UX-06: Owen and Alka only). From Trade Desk choose "Counterparties", or open any state directly with `?screen=<Screen>&state=<State>`.
+
+| Screen | File | States |
+|---|---|---|
+| CounterpartyFind | `Counterparties.jsx` | Global search · Did you mean · Also known as · List view · No match |
+| CounterpartyView | `Counterparties.jsx` | Related · Details · History · Calculation details · Load awaiting offload · Without the sell tier · Farmer · Farmer, without the farmer account tier |
+| CounterpartyGroup | `Counterparties.jsx` | Group overview |
+
+Rules these screens keep:
+
+- Read-only: no capture, edit, confirm or upload control (S08). The highlights panel is `CounterpartyOverview`: Type, Sales under contract, Delivered, Left to deliver, Receivables and Oldest unpaid, each with the date it is as of, and the status.
+- Business language only, from one shared list (`guidelines/banned-words.json`): no batch, upload, template, sync, virtual warehouse or error code. The source of a figure is the labelled field Source, "Stock sheet, 30 Sep 2026" (`SourceLine`), or a Basis row in Calculation details; dates read DD MMM YYYY and freshness reads Last refreshed.
+- A figure opens Calculation details, read-only (UX-18), with its components, its source and its date.
+- A figure the viewer's price tier does not allow is the Restricted mark on a shared layout (the highlights, the farmer account card) and is left out elsewhere (the invoice amount column).
+- Loads read Loading, In transit, Delivered and Reconciled (UX-32); a load awaiting offload is In transit, and its over-delivery variance is a labelled field.
+- Contract, load, invoice and counterparty references are blue links, because Owen can open them.
+- The look is this system's current one (Henry's ruling of 30 Sep 2026). The canvas's customer is replaced by the golden synthetic Riverbend Milling.
+
+Components this card introduced: `CounterpartyOverview` (records) and `SourceLine` (+ `sourceWords`, `SOURCE_KINDS`) (data).

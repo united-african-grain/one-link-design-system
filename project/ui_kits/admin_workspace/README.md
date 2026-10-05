@@ -62,7 +62,7 @@ The signed-out screens, Sign in and Activate, keep the app's current design and 
 | CounterpartiesList | `Records.jsx` | All · Flagged · No match |
 | CounterpartyRecord | `Records.jsx` | Details · Related · History · Without the contacts capability · Same name |
 | NameResolve | `Records.jsx` | Suggestions · Remembered match · No match · Re-point |
-| UploadPreview | `Records.jsx` | Validating · Preview with errors · Preview clean · Imported · Failed · Duplicate file · Without the price tier · Wrong type · Too large · Protected · Empty · Wrong sheet |
+| UploadPreview | `Records.jsx` | Validating · Preview with errors · Preview clean · Imported · Failed · Duplicate file · Without the price tier · Wrong type · Too large · Protected · Empty · Wrong sheet · Heading not found · Columns not read · Price tier missing · Earlier version · Amendment · Confirm amendment · Confirming amendment · Already recorded · Differs from recorded · Sheet figure differs · Duplicate refused · Importing |
 | TemplateBuilder | `Records.jsx` | Columns · Who may upload · Versions |
 | BusinessChanges | `Records.jsx` | Business changes · Without the price tier · Exporting · No match |
 | LedgerView | `Records.jsx` | Entries · Posted entry · Reverse · Reversed |
@@ -71,6 +71,28 @@ The signed-out screens, Sign in and Activate, keep the app's current design and 
 Reference data (sites and storage units, corridors and routes, products, delivery points with their capture mode, operating calendars in Zambian time, and counterparty classes, grades and seasons) uses one list view and record page. A site never offers Delete: it offers Deactivate, refused in the blocked pattern while stock remains, and a change takes effect from a date and time. The counterparty register, the counterparty record, the ledger and the contract view draw outside Setup, in One Link's own frame. The Business changes log is also the Audit logs page's second tab.
 
 The upload and import preview composes `ImportPreview`: a File card, the tiles, the rows with Row and Result, and Import disabled while any row has an error. A file refused before it is read says why under the File field, in the S57 "[Field] [requirement]." pattern. A price column is left out for a viewer without its tier. A price shown on a shared layout, such as a contract or a Business changes row, is the `Restricted` mark: a lock, no value, and the tooltip Restricted.
+
+## Data: templates, upload history and production readiness (`Data.jsx`, M3.DS.01)
+
+The Setup navigation's Data group (S11), renamed from Uploads, holds Templates, Upload history and Production readiness (Henry, 5 Oct 2026: navigation entries may be added, renamed or regrouped; the layout does not change).
+
+| Screen | File | States |
+|---|---|---|
+| TemplatesList | `Data.jsx` | All · No match |
+| NewTemplate | `Data.jsx` | Form · Missing fields · Saving |
+| TemplateVersion | `Data.jsx` | From a headers file · From an upload · Remove a column · Make a column required · Saving |
+| TemplateCompare | `Data.jsx` | Version 1 and version 2 |
+| UploadHistory | `Data.jsx` | All · Reversed · Discarded · No match |
+| UploadRecord | `Data.jsx` | Reversed · Related · History · Imported · Reverse · Reversing · Reverse refused |
+| ProductionReadiness | `Data.jsx` | Evidence missing · Ready to open · Propose opening · Submitting · Pending approval · Open |
+
+- Templates is a list view (UX-07): name, what it loads, the current version, its effective date, who may upload and the status, with New as the primary button. Who may upload is set per template by the administrator (Map D-39); no person is named by default, so a template with no bundle reads Not set. Statuses are icon and word: Active, Draft, Scheduled, Retired (UX-14).
+- The template record is `TemplateBuilder` (M1.DS.03), which gains New version. The version editor maps each column of the file to a field, its type, Required and its price tier, tested against a header row from a file of headers only or captured from an upload whose headers did not match (`ColumnMapping`). A tier from the figure-to-tier mapping is read-only, with no control that removes it. A destructive change (a column removed, moved to another field, a new type, an optional column made required) opens the existing `ReasonDialog` naming the change, and Save version waits for the reason (UX-22).
+- Version comparison draws version 1 beside version 2 with Added, Removed, Remapped and Changed marked (`VersionCompare`).
+- The template editor shows column names, types and tags, never a row's values (S10 control 4).
+- Upload history is a list view: each upload with its file, fingerprint, template version, uploader, time, rows, rows imported and status (Imported, Reversed, Discarded). An upload's record page in its Reversed state names who reversed it, when and why, lists the reversal records on the Related tab and the warnings recorded at import with their cells. Reverse is the existing `ReverseDialog`; refused, it reads "Reverse is not allowed. [Reason]." with the records that depend on the upload.
+- The upload preview additions (`UploadPreview`, from Heading not found to Importing) are the checks of `ImportPreview`: each cites its cell or record, warnings never stop Import, an amendment does until it is confirmed (Old value and New value columns and a confirm step), and a refused file shows no rows.
+- Production readiness is the evidence record with the Records open switch, drawn with the switch pattern (highlights, Propose change, the approver). While it is off, a condition banner says so. Evidence names who recorded it, when and where it sits; a missing piece reads Missing.
 
 ## Components this section introduced
 
@@ -83,6 +105,7 @@ The upload and import preview composes `ImportPreview`: a File card, the tiles, 
 - `OneTimeCode` (feedback): the activation code, shown once, with Copy and its expiry (M1.DS.02).
 - `CheckboxList` (inputs/Field) and Input's `size="large"`: bundles and sites, and the signed-out fields (M1.DS.02).
 - AppShell's `user.detail`: "Last sign-in" in the user menu (M1.DS.02).
+- `ColumnMapping` (+ `TierTag`, `mappingChanges`, `MAPPING_TYPES`, `TIER_TAGS`), `VersionCompare` (+ `compareVersions`, `COMPARE_MARKS`) (records, M3.DS.01): the template version editor's mapping and two versions compared. `ImportPreview` gains its checks (`PREVIEW_CHECKS`, `PREVIEW_STATES`, `previewBlocked`, `file.template`, `file.inForce`, `file.missing`, `file.notRead`, `refusal`), and its Result column wraps so a check is read in full.
 - `ReverseDialog` (records): "Reverse [record]? A reversal entry will be created." with a required reason, for a permanent record, which never draws Edit (M1.DS.03). It composes `ReasonDialog`; the restricted figure is the existing `Restricted`, and the import preview is the existing `ImportPreview`.
 
 ## Rules the screens keep

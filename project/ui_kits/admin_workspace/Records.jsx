@@ -16,7 +16,8 @@ export const RECORDS_STATES = {
   CounterpartiesList: ['All', 'Flagged', 'No match'],
   CounterpartyRecord: ['Details', 'Related', 'History', 'Without the contacts capability', 'Same name'],
   NameResolve: ['Suggestions', 'Remembered match', 'No match', 'Re-point'],
-  UploadPreview: ['Validating', 'Preview with errors', 'Preview clean', 'Imported', 'Failed', 'Duplicate file', 'Without the price tier', 'Wrong type', 'Too large', 'Protected', 'Empty', 'Wrong sheet'],
+  UploadPreview: ['Validating', 'Preview with errors', 'Preview clean', 'Imported', 'Failed', 'Duplicate file', 'Without the price tier', 'Wrong type', 'Too large', 'Protected', 'Empty', 'Wrong sheet',
+    'Heading not found', 'Columns not read', 'Price tier missing', 'Earlier version', 'Amendment', 'Confirm amendment', 'Confirming amendment', 'Already recorded', 'Differs from recorded', 'Sheet figure differs', 'Duplicate refused', 'Importing'],
   TemplateBuilder: ['Columns', 'Who may upload', 'Versions'],
   BusinessChanges: ['Business changes', 'Without the price tier', 'Exporting', 'No match'],
   LedgerView: ['Entries', 'Posted entry', 'Reverse', 'Reversed'],
@@ -29,7 +30,7 @@ export function recordsTitle(screen, state) {
   if (screen === 'OperatingCalendar') return 'Chisamba Shed';
   if (screen === 'CounterpartyRecord') return 'Lakeview Farms Ltd';
   if (screen === 'TemplateBuilder') return 'Contract register';
-  if (screen === 'UploadPreview') return 'Contract register 26 Sep 2026.xlsx';
+  if (screen === 'UploadPreview') return TRADE_PREVIEW_STATES.includes(state) ? 'Trade sheet 08 Oct 2026.xlsx' : 'Contract register 26 Sep 2026.xlsx';
   if (screen === 'NameResolve') return 'Contract register 26 Sep 2026.xlsx';
   if (screen === 'ReferenceList') return state;
   return null;
@@ -64,7 +65,7 @@ function ChangesCard({ rows }) {
       <SetupTable rowKey="id" columns={[
         { key: 'field', label: 'Field', width: '170px' }, { key: 'user', label: 'User', width: '130px' },
         { key: 'old', label: 'Old value', width: '170px' }, { key: 'next', label: 'New value', width: '170px' },
-        { key: 'date', label: 'Date (CAT)', width: '170px', tabular: true }, { key: 'reason', label: 'Reason' },
+        { key: 'date', label: 'Date (CAT)', width: '170px', tabular: true }, { key: 'reason', label: 'Reason', wrap: true },
       ]} rows={rows} />
     </CountCard>
   );
@@ -394,7 +395,66 @@ const REFUSED = {
   'Wrong sheet': 'Sheet must be named Contract register.',
 };
 
+// The upload preview additions (M3.DS.01, AC 1(f) and (g)), on the trade sheet. Each check cites its cell; the
+// warnings never stop Import, and an amendment does until it is confirmed (ImportPreview's PREVIEW_CHECKS).
+const TRADE_PREVIEW_STATES = ['Heading not found', 'Columns not read', 'Price tier missing', 'Earlier version', 'Amendment', 'Confirm amendment', 'Confirming amendment', 'Already recorded', 'Differs from recorded', 'Sheet figure differs', 'Duplicate refused', 'Importing'];
+const TRADE_ROWS = [
+  { row: 2, contract: 'SYN4702-A', counterparty: 'Riverbend Milling', product: 'White maize', tonnes: '1,200.000' },
+  { row: 3, contract: 'SYN4702-B', counterparty: 'Riverbend Milling', product: 'White maize', tonnes: '800.000' },
+  { row: 4, contract: 'SYN4702-C', counterparty: 'Lakeview Farms Ltd', product: 'White maize', tonnes: '180.000' },
+  { row: 5, contract: 'SYN4790', counterparty: 'Riverbend Milling', product: 'Wheat', tonnes: '1,200.000' },
+  { row: 6, contract: 'SYN4845', counterparty: 'Riverbend Milling', product: 'Wheat', tonnes: '4,000.000' },
+];
+const TRADE_CHECK = {
+  'Already recorded': { row: 3, check: 'already-recorded', cell: 'A3' },
+  'Differs from recorded': { row: 6, check: 'differs-from-recorded', cell: 'D6' },
+  'Sheet figure differs': { row: 5, check: 'sheet-figure-differs', cell: 'K5' },
+  Amendment: { row: 4, check: 'amendment', cell: 'D4', old: '150.000', next: '180.000' },
+};
+
+function TradeSheetPreview({ state }) {
+  const narrow = narrowNow();
+  const amending = state === 'Amendment' || state === 'Confirm amendment' || state === 'Confirming amendment';
+  const c = TRADE_CHECK[amending ? 'Amendment' : state];
+  // A refused file is not read, and without its required headings no row is: neither shows rows.
+  const unread = state === 'Heading not found' || state === 'Price tier missing' || state === 'Duplicate refused';
+  const rows = unread ? [] : TRADE_ROWS.map((r) => (c && r.row === c.row ? { ...r, ...c } : r));
+  const file = {
+    name: 'Trade sheet 08 Oct 2026.xlsx', by: state === 'Price tier missing' ? ['K. Zulu', '09:40'] : ['L. Mulenga', '09:40'], rows: unread ? '' : 5,
+    template: state === 'Earlier version' ? 'Trade sheet, version 1' : 'Trade sheet, version 2',
+    inForce: state === 'Earlier version' ? 'Version 2, from 08 Oct 2026' : undefined,
+    missing: state === 'Heading not found' ? ['Delivery window (Trades, row 1)'] : undefined,
+    notRead: state === 'Columns not read' ? ['Comments (H1)', 'Officer (I1)'] : undefined,
+  };
+  const refusal = state === 'Price tier missing' ? { reason: 'Trade sheet version 2 reads Buy price K/t (cell F1) for the Contract tier, which K. Zulu does not hold' }
+    : state === 'Duplicate refused' ? { reason: 'This file was imported as UPL-000240 on 01 Oct 2026, 09:12 CAT' } : undefined;
+  const tiles = unread ? [] : state === 'Importing'
+    ? [{ label: 'Rows', value: '1,240' }, { label: 'Imported so far', value: '412 of 1,240' }]
+    : [{ label: 'Rows', value: '5' }, { label: 'New contracts', value: '2' }, { label: 'Amendments', value: amending ? '1' : '0' }, { label: 'Warnings', value: c && !amending ? '1' : '0' }];
+  return (
+    <Sections>
+      <SetupHead title="Trade sheet preview" right={state === 'Heading not found' ? <Button variant="outline" size="small">New version</Button> : amending ? <Button variant="outline" size="small">Confirm amendments</Button> : null} />
+      <ImportPreview status="ready" importing={state === 'Importing'} file={file} refusal={refusal} tiles={tiles}
+        columns={[
+          { key: 'contract', label: 'Contract', width: '120px' }, { key: 'counterparty', label: 'Counterparty', width: '170px' }, { key: 'product', label: 'Product', width: '120px' },
+          { key: 'tonnes', label: 'Contracted (t)', width: '130px', align: 'right', tabular: true },
+          ...(amending ? [{ key: 'old', label: 'Old value', width: '110px', align: 'right', tabular: true }, { key: 'next', label: 'New value', width: '110px', align: 'right', tabular: true }] : []),
+        ]} rows={rows} />
+      {state === 'Confirm amendment' || state === 'Confirming amendment' ? (
+        <Dialog title="Confirm 1 amendment" width={480} sheet={narrow}
+          footer={<><Button variant="ghost" size="small" disabled={state === 'Confirming amendment'}>Cancel</Button><Button size="small" loading={state === 'Confirming amendment'}>Confirm</Button></>}>
+          <div style={{ margin: '0 -8px' }}>
+            <SetupTable rowKey="id" columns={[{ key: 'field', label: 'Field', wrap: true }, { key: 'old', label: 'Old value', width: '96px', align: 'right', tabular: true }, { key: 'next', label: 'New value', width: '96px', align: 'right', tabular: true }]}
+              rows={[{ id: 'a1', field: 'SYN4702-C, Contracted (t)', old: '150.000', next: '180.000' }]} />
+          </div>
+        </Dialog>
+      ) : null}
+    </Sections>
+  );
+}
+
 export function UploadPreview({ state = 'Preview with errors' }) {
+  if (TRADE_PREVIEW_STATES.includes(state)) return <TradeSheetPreview state={state} />;
   if (REFUSED[state]) {
     return (
       <Sections>
@@ -442,11 +502,11 @@ export function TemplateBuilder({ state = 'Columns' }) {
     <Sections>
       <SetupHead title="Contract register" />
       <RecordHighlights kind="Template" title="Contract register" status={R_ACTIVE} tab={tab} onTab={setTab}
-        actions={state === 'Who may upload' ? <><Button variant="ghost" size="small">Cancel</Button><Button size="small">Save</Button></> : <Button variant="outline" size="small">Edit</Button>}
+        actions={state === 'Who may upload' ? <><Button variant="ghost" size="small">Cancel</Button><Button size="small">Save</Button></> : <><Button variant="outline" size="small">New version</Button><Button variant="outline" size="small">Edit</Button></>}
         fields={[{ label: 'Sheet', value: 'Contract register' }, { label: 'Columns', value: String(columns.length) }, { label: 'Version', value: '2, from 01 Sep 2026' }, { label: 'Who may upload', value: 'Trading, Trading support' }]} />
       {tab === 'History' ? (
         <CountCard title="Versions" objects="versions" count={2}>
-          <SetupTable rowKey="id" columns={[{ key: 'v', label: 'Version', width: '90px', tabular: true }, { key: 'from', label: 'Effective from', width: '190px', tabular: true }, { key: 'change', label: 'Change' }, { key: 'by', label: 'By', width: '120px' }]}
+          <SetupTable rowKey="id" columns={[{ key: 'v', label: 'Version', width: '90px', tabular: true }, { key: 'from', label: 'Effective from', width: '190px', tabular: true }, { key: 'change', label: 'Change', wrap: true }, { key: 'by', label: 'By', width: '120px' }]}
             rows={[{ id: 'v2', v: '2', from: '01 Sep 2026, 00:00', change: 'Delivery added, as a month range', by: 'N. Phiri' }, { id: 'v1', v: '1', from: '15 Aug 2026, 00:00', change: 'Created from the file\'s own headings', by: 'N. Phiri' }]} />
         </CountCard>
       ) : state === 'Who may upload' ? (
@@ -459,7 +519,7 @@ export function TemplateBuilder({ state = 'Columns' }) {
         <CountCard title="Columns" objects="columns" count={columns.length}>
           <SetupTable rowKey="id" columns={[
             { key: 'header', label: 'Heading in the file', width: '160px' }, { key: 'field', label: 'One Link field', width: '160px' }, { key: 'type', label: 'Type', width: '120px' },
-            { key: 'required', label: 'Required', width: '100px' }, { key: 'check', label: 'Check' }, { key: 'tier', label: 'Price tier', width: '110px' },
+            { key: 'required', label: 'Required', width: '100px' }, { key: 'check', label: 'Check', wrap: true }, { key: 'tier', label: 'Price tier', width: '110px' },
           ]} rows={columns} />
         </CountCard>
       )}

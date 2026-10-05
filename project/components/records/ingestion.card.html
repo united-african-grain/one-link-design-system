@@ -1,0 +1,49 @@
+<!-- @dsCard group="Components" viewport="1000x1500" subtitle="Templates, uploads and counterparties: the column mapping with read-only tier tags, two versions compared, the preview checks with their cells, the counterparty overview and the source line" name="Records · Column mapping, version comparison, preview checks, counterparty overview (M3.DS.01)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .row{display:flex;gap:24px;flex-wrap:wrap}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { ColumnMapping, mappingChanges, VersionCompare, ImportPreview, CounterpartyOverview, SourceLine, StatusMark, ReasonDialog, Card, Text } = DS;
+const V1 = [
+  { source: 'Qty', field: 'Quantity', type: 'Tonnes', required: true },
+  { source: 'Buy price K/t', field: 'Purchase price', type: 'Money', required: true, tier: 'Contract', tierFrom: 'mapping' },
+  { source: 'Comments', field: 'Note', type: 'Text' },
+];
+const V2 = [
+  { source: 'Qty', field: 'Contracted tonnage', type: 'Tonnes', required: true, found: true, cell: 'D1' },
+  { source: 'Buy price K/t', field: 'Purchase price', type: 'Money', required: true, tier: 'Contract', tierFrom: 'mapping', found: true, cell: 'E1' },
+  { source: 'Transport rate', field: 'Transport rate', type: 'Money', tier: 'Contract', tierFrom: 'mapping', found: true, cell: 'G1' },
+  { source: 'Delivery window', field: 'Delivery window', type: 'Month range', required: true, found: false },
+];
+function Demo(){
+  const [cols,setCols]=React.useState(V2);
+  const change=(s,p)=>setCols((cs)=>cs.map((c)=>c.source===s?{...c,...p}:c));
+  return <div className="col">
+    <Text variant="caption-1-condensed" tone="tertiary">Column mapping, tested against a header row; a tier from the mapping is read-only</Text>
+    <Card padding={4}><ColumnMapping editable fields={['Quantity','Contracted tonnage','Purchase price','Transport rate','Delivery window']} columns={cols} onChange={change}/></Card>
+    <Text variant="caption-1-condensed" tone="tertiary">A destructive change asks for a reason</Text>
+    <div style={{position:'relative',height:340,borderRadius:'var(--radius-lg)',overflow:'hidden'}}><ReasonDialog contained title="Confirm template change" confirmLabel="Save version">{`Version 2 of Trade sheet: ${mappingChanges(V1, V2).filter((c)=>c.destructive).map((c)=>c.words).join(' ')}`}</ReasonDialog></div>
+    <Text variant="caption-1-condensed" tone="tertiary">Two versions compared</Text>
+    <Card padding={4}><VersionCompare before={{label:'Version 1',columns:V1}} after={{label:'Version 2',columns:V2}}/></Card>
+    <Text variant="caption-1-condensed" tone="tertiary">Preview checks: each cites its cell; an amendment waits for its confirm</Text>
+    <ImportPreview file={{ name: 'Trade sheet 08 Oct 2026.xlsx', by: ['L. Mulenga', '09:40'], template: 'Trade sheet, version 2', notRead: ['Comments (H1)'], rows: 3 }}
+      columns={[{ key: 'contract', label: 'Contract', width: '120px' }, { key: 'old', label: 'Old value', width: '100px', align: 'right' }, { key: 'next', label: 'New value', width: '100px', align: 'right' }]}
+      rows={[{ row: 3, contract: 'SYN4702-B', check: 'already-recorded', cell: 'A3' }, { row: 4, contract: 'SYN4702-C', old: '150.000', next: '180.000', check: 'amendment', cell: 'D4' }, { row: 5, contract: 'SYN4790', check: 'sheet-figure-differs', cell: 'K5' }]}/>
+    <Text variant="caption-1-condensed" tone="tertiary">Counterparty overview, read-only, with a restricted figure; the source line</Text>
+    <CounterpartyOverview name="Riverbend Milling" type="Mill" status={<StatusMark kind="clean" label="Active" size="body-4"/>} onFigure={()=>{}}
+      figures={[{key:'sales',label:'Sales under contract',value:'10,200 t',asOf:'01 Oct 2026'},{key:'left',label:'Left to deliver',value:'6,000 t',asOf:'04 Oct 2026'},{key:'receivables',label:'Receivables',restricted:true,asOf:'04 Oct 2026'}]}/>
+    <div className="row"><SourceLine kind="stock-sheet" date="30 Sep 2026"/><SourceLine kind="trade-sheet" date="01 Oct 2026"/><SourceLine kind="farmer-ledger" date="04 Oct 2026" inline/></div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

@@ -12,9 +12,9 @@
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Settings.jsx','People.jsx','Records.jsx']).then((K) => {
+loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Settings.jsx','People.jsx','Records.jsx','Data.jsx']).then((K) => {
   const { SetupFrame, Segmented, ScrollRow } = K;
-  const STATES = { ...K.SETTINGS_STATES, ...K.PEOPLE_STATES, ...K.RECORDS_STATES };
+  const STATES = { ...K.SETTINGS_STATES, ...K.PEOPLE_STATES, ...K.RECORDS_STATES, ...K.DATA_STATES };
   // Each Setup navigation item opens its screens; a record's screens sit beside its list.
   const SECTIONS = {
     home: { crumbs: [], screens: ['SetupHome'] },
@@ -32,12 +32,13 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Setting
     points: { crumbs: ['Delivery points'], screens: ['DeliveryPointsList'] },
     calendars: { crumbs: ['Operating calendars'], screens: ['OperatingCalendar'] },
     lists: { crumbs: ['Classes, grades and seasons'], screens: ['ReferenceList'] },
-    templates: { crumbs: ['Templates'], screens: ['TemplateBuilder'] },
-    uploads: { crumbs: ['Upload history'], screens: ['UploadPreview', 'NameResolve'] },
+    templates: { crumbs: ['Templates'], screens: ['TemplatesList', 'TemplateBuilder', 'NewTemplate', 'TemplateVersion', 'TemplateCompare'] },
+    uploads: { crumbs: ['Upload history'], screens: ['UploadHistory', 'UploadRecord', 'UploadPreview', 'NameResolve'] },
+    readiness: { crumbs: ['Production readiness'], screens: ['ProductionReadiness'] },
     review: { crumbs: ['Access review'], screens: ['AccessReview'] },
   };
   const OUTSIDE = ['UserMenuWithSetup', 'ItemsToApprove', 'SignIn', 'Activate', 'CounterpartiesList', 'CounterpartyRecord', 'LedgerView', 'ContractView'];
-  const LABEL = { SetupHome: 'Setup Home', SettingsList: 'List', SettingRecord: 'Record', ScopedValues: 'Scoped values', SwitchesList: 'List', SwitchRecord: 'Record', ApprovalStepsList: 'List', ApprovalStepRecord: 'Record', PolicyMethodsList: 'List', PolicyRecord: 'Record', UserMenuWithSetup: 'User menu with Setup', ItemsToApprove: 'Items to approve', SignIn: 'Sign in', Activate: 'Activate', UsersList: 'List', NewUser: 'New user', UserRecord: 'Record', BundlesList: 'List', BundleRecord: 'Record', FiguresList: 'List', FigureRecord: 'Record', AccessLog: 'Access log', AccessReview: 'Access review', BusinessChanges: 'Business changes', SitesList: 'List', SiteRecord: 'Record', CorridorsList: 'List', ProductsList: 'List', DeliveryPointsList: 'List', OperatingCalendar: 'Calendar', ReferenceList: 'List', TemplateBuilder: 'Template', UploadPreview: 'Import preview', NameResolve: 'Name resolve', CounterpartiesList: 'Counterparties', CounterpartyRecord: 'Counterparty', LedgerView: 'Ledger', ContractView: 'Contract' };
+  const LABEL = { SetupHome: 'Setup Home', SettingsList: 'List', SettingRecord: 'Record', ScopedValues: 'Scoped values', SwitchesList: 'List', SwitchRecord: 'Record', ApprovalStepsList: 'List', ApprovalStepRecord: 'Record', PolicyMethodsList: 'List', PolicyRecord: 'Record', UserMenuWithSetup: 'User menu with Setup', ItemsToApprove: 'Items to approve', SignIn: 'Sign in', Activate: 'Activate', UsersList: 'List', NewUser: 'New user', UserRecord: 'Record', BundlesList: 'List', BundleRecord: 'Record', FiguresList: 'List', FigureRecord: 'Record', AccessLog: 'Access log', AccessReview: 'Access review', BusinessChanges: 'Business changes', SitesList: 'List', SiteRecord: 'Record', CorridorsList: 'List', ProductsList: 'List', DeliveryPointsList: 'List', OperatingCalendar: 'Calendar', ReferenceList: 'List', TemplateBuilder: 'Template', TemplatesList: 'List', NewTemplate: 'New template', TemplateVersion: 'Version editor', TemplateCompare: 'Compare versions', UploadHistory: 'List', UploadRecord: 'Upload', ProductionReadiness: 'Production readiness', UploadPreview: 'Import preview', NameResolve: 'Name resolve', CounterpartiesList: 'Counterparties', CounterpartyRecord: 'Counterparty', LedgerView: 'Ledger', ContractView: 'Contract' };
   const params = new URLSearchParams(location.search);
   const sectionOf = (screen) => Object.keys(SECTIONS).find((k) => SECTIONS[k].screens.includes(screen));
 
@@ -61,8 +62,8 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','Shell.jsx','Setting
     }
     const section=sectionOf(screen);
     const open=(s)=> (st)=> go(s);
-    const record={ SettingsList:'SettingRecord', SwitchesList:'SwitchRecord', ApprovalStepsList:'ApprovalStepRecord', PolicyMethodsList:'PolicyRecord', UsersList:'UserRecord', BundlesList:'BundleRecord', SitesList:'SiteRecord', FiguresList:'FigureRecord' }[screen];
-    const crumbs=[...SECTIONS[section].crumbs, ...(screen.endsWith('Record')||screen==='ScopedValues'||screen==='NewUser'||K.recordsTitle(screen, state)?[K.recordTitle(screen, state) || K.peopleTitle(screen, state) || K.recordsTitle(screen, state)]:[])];
+    const record={ SettingsList:'SettingRecord', SwitchesList:'SwitchRecord', ApprovalStepsList:'ApprovalStepRecord', PolicyMethodsList:'PolicyRecord', UsersList:'UserRecord', BundlesList:'BundleRecord', SitesList:'SiteRecord', FiguresList:'FigureRecord', TemplatesList:'TemplateBuilder', UploadHistory:'UploadRecord' }[screen];
+    const crumbs=[...SECTIONS[section].crumbs, ...(screen.endsWith('Record')||screen==='ScopedValues'||screen==='NewUser'||K.recordsTitle(screen, state)||K.dataTitle(screen, state)?[K.recordTitle(screen, state) || K.peopleTitle(screen, state) || K.recordsTitle(screen, state) || K.dataTitle(screen, state)]:[])];
     const shipped = screen==='SetupHome' && state==='Before reference data' ? ['home','users','bundles','settings','switches','steps','policies','audit'] : undefined;
     return <SetupFrame section={section} crumbs={crumbs} shipped={shipped} onExit={()=>go('UserMenuWithSetup')}
       onSection={(v)=>{ if(SECTIONS[v]) go(SECTIONS[v].screens[0]); }}>

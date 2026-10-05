@@ -1,0 +1,5 @@
+{
+  "about": "Words an owner's screen never shows (build specification section 4, rule 6; M3.DS.01 AC 4). Business language only: the source of a figure is a labelled field such as Source: Trade sheet, 01 Oct 2026. Read by the design system's kit copy lint and, vendored by npm run design-system:sync, by the One Link web copy test. Change it here, then sync.",
+  "words": ["batch", "upload", "template", "sync", "virtual warehouse"],
+  "patterns": ["\\berror code\\b", "\\b(?:E|ERR|ERROR)[-_ ]?\\d{2,}\\b"]
+}

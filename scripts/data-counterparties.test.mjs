@@ -362,7 +362,7 @@ describe('[M3.DS.01] the components', () => {
     const restricted = read(join(COMPONENTS, 'data/Restricted.jsx'));
     assert.match(restricted, /<Icon name="lock"/);
     assert.match(restricted, /label = 'Restricted'/);
-    assert.doesNotMatch(overview, /—|RestrictedCell/);
+    assert.doesNotMatch(overview, /\u2014|RestrictedCell/);
     const view = fn(counterparties, 'CounterpartyView');
     assert.match(view, /restricted: f\.tier === 'Sell' && !sellTier/);
     assert.match(counterparties, /\['Balance', farmerTier \? 'USD 4,850\.00' : <Restricted \/>\]/);

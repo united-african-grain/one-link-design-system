@@ -298,6 +298,18 @@ describe('[M2.DS.01] the components it introduced', () => {
     assert.equal(ready([{ ...f, doubtful: false }]), true);
   });
 
+  test('REGRESSION: [M2.WB.04] narrower than 560px the column heads go, and stay gone, while each field stacks', () => {
+    // Found in the app port on the Scanned slip screen at 1280px: its head row is a stacked row as well, and came back
+    // over the first field. Here the stacked layout must draw no head row at all, and each field carries its own label.
+    const src = read(join(COMPONENTS, 'records/FieldCheck.jsx'));
+    assert.match(src, /const stacked = width > 0 && width < 560;/);
+    const heads = [...src.matchAll(/<div role="row" data-head=""/g)];
+    assert.equal(heads.length, 1, 'one head row');
+    const before = src.slice(0, heads[0].index);
+    assert.match(before, /\{stacked \? null : \(\s*$/, 'the head row is drawn only when the table is not stacked');
+    assert.match(src, /\{stacked \? <span style=\{textStyle\('body-4', \{ tone: 'secondary' \}\)\}>Read from slip<\/span> : null\}/, 'a stacked field labels its reading');
+  });
+
   test('[M2.DS.01] the waiting-for-a-second-confirmation state shows the reading, the entered value and the first confirmer, and offers withdraw only to that person', () => {
     const src = read(join(COMPONENTS, 'records/SecondConfirmation.jsx'));
     assert.match(src, /\['Read from slip', reading\], \['Entered', entered\], \['Confirmed first by'/);

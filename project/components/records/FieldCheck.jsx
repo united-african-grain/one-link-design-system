@@ -36,8 +36,9 @@ export function FieldCheck({ fields = [], onChange, evidence, disabled = false, 
   ) : <span style={{ ...textStyle('body-3', { tabular: f.numeric }) }}>{f.value}</span>;
   return (
     <div ref={ref} data-field-check="" data-editable={editable || undefined} style={{ minWidth: 0, ...style }}>
+      {/* Narrower than 560px the column heads are not drawn at all, so they can never sit over the first field. */}
       {stacked ? null : (
-        <div role="row" style={{ display: 'grid', gridTemplateColumns: grid, gap: 12, alignItems: 'center', height: 36, padding: '0 12px', boxShadow: 'inset 0 -1px 0 var(--border-light)' }}>
+        <div role="row" data-head="" style={{ display: 'grid', gridTemplateColumns: grid, gap: 12, alignItems: 'center', height: 36, padding: '0 12px', boxShadow: 'inset 0 -1px 0 var(--border-light)' }}>
           <span style={head}>Field</span><span style={head}>Read from slip</span><span style={head}>Confirmed</span>
         </div>
       )}

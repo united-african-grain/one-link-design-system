@@ -37,9 +37,11 @@ function Side({ col }) {
 
 /** Two versions of a template side by side (M3.DS.01): each column of the file with what the older version and the
     newer one read it as, and the change marked Added, Removed, Remapped or Changed. Unchanged columns carry no mark.
-    On a phone the table scrolls in its own container. */
-export function VersionCompare({ before = { label: 'Version 1', columns: [] }, after = { label: 'Version 2', columns: [] }, minWidth = 760, style }) {
-  const rows = compareVersions(before.columns, after.columns);
+    On a phone the table scrolls in its own container. Where the comparison is worked out elsewhere (M3.ING.04: the
+    backend's own difference, the one the publish writes to the trail), pass its rows and the marks are exactly those;
+    the look is the same either way. */
+export function VersionCompare({ before = { label: 'Version 1', columns: [] }, after = { label: 'Version 2', columns: [] }, rows: compared = null, minWidth = 760, style }) {
+  const rows = compared ?? compareVersions(before.columns, after.columns);
   return (
     <div data-version-compare="" style={{ minWidth: 0, ...style }}>
       <DataTable rowKey="source" minWidth={minWidth} rows={rows} columns={[

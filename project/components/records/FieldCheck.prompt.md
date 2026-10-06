@@ -11,3 +11,5 @@ const change = (key, patch) => setFields((fs) => fs.map((f) => (f.key === key ? 
 - A corrected field keeps the reading in Read from slip and the clerk's value in Confirmed, marked Corrected.
 - No confidence level, word or score is shown. The reading's confidence decides `doubtful` and nothing else.
 - The inputs exist only with `evidence`, the fingerprint of the photo beside the table. There is no typed weight anywhere (R-08).
+
+For a document rather than a slip, name the column `readLabel="Read from document"`, and pass `onFieldFocus` to learn which field is being looked at, so the EvidenceViewer beside it can outline where that field was read from.

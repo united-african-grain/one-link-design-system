@@ -20,6 +20,10 @@ export interface FieldCheckProps {
   evidence?: string;
   /** While Confirm weights is working. */
   disabled?: boolean;
+  /** The middle column's name: "Read from slip" (default), or "Read from document" (M3.ING.06). */
+  readLabel?: string;
+  /** The field being looked at (hovered or focused), so the evidence can outline where it was read from. */
+  onFieldFocus?: (key: string) => void;
   style?: React.CSSProperties;
 }
 export function FieldCheck(props: FieldCheckProps): JSX.Element;

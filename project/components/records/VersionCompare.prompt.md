@@ -4,4 +4,10 @@ Two versions of a template side by side (M3.DS.01), lined up by the heading in t
 <VersionCompare before={{ label: 'Version 1', columns: V1 }} after={{ label: 'Version 2', columns: V2 }} />
 ```
 
+Where the comparison is worked out elsewhere (the backend's own difference, M3.ING.04), pass its rows and the marks are exactly those, in the same look:
+
+```jsx
+<VersionCompare before={{ label: 'Version 1', columns: V1 }} after={{ label: 'Version 2', columns: V2 }} rows={compared} />
+```
+
 Column names, types and tags only, never a row's values. On a phone the table scrolls in its own container.

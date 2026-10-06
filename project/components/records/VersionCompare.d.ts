@@ -2,10 +2,13 @@
 import type { MappingColumn } from './ColumnMapping';
 export type CompareChange = 'added' | 'removed' | 'remapped' | 'changed';
 export const COMPARE_MARKS: Record<CompareChange, { kind: string; word: string }>;
-export function compareVersions(before: MappingColumn[], after: MappingColumn[]): Array<{ source: string; before: MappingColumn | null; after: MappingColumn | null; change: CompareChange | null }>;
+export type CompareRow = { source: string; before: MappingColumn | null; after: MappingColumn | null; change: CompareChange | null };
+export function compareVersions(before: MappingColumn[], after: MappingColumn[]): CompareRow[];
 export interface VersionCompareProps {
   before: { label: string; columns: MappingColumn[] };
   after: { label: string; columns: MappingColumn[] };
+  /** Rows already lined up and marked elsewhere (M3.ING.04); when given, they are shown as they are. */
+  rows?: CompareRow[] | null;
   minWidth?: number;
   style?: React.CSSProperties;
 }

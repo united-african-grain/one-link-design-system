@@ -28,6 +28,10 @@ function Demo(){
     <Card title="Crest Milling" meta={['target 25,000','window 45d']} commodityColor="var(--commodity-wheat)" interactive>
       <CardRow leading={<Avatar initials="CM" commodityColor="var(--commodity-wheat)"/>} name="Firm 10,939" sub="declared 2,500" bar={<ShareBar share={0.44} declared={0.1} color="var(--commodity-wheat)"/>} figure="short 11,561" trailing={<><StatusMark kind="flat"/><PressButton kind="figure">54%</PressButton></>}/>
     </Card>
+    <Card title="Pending approval" style={{maxWidth:420}}>
+      <CardRow stacked name="Switch change: Weight source, UAG warehouse" sub="Scanned slip to Weighbridge, waiting for Owen" trailing={<StatusMark kind="pending" label="Pending approval" size="body-4"/>}/>
+      <CardRow stacked name="Bundle change: Finance" sub="Add capability Export farmer statements, waiting for Owen" trailing={<StatusMark kind="pending" label="Pending approval" size="body-4"/>}/>
+    </Card>
     <div className="row" style={{alignItems:'flex-start',gap:40}}>
       <Figure label="your position right now" value="K125M" size="display-1-condensed" derivation="physical K80M · in-transit K45M" derivationRows={[{label:'Physical stock',value:'K80M'},{label:'In transit',value:'K45M'},{label:'Position',value:'K125M',total:true}]}/>
       <Figure label="blended margin" value="K11.8M" delta="9.4%"/>

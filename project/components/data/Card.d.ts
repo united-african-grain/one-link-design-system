@@ -37,6 +37,10 @@ export interface CardRowProps {
   /** QuantityChip, PressButton, StatusMark… */
   trailing?: React.ReactNode;
   closed?: boolean;
+  /** Sub on its own line under name, both wrapping, no ellipsis (Setup Home's rows: "Switch change: Weight source,
+      UAG warehouse" over "Scanned slip to Weighbridge, waiting for Owen"). Default false: name and sub share one
+      line, each cut with an ellipsis, as before. */
+  stacked?: boolean;
   style?: React.CSSProperties;
 }
 export function CardRow(props: CardRowProps): JSX.Element;

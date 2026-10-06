@@ -307,7 +307,8 @@ describe('[M2.DS.01] the components it introduced', () => {
     assert.equal(heads.length, 1, 'one head row');
     const before = src.slice(0, heads[0].index);
     assert.match(before, /\{stacked \? null : \(\s*$/, 'the head row is drawn only when the table is not stacked');
-    assert.match(src, /\{stacked \? <span style=\{textStyle\('body-4', \{ tone: 'secondary' \}\)\}>Read from slip<\/span> : null\}/, 'a stacked field labels its reading');
+    assert.match(src, /\{stacked \? <span style=\{textStyle\('body-4', \{ tone: 'secondary' \}\)\}>\{readLabel\}<\/span> : null\}/, 'a stacked field labels its reading');
+    assert.match(src, /readLabel = 'Read from slip'/, 'a slip still reads Read from slip unless a document names its own');
   });
 
   test('[M2.DS.01] the waiting-for-a-second-confirmation state shows the reading, the entered value and the first confirmer, and offers withdraw only to that person', () => {

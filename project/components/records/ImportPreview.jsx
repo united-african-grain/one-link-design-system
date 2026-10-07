@@ -24,6 +24,8 @@ export const PREVIEW_CHECKS = {
   'already-recorded': { kind: 'flat', word: 'already recorded, skipped' },
   'differs-from-recorded': { kind: 'attention', word: 'differs from recorded, not applied' },
   'sheet-figure-differs': { kind: 'attention', word: 'sheet figure differs' },
+  // A free-text warning the row carries in `note` ("Grade read as 2, contract says 1"). It never stops Import.
+  note: { kind: 'attention', word: 'note' },
 };
 
 /** The nine preview states M3.DS.01 draws, each with the cell or record it cites and whether Import is enabled. */
@@ -50,8 +52,13 @@ export function previewBlocked({ refusal, file, rows = [] }) {
  * uploader or dispatch date, rows), summary tiles, and a row table with the row number and a Result
  * column. Errors cite the row. Discard and Import sit at the top right; Import stays disabled while
  * any row has an error.
+ *
+ * Opt-in, each defaulting to today's drawing: a tile's `note` under its value ("In file", "Loaded at origin");
+ * `readyWord` for a clean row's Result ("New leg", or a function of the row); `actions` to put Discard and Import
+ * in the File card's title row ('inline') or leave them to the page ('none'); `statusWord="map"` to show the
+ * map's upload status word (Ready to import, Failed) with the computed detail ("1 row to fix") beside it.
  */
-export function ImportPreview({ file, status = 'ready', tiles = [], columns = [], rows = [], refusal, onDiscard, onImport, importing = false, style }) {
+export function ImportPreview({ file, status = 'ready', tiles = [], columns = [], rows = [], refusal, onDiscard, onImport, importing = false, readyWord = 'Ready', actions = 'beside', statusWord = 'computed', style }) {
   const errors = rows.filter((r) => r.error);
   const missing = (file && file.missing) || [];
   const amendments = rows.filter((r) => r.check === 'amendment');
@@ -62,12 +69,16 @@ export function ImportPreview({ file, status = 'ready', tiles = [], columns = []
     : status === 'ready' && errors.length ? { kind: 'breach', word: `${plural(errors.length, 'row', 'rows')} to fix` }
     : status === 'ready' && amendments.length ? { kind: 'pending', word: `${plural(amendments.length, 'amendment', 'amendments')} to confirm` }
     : UPLOAD_STATUS[status] || UPLOAD_STATUS.ready;
+  // The map's word for the same file (UX-25), and the computed phrase kept as its detail when the two differ.
+  const mapSt = refusal ? UPLOAD_STATUS.failed : UPLOAD_STATUS[status] || UPLOAD_STATUS.ready;
+  const detail = st === mapSt ? null : st.word;
   const blocked = previewBlocked({ refusal, file, rows });
   const result = (r) => {
     if (r.error) return <StatusMark kind="breach" label={r.error} size="body-4" style={{ whiteSpace: 'normal' }} />;
     const c = r.check && PREVIEW_CHECKS[r.check];
+    if (c && r.check === 'note') return <span data-check="note"><StatusMark kind={c.kind} label={r.cell ? `Cell ${r.cell}: ${r.note || c.word}` : (r.note || c.word)} size="body-4" style={{ whiteSpace: 'normal' }} /></span>;
     if (c) return <span data-check={r.check}><StatusMark kind={c.kind} label={`Cell ${r.cell}: ${c.word}`} size="body-4" style={{ whiteSpace: 'normal' }} /></span>;
-    return <StatusMark kind="clean" label="Ready" size="body-4" />;
+    return <StatusMark kind="clean" label={typeof readyWord === 'function' ? readyWord(r) : readyWord} size="body-4" />;
   };
   const fact = (label, value, key) => value ? <React.Fragment key={key || label}><dt style={textStyle('body-3', { tone: 'secondary' })}>{label}</dt><dd data-fact={label} style={{ margin: 0, ...textStyle('body-3'), overflowWrap: 'anywhere' }}>{value}</dd></React.Fragment> : null;
   const table = [
@@ -75,10 +86,22 @@ export function ImportPreview({ file, status = 'ready', tiles = [], columns = []
     ...columns,
     { key: 'result', label: 'Result', width: 'minmax(220px, 1fr)', wrap: true, render: result },
   ];
+  const buttons = (
+    <>
+      <Button variant="outline" onClick={onDiscard} disabled={importing}>Discard</Button>
+      <Button variant="primary" onClick={onImport} loading={importing} disabled={errors.length > 0 || blocked || status !== 'ready'}>Import</Button>
+    </>
+  );
+  const statusMark = statusWord === 'map'
+    ? <span data-status-word="map" style={{ display: 'inline-flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}><StatusMark kind={mapSt.kind} label={mapSt.word} />{detail ? <span data-status-detail style={textStyle('body-3', { tone: 'secondary' })}>{detail}</span> : null}</span>
+    : <StatusMark kind={st.kind} label={st.word} />;
+  const headerRight = actions === 'inline'
+    ? <div data-actions="inline" style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'flex-end' }}>{statusMark}<div style={{ display: 'flex', gap: 8 }}>{buttons}</div></div>
+    : statusMark;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, ...style }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
-        <Card title="File" headerRight={<StatusMark kind={st.kind} label={st.word} />} style={{ flex: '1 1 320px' }}>
+        <Card title="File" headerRight={headerRight} style={{ flex: '1 1 320px' }}>
           <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'auto 1fr', rowGap: 8, columnGap: 16 }}>
             <dt style={textStyle('body-3', { tone: 'secondary' })}>File name</dt><dd style={{ margin: 0, ...textStyle('body-3', { strong: true }) }}>{file?.name}</dd>
             {file?.by ? <><dt style={textStyle('body-3', { tone: 'secondary' })}>{file.byLabel || 'Uploaded by'}</dt><dd style={{ margin: 0, ...textStyle('body-3') }}><MetaParts meta={file.by} /></dd></> : null}
@@ -89,10 +112,11 @@ export function ImportPreview({ file, status = 'ready', tiles = [], columns = []
             {fact('Not read', ((file && file.notRead) || []).join(', '))}
           </dl>
         </Card>
-        <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
-          <Button variant="outline" onClick={onDiscard} disabled={importing}>Discard</Button>
-          <Button variant="primary" onClick={onImport} loading={importing} disabled={errors.length > 0 || blocked || status !== 'ready'}>Import</Button>
-        </div>
+        {actions === 'beside' ? (
+          <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
+            {buttons}
+          </div>
+        ) : null}
       </div>
       {refusal ? <Refusal action={refusal.action || 'Import'} reason={refusal.reason} /> : null}
       {!refusal && tiles.length ? (
@@ -101,6 +125,7 @@ export function ImportPreview({ file, status = 'ready', tiles = [], columns = []
             <Card key={i} padding={16} gap={4}>
               <span style={textStyle('body-3', { tone: 'secondary' })}>{t.label}</span>
               <span style={textStyle('heading-3-condensed', { tabular: true })}>{t.value}</span>
+              {t.note ? <span data-tile-note style={textStyle('body-3', { tone: 'tertiary' })}>{t.note}</span> : null}
             </Card>
           ))}
         </div>

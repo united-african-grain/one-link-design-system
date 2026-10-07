@@ -16,6 +16,23 @@ The preview's checks (M3.DS.01). Each one cites its cell or record, and only som
 - Columns the template does not name: `file.notRead` lists them, with their cells, under Not read. They never stop Import.
 - A file staged on an older version while a newer one is in force: `file.template` names the version it was read under and `file.inForce` the newer one. It is never read again silently.
 - A file refused before it is read (a price column for a tier the uploader does not hold, a file already imported): `refusal` draws "Import is not allowed. [Reason]." and no rows.
-- Row checks: `check: 'amendment'` reads "Cell D4: amendment, confirm before import" and stops Import until the amendments are confirmed (then `amendment-confirmed`); `already-recorded` (skipped), `differs-from-recorded` (not applied) and `sheet-figure-differs` are warnings and never stop it. Show an amendment's Old value and New value as columns.
+- Row checks: `check: 'amendment'` reads "Cell D4: amendment, confirm before import" and stops Import until the amendments are confirmed (then `amendment-confirmed`); `already-recorded` (skipped), `differs-from-recorded` (not applied) and `sheet-figure-differs` are warnings and never stop it. `check: 'note'` carries free text in `note` and shows it as a warning ("Cell F7: grade read as 2, contract says 1", or the text alone without a `cell`); it never stops Import either. Show an amendment's Old value and New value as columns.
 
 `PREVIEW_STATES` lists the nine states with the reference each cites and whether Import is enabled.
+
+Per template, each opt-in; leave them out and the preview is drawn as before:
+
+- `tiles[].note`: a sub-line under the tile's value, as the canvases draw "Rows 14 In file", "New legs 12 Loaded at origin", "Already recorded 1 Recognised, not duplicated", "Errors 1 Fix before import".
+- `readyWord`: the Result word for a clean row, the template's own word ("New leg"), or a function of the row ("Creates consignment", "Completes consignment"). Default "Ready".
+- `actions`: `'beside'` (default) draws Discard and Import beside the File card; `'inline'` puts them in the File card's title row after the status; `'none'` leaves them to the page's own title row, as the canvases draw them next to "Port schedule preview". Import's rule stays `previewBlocked` and the status.
+- `statusWord="map"`: the status reads the map's word (Validating, Ready to import, Imported, Failed) and the computed phrase ("1 row to fix") sits beside it, secondary. Default `'computed'` shows the computed phrase, as before.
+
+```jsx
+<ImportPreview
+  file={{ name: 'Port schedule 26 Sep 2026.xlsx', by: ['Shakil', '09:12'], rows: 14 }}
+  tiles={[{ label: 'Rows', value: '14', note: 'In file' }, { label: 'New legs', value: '12', note: 'Loaded at origin' }]}
+  readyWord="New leg" actions="none" statusWord="map"
+  columns={[{ key: 'leg', label: 'Leg' }, { key: 'loaded', label: 'Loaded (t)', align: 'right', tabular: true }]}
+  rows={[{ row: 1, leg: 'KAL-15', loaded: '34.180' }, { row: 2, leg: 'KAL-16', loaded: '33.940', check: 'note', cell: 'F2', note: 'loaded on a Sunday' }]}
+/>
+```

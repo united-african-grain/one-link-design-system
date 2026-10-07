@@ -51,16 +51,24 @@ export function MetaParts({ meta, split = true }) {
   return <>{parts.map((m, i) => <React.Fragment key={i}>{i > 0 ? <Dot /> : null}<span>{m}</span></React.Fragment>)}</>;
 }
 
-/** 36px card row: leading tile, name, share underline, secondary figure, trailing chips/buttons. On a very narrow card the trailing group wraps under the row, right-aligned. */
-export function CardRow({ leading, name, sub, bar, figure, trailing, closed = false, style }) {
+/** 36px card row: leading tile, name, share underline, secondary figure, trailing chips/buttons. On a very narrow card the trailing group wraps under the row, right-aligned.
+    stacked puts sub on its own line under name (a setup or list row: "Switch change: Weight source" over "Scanned slip to Weighbridge, waiting for Owen"); both wrap and neither is cut with an ellipsis. Off by default, so a row without it is drawn exactly as before. */
+export function CardRow({ leading, name, sub, bar, figure, trailing, closed = false, stacked = false, style }) {
   return (
     <div data-card-row style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', columnGap: 12, rowGap: 8, minHeight: 36, ...style }}>
       {leading}
       <div style={{ flex: '1 1 0px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {stacked ? (
+          <div data-card-row-stacked style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+            <span style={{ ...textStyle('body-3', { tone: closed ? 'quaternary' : 'primary' }), overflowWrap: 'anywhere' }}>{name}</span>
+            {sub ? <span style={{ ...textStyle('body-3', { tone: 'secondary' }), overflowWrap: 'anywhere' }}>{sub}</span> : null}
+          </div>
+        ) : (
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, minWidth: 0 }}>
           <span style={{ ...textStyle('body-3', { tone: closed ? 'quaternary' : 'primary' }), overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
           {sub ? <span style={{ ...textStyle('body-3', { tone: 'secondary' }), whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{sub}</span> : null}
         </div>
+        )}
         {bar}
       </div>
       {figure ? <span style={{ ...textStyle('body-3', { tone: 'secondary', tabular: true }), whiteSpace: 'nowrap' }}>{figure}</span> : null}

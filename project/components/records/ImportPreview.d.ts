@@ -26,7 +26,7 @@ export interface ImportPreviewProps {
   /** The file is refused before it is read ("Import is not allowed. [Reason]."): no tiles or rows, Import disabled. */
   refusal?: { action?: string; reason: string };
   /** validating · ready · imported · failed. A ready file with row errors shows "1 row to fix" instead of Ready to import. */
-  status?: 'validating' | 'ready' | 'imported' | 'failed';
+  status?: 'validating' | 'ready' | 'imported' | 'failed' | 'discarded' | 'reversed';
   tiles?: Array<{ label: React.ReactNode; value: React.ReactNode }>;
   /** The file's own columns, between Row and Result. */
   columns?: import('../data/DataTable').DataColumn<ImportRow>[];

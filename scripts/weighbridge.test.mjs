@@ -279,10 +279,10 @@ describe('[M2.DS.01] the components it introduced', () => {
     assert.deepEqual(typed, [], 'nothing draws typed or bridge');
   });
 
-  test('[M2.DS.01] readiness is a status mark with its own words, and Weighed in only is readiness (ReadinessChip)', () => {
+  test('[M2.DS.01] readiness is a status mark with its own words, and Weighed in is readiness (ReadinessChip)', () => {
     const r = read(join(COMPONENTS, 'records/ReadinessChip.jsx'));
     const spec = literal(r, 'READINESS_SPEC');
-    assert.equal(spec['weighed-in-only'].word, 'Weighed in only');
+    assert.equal(spec['weighed-in-only'].word, 'Weighed in');
     assert.equal(spec.ready.word, 'Ready');
     assert.match(r, /<StatusMark kind=\{r\.mark\} label=\{r\.word\}/, 'composes StatusMark: icon and word');
   });

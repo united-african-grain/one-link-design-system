@@ -52,7 +52,7 @@ Rules these screens keep:
 - Sample data is fictional: Chisamba Shed, Mpongwe Depot, Site A gate, Lakeview Farms Ltd, Cameron Estates. The slip photo is a drawn sample (`assets/samples/slip-chisamba-10001614.svg`).
 - The look is this system's current one (Henry's ruling of 30 Sep 2026): the canvases give layout, content and flow; buttons, radii, shadows and type are the published ones.
 
-Components this card introduced: `ReadinessChip`, `EvidenceViewer`, `FieldCheck` (with `fieldOpen`, `fieldCorrected`, `fieldsReady`), `SecondConfirmation` and `ExceptionList` (with `ExceptionStatus`), all in `components/records`. `ProvenanceChip` renamed `typed` to `unverified`, dropped `bridge` (now `ReadinessChip` Weighed in only) and reads in S57 words only; `ConfirmationChip` gained `pending` for Counterparty status Pending.
+Components this card introduced: `ReadinessChip`, `EvidenceViewer`, `FieldCheck` (with `fieldOpen`, `fieldCorrected`, `fieldsReady`), `SecondConfirmation` and `ExceptionList` (with `ExceptionStatus`), all in `components/records`. `ProvenanceChip` renamed `typed` to `unverified`, dropped `bridge` (now `ReadinessChip` Weighed in) and reads in S57 words only; `ConfirmationChip` gained `pending` for Counterparty status Pending.
 
 ## Counterparties for Owen (M3.DS.01)
 

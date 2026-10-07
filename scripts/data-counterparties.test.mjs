@@ -99,6 +99,12 @@ function readmeRows(md) {
 }
 
 describe('[M3.DS.01] the screens', () => {
+  test('[M3.ING.02] an upload\'s statuses include Discarded and Reversed, each an icon and a word, as the Data screens draw them', () => {
+    const src = readFileSync(join(COMPONENTS, 'records/ImportPreview.jsx'), 'utf8');
+    assert.match(src, /discarded: \{ kind: 'neutral', word: 'Discarded' \}/);
+    assert.match(src, /reversed: \{ kind: 'neutral', word: 'Reversed' \}/);
+  });
+
   test('[M3.DS.01] the kit READMEs list every new screen with its file and states, in order', () => {
     const admin = readmeRows(read(join(ADMIN, 'README.md')));
     for (const [screen, list] of Object.entries(DATA_STATES)) assert.deepEqual(admin[screen], { file: 'Data.jsx', states: list }, screen);

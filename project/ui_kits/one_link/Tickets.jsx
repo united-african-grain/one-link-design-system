@@ -376,12 +376,12 @@ const HISTORY_SLIP = [
   { id: 'h4', field: 'Counterparty status', user: 'Lakeview Farms Ltd', old: 'Pending', next: 'Confirmed', date: '26 Sep 2026, 10:12', reason: '' },
   { id: 'h3', field: 'Tare (t)', user: 'S. Banda', old: '13.380', next: '13.880', date: '26 Sep 2026, 09:58', reason: 'Corrected from photo' },
   { id: 'h2', field: 'Source', user: 'S. Banda', old: 'Weighbridge', next: 'Scanned slip', date: '26 Sep 2026, 09:58', reason: 'Completed from a scanned slip' },
-  { id: 'h1', field: 'Status', user: 'Chisamba Shed weighbridge', old: '', next: 'Weighed in only', date: '26 Sep 2026, 09:31', reason: 'Arrived from the weighbridge' },
+  { id: 'h1', field: 'Status', user: 'Chisamba Shed weighbridge', old: '', next: 'Weighed in', date: '26 Sep 2026, 09:31', reason: 'Arrived from the weighbridge' },
 ];
 const HISTORY_CLOSED = [
   { id: 'k3', field: 'Status', user: 'S. Banda', old: 'Stalled', next: 'Closed', date: '26 Sep 2026, 11:02', reason: 'Truck left without weighing out' },
-  { id: 'k2', field: 'Status', user: 'One Link', old: 'Weighed in only', next: 'Stalled', date: '26 Sep 2026, 08:12', reason: '' },
-  { id: 'k1', field: 'Status', user: 'Chisamba Shed weighbridge', old: '', next: 'Weighed in only', date: '26 Sep 2026, 06:12', reason: 'Arrived from the weighbridge' },
+  { id: 'k2', field: 'Status', user: 'One Link', old: 'Weighed in', next: 'Stalled', date: '26 Sep 2026, 08:12', reason: '' },
+  { id: 'k1', field: 'Status', user: 'Chisamba Shed weighbridge', old: '', next: 'Weighed in', date: '26 Sep 2026, 06:12', reason: 'Arrived from the weighbridge' },
 ];
 
 export function TicketRecord({ state = 'Ready' }) {

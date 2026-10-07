@@ -12,6 +12,8 @@ export const UPLOAD_STATUS = {
   ready: { kind: 'clean', word: 'Ready to import' },
   imported: { kind: 'clean', word: 'Imported' },
   failed: { kind: 'breach', word: 'Failed' },
+  discarded: { kind: 'neutral', word: 'Discarded' },
+  reversed: { kind: 'neutral', word: 'Reversed' },
 };
 
 /** What a row check says in the Result column, with its cell (M3.DS.01). A warning never stops Import; an amendment

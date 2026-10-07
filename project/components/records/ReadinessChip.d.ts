@@ -1,4 +1,4 @@
-/** @startingPoint section="Records" subtitle="Readiness chip: a weighbridge ticket's status (Ready, Weighed in only, Stalled, Problem…), apart from its source" viewport="700x120" */
+/** @startingPoint section="Records" subtitle="Readiness chip: a weighbridge ticket's status (Ready, Weighed in, Stalled, Problem…), apart from its source" viewport="700x120" */
 export type ReadinessKind = 'ready' | 'weighed-in-only' | 'stalled' | 'problem' | 'pending-reading' | 'awaiting-confirmation' | 'received' | 'closed';
 export const READINESS_KINDS: ReadinessKind[];
 export interface ReadinessChipProps {

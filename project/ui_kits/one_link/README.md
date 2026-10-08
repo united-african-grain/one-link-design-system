@@ -28,7 +28,7 @@ The Clerk's continuity screens (canvas S13) and the Exceptions screens (canvas S
 
 | Screen | File | States |
 |---|---|---|
-| ClerkHome | `Tickets.jsx` | Inbound · Weighbridge offline · Close problem · Closing problem |
+| ClerkHome | `Tickets.jsx` | Inbound · Weighbridge offline · Close problem · Closing problem · Ready · Problem · Stalled · On hold · Drafts · Empty |
 | TicketsList | `Tickets.jsx` | All · Delayed · Offline · Stalled · Scanned slip site · Closed · Close · Closing · One site and date · Exporting · Empty |
 | ScannedSlip | `Tickets.jsx` | Read clearly · Check · Corrected · Net disagrees · Tare at or above gross · Photo already used · Confirming · Reading · Pending reading · Reading failed · Second confirmation · Second confirmation, first confirmer · Withdraw |
 | TicketRecord | `Tickets.jsx` | Ready · Receiving · From scanned slip · History · Later scale record · Keeping weights · Closed |
@@ -75,3 +75,40 @@ Rules these screens keep:
 - The look is this system's current one (Henry's ruling of 30 Sep 2026). The canvas's customer is replaced by the golden synthetic Riverbend Milling.
 
 Components this card introduced: `CounterpartyOverview` (records) and `SourceLine` (+ `sourceWords`, `SOURCE_KINDS`) (data).
+
+## Inbound, gate price and stock (M4.DS.01)
+
+The inbound half of the Operations kit and the stock control screens (canvases S13, S15 and S09; S12 C1 to C6, S14 R2, R3 and R8, S08 J4 and J5). The Clerk's screens open in his frame (Logistics highlighted on goods received note pages, Inventory on Warehouse stock, UX-04), stock control's in Ryan's frame (Home, Logistics, Inventory, Reports), and the decisions and gate prices in the owner's. From Warehouse choose "Clerk screens", from Stock choose "Stock control screens", from Trade Desk choose "Gate prices", or open any state directly with `?screen=<Screen>&state=<State>`.
+
+| Screen | File | States |
+|---|---|---|
+| NewGoodsReceivedNote | `Inbound.jsx` | Grain · Grain, beyond tolerance · Grain, tally in bags · Fertiliser · Fertiliser, count short · Gate purchase · Transfer · Saving draft · Finalising |
+| GoodsReceivedNote | `Inbound.jsx` | Booked · On hold · Escalated · Returned · Re-finalising · Weight dispute · Re-weigh slip · Gate purchase · Gate purchase, valued · Over-delivery · Related · History |
+| LoadOnHold | `Inbound.jsx` | On hold · Reject · Rejecting · Rejected · Releasing · Released · Escalated |
+| OverDeliveryNotice | `Inbound.jsx` | Open · Acknowledge · Acknowledging · Acknowledged · Stock control |
+| WarehouseStock | `Inbound.jsx` | All · Exporting · Empty |
+| StockPosition | `StockControl.jsx` | Position · Calculation details · No gate price in force |
+| OnTheRoad | `StockControl.jsx` | All · Past window · Empty |
+| TransferOrder | `StockControl.jsx` | In transit · Past clearing window · Cleared · Within allowance · Transit difference · Requesting write-off · Write-off pending approval |
+| StockTake | `StockControl.jsx` | Counted · Request write-off · Requesting write-off · Write-off pending approval · Third-party count · Adjustments to book |
+| GatePrices | `GatePrice.jsx` | All · No price in force · Pending approval |
+| NewGatePrice | `GatePrice.jsx` | Form · Missing price · Submitting |
+| GatePriceRecord | `GatePrice.jsx` | Pending approval · Approving · Reject · Rejecting · Approved · Rejected · History · Own proposal |
+
+The Clerk's Home (`ClerkHome`, above) gains the inbound queue: goods received notes returned for correction, in a weight dispute, on hold and in draft, a ticket not received for too long, and a transfer on its way in, with the counts Ready, Problem, Stalled, On hold and Drafts as filters. The Setup kit draws Vehicles and Transporters (`../admin_workspace/Vehicles.jsx`).
+
+Rules these screens keep:
+
+- No price, value or margin on any Clerk or stock control layout (UX-10). The Clerk's gate purchase shows the field Gate price with only its status, Awaiting gate price. Today's gate price, in ZMW per t, is the only price stock control sees. On a layout shared with a viewer who holds the tier (the over-delivery notice), stock control sees the `Restricted` mark.
+- A weight's source is the labelled field Source (Weighbridge or Scanned slip); counterparty agreement is the separate field Counterparty status (Confirmed, Disputed, Pending).
+- Every screen that shows a contract shows its Basis (Delivered or Collected) as a field.
+- The goods received note checks ticket net, lines total and offload tally in the Reconcile card (`ThreeWayReconcile`), with the lines' running sum under the Lines card (`RunningSum`). Beyond tolerance, the note is On hold and names who acts next as the field "Waiting for: T. Mwila or J. Tembo".
+- The approver's choices are data (`DecisionActions`): Release hold, or Reject with a mandatory comment naming the follow-up (correct lines, re-weigh or cancel the receipt). Stock moves only after the decision. A gate price is decided the same way: Reject or Approve. Nobody decides their own proposal.
+- No gate price in force is a state naming who sets it (`NoPriceInForce`, "Set by Trading"), never a zero, a blank or a stale price.
+- A leg past its clearing window (7 days, a setting) is an exception. A transit difference within its allowance clears; bagged product has none. A residue's write-off is Pending approval until decided, never shown as done (`TransitResidue`).
+- Stock take differences show tonnes and per cent with two decimals against 0.20%. The Virtual warehouse line must be empty. Counts name the Stock control role or the third-party organisation, never a person.
+- Every figure on stock control's Home opens Calculation details. Other owners' stock is shown apart, never added into ours. No shortfall is drawn: demand is not recorded (S14).
+- Every save, finalise, decide, close, acknowledge, request and export button draws its working state.
+- Sample data is fictional: SYN4702 (delivered basis), SYN4790 (collected basis), Lakeview Farms Ltd, Cameron Estates, Riverbend Milling, Chisamba Shed, Mpongwe Depot. People are T. Mwila (owner), J. Tembo (trading), S. Banda (clerk) and R. Daka (stock control).
+
+Components this card introduced, all in `components/records`: `RunningSum` (+ `runningSumState`, `thousandths`, `tonnes`), `ThreeWayReconcile` (+ `threeWayCheck`), `DecisionActions` and `TransitResidue` (+ `WRITE_OFF_MARKS`).

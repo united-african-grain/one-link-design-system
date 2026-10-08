@@ -7,7 +7,9 @@ export const SETUP_NAV = [
   { items: [{ value: 'home', label: 'Setup Home' }] },
   { label: 'Users and access', items: [{ value: 'users', label: 'Users' }, { value: 'bundles', label: 'Bundles' }] },
   { label: 'Configuration', items: [{ value: 'settings', label: 'Settings' }, { value: 'switches', label: 'Switches' }, { value: 'steps', label: 'Approval steps' }, { value: 'policies', label: 'Policy methods' }, { value: 'figures', label: 'Figures and price tiers' }] },
-  { label: 'Reference data', items: [{ value: 'sites', label: 'Sites and storage units' }, { value: 'corridors', label: 'Corridors and routes' }, { value: 'products', label: 'Products' }, { value: 'points', label: 'Delivery points' }, { value: 'calendars', label: 'Operating calendars' }, { value: 'lists', label: 'Classes, grades and seasons' }] },
+  { label: 'Reference data', items: [{ value: 'sites', label: 'Sites and storage units' }, { value: 'corridors', label: 'Corridors and routes' }, { value: 'products', label: 'Products' }, { value: 'points', label: 'Delivery points' }, { value: 'calendars', label: 'Operating calendars' }, { value: 'lists', label: 'Classes, grades and seasons' },
+    // Vehicles and transporters (S10 reference data, M4 round; M4.DS.01): added, nothing above moved.
+    { value: 'vehicles', label: 'Vehicles' }, { value: 'transporters', label: 'Transporters' }] },
   // Data (S11, M3.DS.01): renamed from Uploads, with Production readiness added (Henry, 5 Oct 2026: entries may be added,
   // renamed or regrouped; the layout does not change).
   { label: 'Data', items: [{ value: 'templates', label: 'Templates' }, { value: 'uploads', label: 'Upload history' }, { value: 'readiness', label: 'Production readiness' }] },

@@ -120,3 +120,15 @@ The Setup navigation's Data group (S11), renamed from Uploads, holds Templates, 
 - Every save, propose and decide button shows its spinner in place until it lands.
 - Sample data is fictional: SYN4702, Lakeview Farms Ltd, Riverbend Milling, Chisamba Shed, Mpongwe Depot, and people with initials only. The logo is the One Link mark; public copy says One Link.
 - The look is this system's, the flow is the map's canvases (Henry's ruling of 30 Sep 2026, D-58). So buttons, radii and shadows are the current ones, not the canvas restyle.
+
+## Vehicles and transporters (`Vehicles.jsx`, M4.DS.01)
+
+Reference data (S10, M4 round), in the Setup list view and record page. The Reference data group gains Vehicles and Transporters; nothing above them moves.
+
+| Screen | File | States |
+|---|---|---|
+| VehiclesList | `Vehicles.jsx` | All · To verify · No match |
+| VehicleRecord | `Vehicles.jsx` | Transporter · Owner-operated · Unverified · Verifying · Delete refused · History |
+| TransportersList | `Vehicles.jsx` | All |
+
+A vehicle belongs to a transporter or is owner-operated by a farmer. A truck added at the gate is Unverified, with its configuration's default payload, until an administrator verifies it. A referenced vehicle is deactivated, never deleted.

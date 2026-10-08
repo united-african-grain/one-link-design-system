@@ -1,0 +1,47 @@
+<!-- @dsCard group="Components" viewport="1000x1100" subtitle="Inbound and stock: the lines' running sum, the three-way reconcile naming the pair that is out, decision actions as data, a transit residue with its write-off Pending approval" name="Inbound · Running sum, three-way reconcile, decisions, transit residue (M4.DS.01)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;align-items:start}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { RunningSum, ThreeWayReconcile, DecisionActions, TransitResidue, Card, Text } = DS;
+const L = (t) => <Text variant="caption-1-condensed" tone="tertiary">{t}</Text>;
+function Demo(){
+  return <div className="col">
+    {L('Running sum: the lines total against the ticket net (exact, within, beyond)')}
+    <Card><div className="grid">
+      <RunningSum total="32.140" target="32.140" tolerance="0.080"/>
+      <RunningSum total="32.060" target="32.140" tolerance="0.080"/>
+      <RunningSum total="31.700" target="32.140" tolerance="0.080"/>
+    </div></Card>
+    {L('Three-way reconcile: ticket net, lines total, offload tally; the pair that is out, and by how much')}
+    <div className="grid">
+      <ThreeWayReconcile tolerance="0.080" figures={[{label:'Ticket net',value:'32.140'},{label:'Lines total',value:'32.060'},{label:'Offload tally',value:'32.060'}]}/>
+      <ThreeWayReconcile tolerance="0.080" figures={[{label:'Ticket net',value:'32.140'},{label:'Lines total',value:'31.700'},{label:'Offload tally',value:'31.700'}]}/>
+      <ThreeWayReconcile tolerance="0.080" figures={[{label:'Ticket net',value:'32.140'},{label:'Lines total',value:'32.100'},{label:'Offload tally',value:'31.900'}]} extra={[{label:'Bags offloaded',value:'638'}]}/>
+    </div>
+    {L('Decision actions: exactly the outcomes given; the one being saved shows its working state')}
+    <Card>
+      <DecisionActions outcomes={[{value:'reject',label:'Reject',variant:'critical',comment:true},{value:'release',label:'Release hold',variant:'primary'}]}/>
+      <DecisionActions busy="approve" outcomes={[{value:'reject',label:'Reject',variant:'critical',comment:true},{value:'approve',label:'Approve',variant:'primary'}]}/>
+    </Card>
+    {L('Transit residue: Request write-off, its working state, Pending approval, Approved')}
+    <Card>
+      <TransitResidue residue="0.300"/>
+      <TransitResidue residue="0.300" requesting/>
+      <TransitResidue residue="0.300" writeOff="pending"/>
+      <TransitResidue residue="0.300" writeOff="approved"/>
+    </Card>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

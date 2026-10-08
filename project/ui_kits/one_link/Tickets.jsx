@@ -10,7 +10,7 @@
     Fictional sample data only: Chisamba Shed, Mpongwe Depot, Site A gate, Lakeview Farms Ltd, Cameron Estates. */
 
 export const TICKETS_STATES = {
-  ClerkHome: ['Inbound', 'Weighbridge offline', 'Close problem', 'Closing problem'],
+  ClerkHome: ['Inbound', 'Weighbridge offline', 'Close problem', 'Closing problem', 'Ready', 'Problem', 'Stalled', 'On hold', 'Drafts', 'Empty'],
   TicketsList: ['All', 'Delayed', 'Offline', 'Stalled', 'Scanned slip site', 'Closed', 'Close', 'Closing', 'One site and date', 'Exporting', 'Empty'],
   ScannedSlip: ['Read clearly', 'Check', 'Corrected', 'Net disagrees', 'Tare at or above gross', 'Photo already used', 'Confirming', 'Reading', 'Pending reading', 'Reading failed', 'Second confirmation', 'Second confirmation, first confirmer', 'Withdraw'],
   TicketRecord: ['Ready', 'Receiving', 'From scanned slip', 'History', 'Later scale record', 'Keeping weights', 'Closed'],
@@ -124,7 +124,25 @@ const QUEUE = [
   { id: 'q5', item: 'WBT10001606', link: true, type: 'Ticket', commodity: 'wheat', product: 'Wheat', detail: 'Truck ABZ 4412, net 32.140 t', status: 'ready', age: '12 min', action: 'Receive' },
   { id: 'q6', item: 'WBT10001608', link: true, type: 'Ticket', commodity: 'maize', product: 'Maize', detail: 'Truck BCA 2210, net 30.060 t', status: 'ready', age: '20 min', action: 'Receive' },
   { id: 'q7', item: 'WBT10001609', link: true, type: 'Ticket', commodity: 'soya', product: 'Soya', detail: 'Truck ALB 7714, net 8.420 t', status: 'ready', age: '25 min', action: 'Receive' },
+  // The inbound half of the queue (M4.DS.01, S12 C1): goods received notes returned, held, in dispute and in draft,
+  // a ready ticket not received for too long, and a transfer on its way in. No price or value on any row.
+  { id: 'q8', item: 'GRN10000375', link: true, type: 'Goods received note', commodity: 'maize', product: 'Maize', detail: 'Returned by T. Mwila: correct lines and re-finalise', status: 'problem', age: '40 min', action: 'Continue' },
+  { id: 'q9', item: 'GRN10000379', link: true, type: 'Goods received note', commodity: 'maize', product: 'Maize', detail: 'Weight dispute: re-weigh pending', status: 'problem', age: '5 h', action: 'Scan slip' },
+  { id: 'q10', item: 'WBT10001596', link: true, type: 'Ticket', commodity: 'wheat', product: 'Wheat', detail: 'Not received after 26 operating hours', status: 'stalled', age: '26 h', action: 'Receive' },
+  { id: 'q11', item: 'GRN10000377', link: true, type: 'Goods received note', commodity: 'wheat', product: 'Wheat', detail: 'Variance 0.440 t, tolerance 0.080 t', status: 'on-hold', age: '2 h', waiting: 'T. Mwila or J. Tembo' },
+  { id: 'q12', item: 'GRN10000380', link: true, type: 'Goods received note', commodity: 'soya', product: 'Soya', detail: 'Two lines entered', status: 'draft', age: '40 min', action: 'Continue' },
+  { id: 'q13', item: 'LEG-5103', link: true, type: 'Transfer', commodity: 'fertilizer', product: 'Urea 50 kg', detail: 'From Mpongwe Depot, truck BCA 2214, 30.000 t', status: 'in-transit', age: '4 days' },
 ];
+
+/** A queue row's status, an icon and a word (UX-14): a ticket's readiness, or a goods received note's On hold or
+    Draft, or a transfer's In transit (a leg is a load, UX-32). */
+const QUEUE_MARKS = { 'on-hold': { kind: 'attention', word: 'On hold' }, draft: { kind: 'neutral', word: 'Draft' }, 'in-transit': { kind: 'pending', word: 'In transit' } };
+export function QueueStatus({ status }) {
+  const m = QUEUE_MARKS[status];
+  return m ? <StatusMark kind={m.kind} label={m.word} size="body-4" /> : <ReadinessChip kind={status} />;
+}
+/** The filter each count selects (UX-08: the queue counts are filters on the list, not tiles). */
+const QUEUE_FILTERS = [['Ready', 'ready'], ['Problem', 'problem'], ['Stalled', 'stalled'], ['On hold', 'on-hold'], ['Drafts', 'draft']];
 
 export function ClerkHome({ state = 'Inbound', onOpen }) {
   const offline = state === 'Weighbridge offline';
@@ -135,27 +153,30 @@ export function ClerkHome({ state = 'Inbound', onOpen }) {
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>Weighbridge <ConnectionStatus status={offline ? 'Offline' : 'Connected'} /></span><Dot style={{ margin: 0 }} />
     <span>Last ticket 07:48 CAT</span><Dot style={{ margin: 0 }} /><span>Last refreshed 09:14</span>
   </>;
-  const count = (s) => QUEUE.filter((q) => q.status === s).length;
+  const all = state === 'Empty' ? [] : QUEUE;
+  const count = (s) => all.filter((q) => q.status === s).length;
+  const filter = QUEUE_FILTERS.find(([label]) => label === state);
+  const rows = filter ? all.filter((q) => q.status === filter[1]) : all;
   return (
     <Sections>
       <WbHead title="Home" meta={meta} right={<Button variant="outline" size="small" icon="scan-line">Scan slip</Button>} />
       {offline ? <OfflineBanner /> : null}
-      <Tabs tabs={[{ value: 'Inbound', label: 'Inbound', count: QUEUE.length }, { value: 'Outbound', label: 'Outbound', count: 4 }]} value="Inbound" />
+      <Tabs tabs={[{ value: 'Inbound', label: 'Inbound', count: all.length }, { value: 'Outbound', label: 'Outbound', count: 4 }]} value="Inbound" />
       <ScrollRow>
-        <Capsule selected count={QUEUE.length}>All</Capsule>
-        <Capsule count={count('ready')}>Ready</Capsule>
-        <Capsule count={count('problem')}>Problem</Capsule>
-        <Capsule count={count('stalled')}>Stalled</Capsule>
+        <Capsule selected={!filter} count={all.length}>All</Capsule>
+        {QUEUE_FILTERS.map(([label, s]) => <Capsule key={s} selected={!!filter && filter[1] === s} count={count(s)}>{label}</Capsule>)}
       </ScrollRow>
       <WbTable columns={[
         { key: 'item', label: 'Item', width: '220px', render: (r) => (r.link ? <span onClick={() => onOpen && onOpen(r.item)}><RefCell>{r.item}</RefCell></span> : r.item) },
         { key: 'type', label: 'Type', width: '160px' },
         { key: 'product', label: 'Commodity', width: '120px', render: (r) => <CommodityMarker commodity={r.commodity}>{r.product}</CommodityMarker> },
         { key: 'detail', label: 'Detail', width: narrow ? '280px' : undefined },
-        { key: 'status', label: 'Status', width: '120px', render: (r) => <ReadinessChip kind={r.status} /> },
+        { key: 'status', label: 'Status', width: '120px', render: (r) => <QueueStatus status={r.status} /> },
         { key: 'age', label: 'Age', width: '80px', tabular: true },
-        { key: 'action', label: '', width: '110px', align: 'right', render: (r) => <Button size="xsmall" variant={r.action === 'Receive' ? 'primary' : 'outline'}>{r.action}</Button> },
-      ]} rows={QUEUE} objects="items" />
+        // Who acts next on a held note is the labelled field Waiting for (UX-19), never a sentence and never a button.
+        { key: 'action', label: '', width: '190px', align: 'right', wrap: true, render: (r) => (r.waiting ? <span data-waiting="" style={textStyle('body-4', { tone: 'secondary' })}>Waiting for: {r.waiting}</span>
+          : r.action ? <Button size="xsmall" variant={r.action === 'Receive' ? 'primary' : 'outline'}>{r.action}</Button> : null) },
+      ]} rows={rows} objects="items" />
       {state === 'Close problem' || closing ? (
         <ReasonDialog title="Close weighbridge record 10001611?" confirmLabel="Close" minLength={1} busy={closing} sheet={narrow}
           defaultReason={closing ? 'Duplicate of WBT10001605, received yesterday' : ''} />

@@ -21,7 +21,8 @@ export interface DataTableProps<Row = any> {
   page?: number;
   pageSize?: number;
   onPage?: (page: number) => void;
-  rowKey?: string;
+  /** The field that tells rows apart (default 'id'), or a function of the row when no one field does. */
+  rowKey?: string | ((row: Row) => string | number);
   /** Optional caption-1-condensed column-group labels above the header: [{label, span}]. */
   groupLabels?: Array<{ label: string; span?: number }>;
   /** Below this container width (default 80px × columns) the table scrolls in its own overflow-x container. */
@@ -31,4 +32,4 @@ export interface DataTableProps<Row = any> {
 export function DataTable<Row = any>(props: DataTableProps<Row>): JSX.Element;
 export function RestrictedCell(props: { tooltip?: string }): JSX.Element;
 export function DerivedCell(props: { children: React.ReactNode; rows?: Array<{ label: React.ReactNode; value: React.ReactNode; total?: boolean }> }): JSX.Element;
-export function RefCell(props: { children: React.ReactNode; href?: string }): JSX.Element;
+export function RefCell(props: { children: React.ReactNode; href?: string; onOpen?: () => void }): JSX.Element;

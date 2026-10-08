@@ -2,11 +2,15 @@
 export interface ImportRow {
   /** The file's own row number; errors cite it. */
   row: number;
+  /** The sheet the row is on, for a workbook with more than one (a load register has one tab per supplier, so row
+      numbers repeat). Rows are told apart by sheet and row; without it, by row alone. */
+  sheet?: string;
   /** A row error, e.g. "Unknown contract ZAM 4999". The Result column shows it and Import stays disabled. */
   error?: string;
   /** A row check (M3.DS.01): the Result column reads "Cell D4: amendment, confirm before import". An unconfirmed
       amendment stops Import; the warnings never do. */
-  check?: 'amendment' | 'amendment-confirmed' | 'already-recorded' | 'differs-from-recorded' | 'sheet-figure-differs' | 'note';
+  check?: 'amendment' | 'amendment-confirmed' | 'already-recorded' | 'differs-from-recorded' | 'sheet-figure-differs' | 'note'
+    | 'skipped-before-cutover' | 'purchase-side-only' | 'carried';
   /** The cell the check cites: "D4". Optional for a `note`. */
   cell?: string;
   /** With `check: 'note'`, the free-text warning the Result column shows ("Cell F7: grade read as 2, contract says 1",
@@ -57,5 +61,7 @@ export function ImportPreview(props: ImportPreviewProps): JSX.Element;
 export const PREVIEW_CHECKS: Record<NonNullable<ImportRow['check']>, { kind: string; word: string }>;
 /** The nine preview states of M3.DS.01 AC 1(f), with the cell or record each cites and whether Import is enabled. */
 export const PREVIEW_STATES: Array<{ state: string; cite: string; importEnabled: boolean }>;
+/** What tells one row from another: its row number, or "Sheet!row" when it carries a sheet. */
+export function previewRowKey(row: Pick<ImportRow, 'row' | 'sheet'>): string;
 export function previewBlocked(args: { refusal?: unknown; file?: { missing?: string[] }; rows?: ImportRow[] }): boolean;
 export const UPLOAD_STATUS: Record<'validating' | 'ready' | 'imported' | 'failed', { kind: string; word: string }>;

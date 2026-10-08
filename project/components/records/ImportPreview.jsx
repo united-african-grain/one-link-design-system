@@ -24,6 +24,11 @@ export const PREVIEW_CHECKS = {
   'already-recorded': { kind: 'flat', word: 'already recorded, skipped' },
   'differs-from-recorded': { kind: 'attention', word: 'differs from recorded, not applied' },
   'sheet-figure-differs': { kind: 'attention', word: 'sheet figure differs' },
+  // A load register's rows (M3.TRD.03, UAG-182): a row before the cutover date, a load recorded on its purchase alone,
+  // and a delivered to date carried at the cutover. Words only, on marks the system already has; none stops Import.
+  'skipped-before-cutover': { kind: 'flat', word: 'skipped, before cutover date' },
+  'purchase-side-only': { kind: 'neutral', word: 'purchase side only' },
+  carried: { kind: 'clean', word: 'carried at the cutover date, unverified' },
   // A free-text warning the row carries in `note` ("Grade read as 2, contract says 1"). It never stops Import.
   note: { kind: 'attention', word: 'note' },
 };
@@ -40,6 +45,13 @@ export const PREVIEW_STATES = [
   { state: 'Sheet figure differs', cite: 'K5', importEnabled: true },
   { state: 'Duplicate refused', cite: 'UPL-000240', importEnabled: false },
 ];
+
+/** What tells one preview row from another. A single-sheet file uses its row number, as before. A workbook with one
+    tab per supplier (a load register) repeats row numbers across tabs, so a row with a `sheet` is told apart by its
+    sheet and its row: "Lakeview Farms Ltd!3". */
+export function previewRowKey(r) {
+  return r.sheet != null && r.sheet !== '' ? `${r.sheet}!${r.row}` : String(r.row);
+}
 
 /** Import waits while the file is refused, a required heading is missing, a row has an error or an amendment is not
     yet confirmed. */
@@ -131,7 +143,7 @@ export function ImportPreview({ file, status = 'ready', tiles = [], columns = []
         </div>
       ) : null}
       {/* A refused file, or one whose required headings are missing, has no rows read to show. */}
-      {refusal || (missing.length && !rows.length) ? null : <DataTable columns={table} rows={rows} rowKey="row" />}
+      {refusal || (missing.length && !rows.length) ? null : <DataTable columns={table} rows={rows} rowKey={previewRowKey} />}
     </div>
   );
 }

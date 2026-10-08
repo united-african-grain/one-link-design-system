@@ -1,4 +1,4 @@
-<!-- @dsCard group="Components" viewport="1000x1300" subtitle="Weighbridge continuity: readiness apart from source, the slip photo with zoom and fingerprint, the field check, the second confirmation, the exceptions list" name="Weighbridge · Readiness, evidence viewer, field check, exceptions (M2.DS.01)" -->
+<!-- @dsCard group="Components" viewport="1000x1500" subtitle="Weighbridge continuity: readiness apart from source, the slip photo with zoom and fingerprint, the field check, the second confirmation, the exceptions list, an exception's highlights with its linked record" name="Weighbridge · Readiness, evidence viewer, field check, exceptions (M2.DS.01)" -->
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../../styles.css">
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -12,7 +12,7 @@
 </head><body><div id="root"></div>
 <script type="text/babel">
 loadDS('../').then((DS) => {
-const { ReadinessChip, READINESS_KINDS, ProvenanceChip, ConfirmationChip, EvidenceViewer, FieldCheck, fieldsReady, SecondConfirmation, ExceptionList, RecordHighlights, Card, Button, Text } = DS;
+const { ReadinessChip, READINESS_KINDS, ProvenanceChip, ConfirmationChip, EvidenceViewer, FieldCheck, fieldsReady, SecondConfirmation, ExceptionList, ExceptionStatus, RecordHighlights, Card, Button, Text } = DS;
 const FIELDS = [
   { key: 'vehicle', label: 'Vehicle', read: 'ABZ 4610', value: 'ABZ 4610' },
   { key: 'gross', label: 'Gross (t)', read: '45.900', value: '45.900', numeric: true },
@@ -41,6 +41,9 @@ function Demo(){
     <Text variant="caption-1-condensed" tone="tertiary">Exceptions: the clerk's wording, then the owner's with the price tier</Text>
     <Card padding={4}><ExceptionList rows={ROWS} variant="clerk"/></Card>
     <Card padding={4}><ExceptionList rows={ROWS} variant="owner" priceTier/></Card>
+    <Text variant="caption-1-condensed" tone="tertiary">An exception's highlights: the linked record is a link, reached with Tab and opened with Enter</Text>
+    <RecordHighlights kind="Exception" title="EXC-000191" status={<ExceptionStatus status="acknowledged"/>} tabs={[]} actions={<Button variant="outline" size="small">Close</Button>}
+      fields={[{label:'Type',value:'Intake'},{label:'Owner',value:'Clerk, Chisamba Shed'},{label:'Age',value:'3 h'},{label:'Linked record',value:'WBT10001599',link:'#'},{label:'Counterparty',value:'Cameron Estates'}]}/>
   </div>;
 }
 ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);

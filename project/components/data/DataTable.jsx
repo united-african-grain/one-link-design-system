@@ -25,10 +25,11 @@ export function DerivedCell({ children, rows = [] }) {
   );
 }
 
-/** Ref link cell: body-3-strong brand. */
-export function RefCell({ children, href = '#' }) { return <a href={href} onClick={(e) => e.preventDefault()} style={{ ...textStyle('body-3', { strong: true, tone: 'brand' }), fontVariantNumeric: 'tabular-nums', textDecoration: 'none' }}>{children}</a>; }
+/** Ref link cell: body-3-strong brand. A real link, so Tab reaches it and Enter opens it; `onOpen` is called when it is. */
+export function RefCell({ children, href = '#', onOpen }) { return <a href={href} onClick={(e) => { e.preventDefault(); if (onOpen) onOpen(); }} style={{ ...textStyle('body-3', { strong: true, tone: 'brand' }), fontVariantNumeric: 'tabular-nums', textDecoration: 'none' }}>{children}</a>; }
 
 /** Dense register. columns: [{key, label, align, width, render}]. rows: objects; row.correction = {reason, actor, time} adds a compensating row beneath.
+    rowKey names the field that tells rows apart (default 'id'), or is a function of the row when no one field does.
     When its container is narrower than minWidth (default 80px per column) the table scrolls inside its own overflow-x container. */
 export function DataTable({ columns, rows, footer, total, page = 1, pageSize, onPage, rowKey = 'id', groupLabels, minWidth, style }) {
   const [hoverI, setHoverI] = useState(-1);
@@ -36,6 +37,7 @@ export function DataTable({ columns, rows, footer, total, page = 1, pageSize, on
   const outerW = useElementWidth(outer);
   const tableMin = minWidth != null ? minWidth : columns.length * 80;
   const scroll = outerW > 0 && outerW < tableMin;
+  const keyOf = (r, i) => { const k = typeof rowKey === 'function' ? rowKey(r) : r[rowKey]; return k != null ? k : i; };
   const grid = columns.map((c) => c.width || (c.align === 'right' ? 'max-content' : 'minmax(0,1fr)')).join(' ');
   // A column with `wrap` lets long words run onto more lines instead of being cut, and its rows grow from 48px.
   const wraps = columns.some((c) => c.wrap);
@@ -53,7 +55,7 @@ export function DataTable({ columns, rows, footer, total, page = 1, pageSize, on
         {columns.map((c) => <div key={c.key} style={{ display: 'flex', alignItems: 'center', justifyContent: c.align === 'right' ? 'flex-end' : 'flex-start', padding: '0 12px', ...textStyle('body-4', { tone: 'tertiary' }), whiteSpace: 'nowrap' }}>{c.label}</div>)}
       </div>
       {rows.map((r, i) => (
-        <React.Fragment key={r[rowKey] != null ? r[rowKey] : i}>
+        <React.Fragment key={keyOf(r, i)}>
           <div role="row" onMouseEnter={() => setHoverI(i)} onMouseLeave={() => setHoverI(-1)} style={{ position: 'relative', display: 'grid', gridTemplateColumns: grid, height: wraps ? undefined : 48, minHeight: 48, boxShadow: r.correction ? 'none' : 'inset 0 -1px 0 var(--border-light)', opacity: r.closed ? 0.6 : 1 }}>
             <span aria-hidden style={{ position: 'absolute', inset: '2px -8px', borderRadius: 'var(--radius-md)', background: 'var(--grouped)', opacity: hoverI === i ? 1 : 0, transition: 'opacity var(--dur-default) var(--ease-default)', pointerEvents: 'none' }} />
             {columns.map((c) => cell(c, r, i))}

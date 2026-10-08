@@ -142,7 +142,9 @@ describe('[M2.DS.01] weighbridge continuity screens', () => {
         if (start < 0) continue;
         const body = src.slice(start, src.indexOf('\n}\n', start));
         if (/<FieldCheck[^>]*evidence=/.test(body)) assert.match(body, /<EvidenceViewer /, `${f} ${name} draws the photo beside its FieldCheck`);
-        for (const m of body.matchAll(/<Field label="([^"]+)"/g)) assert.doesNotMatch(m[1], /gross|tare|net|weight|\(t\)/i, `${f} ${name} offers a typed weight: ${m[1]}`);
+        // The offload tally (M4.DS.01, RL-THREE-WAY, canvas CS-CLERK-04) is counted at the stack, not read from a slip:
+        // it is the one weight a person enters, and it is checked against the ticket net, never stands in for it.
+        for (const m of body.matchAll(/<Field label="([^"]+)"/g)) if (m[1] !== 'Offloaded at stack (t)') assert.doesNotMatch(m[1], /gross|tare|net|weight|\(t\)/i, `${f} ${name} offers a typed weight: ${m[1]}`);
       }
     }
     const check = read(join(COMPONENTS, 'records/FieldCheck.jsx'));

@@ -77,7 +77,7 @@ export function ExceptionRecord({ state = 'Open' }) {
       <WbHead title="EXC-000191" />
       <RecordHighlights kind="Exception" title="EXC-000191" status={<ExceptionStatus status={status} />} tab={tab} onTab={setTab}
         actions={status === 'open' ? <Button size="small">Acknowledge</Button> : status === 'acknowledged' ? <Button variant="outline" size="small">Close</Button> : null}
-        fields={[{ label: 'Type', value: 'Intake' }, { label: 'Owner', value: 'Clerk, Chisamba Shed' }, { label: 'Age', value: '3 h' }, { label: 'Linked record', value: <RefCell>WBT10001599</RefCell> }, { label: 'Counterparty', value: 'Cameron Estates' }]} />
+        fields={[{ label: 'Type', value: 'Intake' }, { label: 'Owner', value: 'Clerk, Chisamba Shed' }, { label: 'Age', value: '3 h' }, { label: 'Linked record', value: 'WBT10001599', link: '#' }, { label: 'Counterparty', value: 'Cameron Estates' }]} />
       {tab === 'History' ? (
         <WbTable title="History" count={history.length} objects="changes" columns={[
           { key: 'field', label: 'Field', width: '120px' }, { key: 'user', label: 'User', width: '130px' },

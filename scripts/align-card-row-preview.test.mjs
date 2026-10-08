@@ -80,7 +80,7 @@ describe('[ALIGN] ImportPreview per template (uploads wording)', () => {
     assert.match(src, /if \(c && r\.check === 'note'\) return <span data-check="note"><StatusMark kind=\{c\.kind\} label=\{r\.cell \? `Cell \$\{r\.cell\}: \$\{r\.note \|\| c\.word\}` : \(r\.note \|\| c\.word\)\}/);
     const blocked = src.match(/export function previewBlocked[\s\S]*?\n\}/)[0];
     assert.doesNotMatch(blocked, /note/, 'a note is a warning, not a stop');
-    assert.match(dts, /\| 'sheet-figure-differs' \| 'note';/);
+    assert.match(dts, /\| 'sheet-figure-differs' \| 'note'[;\n]/);
     assert.match(dts, /note\?: string;/);
   });
 });

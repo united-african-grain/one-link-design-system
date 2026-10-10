@@ -95,6 +95,14 @@ npm run preview        # builds dist/ and serves it at http://localhost:4400
 
 Pushing to `main` builds and deploys GitHub Pages (`.github/workflows/pages.yml`).
 
+### Merging
+
+Merge a pull request with `npm run merge -- <number>` (`--check-only` to see whether it may). It refuses unless the
+pull request is open, not a draft, aimed at `main`, free of conflicts and green on every check, including
+"build and test". It squash-merges, then waits for the Pages deploy of the merge commit and fails unless the site
+deployed. Green pull requests merge this way without waiting for a review (Henry, 10 Oct 2026). The app then re-pins
+with `npm run design-system:sync -- <merge sha>`.
+
 ### Re-exporting from Claude Design
 
 1. Replace `project/` with the new export.

@@ -1,0 +1,44 @@
+<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Trading workspace: the trade working view with live margin, contract terms, the monthly schedule, the price ladder, a shipment's allocations with permit headroom, long and short by origin and corridor, the trade record, closing a trade, generating contracts and signatures, amendments, quality specifications, lots, permits, diversions and the contract list, with the M6 states of the existing screens" name="Trading workspace" -->
+<!-- @startingPoint section="Screens" subtitle="The Trading workspace (M6): every trading screen and state, at 1440 and 390" viewport="1440x900" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trading workspace</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../../components/_loader.js"></script>
+<style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadKit('../../components/', './', ['../one_link/Shell.jsx','../one_link/Home.jsx','../one_link/TradeBoard.jsx','../one_link/Approval.jsx','../one_link/Weighbridge.jsx','../one_link/StockBoard.jsx','../one_link/TradingStates.jsx','../admin_workspace/Shell.jsx','../admin_workspace/QualitySpecs.jsx','Workspace.jsx','Trades.jsx','Terms.jsx','Supply.jsx']).then((K) => {
+  const { Page, Segmented, ScrollRow } = K;
+  // The card's screens (a) to (n), the contract list, then the M6 states of the existing kit screens (TradeBoard,
+  // Approval, GradingDispute, GRNFinalise, StockBoard), which draw here in their own frames. Every state opens directly
+  // with ?screen=<Screen>&state=<State>, which the screenshot review uses at 1440 and 390.
+  const ORDER = ['TradeWorkingView', 'ContractTerms', 'ScheduleGrid', 'PriceLadder', 'ShipmentAllocations', 'LongShort', 'TradeRecord', 'NewTrade', 'CloseTrade', 'GenerateContracts', 'AmendmentConfirm',
+    'QualitySpecifications', 'LotDefinition', 'PermitsList', 'DiversionTask', 'ContractList', 'TradeBoard', 'Approval', 'GradingDispute', 'GRNFinalise', 'StockBoard'];
+  const STATES = { ...K.TRADING_WORKSPACE_STATES, ...K.QUALITY_SPEC_STATES, ...K.M6_STATES };
+  const NAVS = { trading: K.TW_NAV, finance: K.TW_FIN_NAV, clerk: K.TW_CLERK_NAV, stock: K.TW_STOCK_NAV };
+  const params = new URLSearchParams(location.search);
+  function App(){
+    const first = STATES[params.get('screen')] ? params.get('screen') : 'TradeWorkingView';
+    const [screen,setScreen]=React.useState(first);
+    const [state,setState]=React.useState(params.get('screen')===first && params.get('state') || STATES[first][0]);
+    const go=(s)=>{ setScreen(s); setState(STATES[s][0]); };
+    const Screen=K[screen];
+    const f=K.twFrame(screen, state);
+    const controls=<ScrollRow align="flex-end" style={{marginBottom:16}}>
+      <Segmented options={ORDER.map((s)=>K.TW_LABEL[s])} value={K.TW_LABEL[screen]} onChange={(l)=>go(ORDER.find((s)=>K.TW_LABEL[s]===l))}/>
+      {STATES[screen].length>1?<Segmented options={STATES[screen]} value={state} onChange={setState}/>:null}
+    </ScrollRow>;
+    const body=<Screen state={state} onOpen={()=>{}}/>;
+    if(f.who==='md') return <K.MdFrame module={f.module} breadcrumb={f.breadcrumb}>{controls}{body}</K.MdFrame>;
+    if(f.who==='setup') return <K.SetupFrame section={f.section} crumbs={f.crumbs} onSection={(v)=>{ if(v==='quality') go('QualitySpecifications'); }}>{controls}{body}</K.SetupFrame>;
+    return <Page nav={NAVS[f.nav]} module={f.module} section={f.section} breadcrumb={f.breadcrumb} user={K.TW_USERS[f.user]} sync={null}
+      onSection={(v)=>{ const to={ trades:'TradeBoard', contracts:'ContractList', schedule:'ScheduleGrid', longshort:'LongShort', diversions:'DiversionTask', shipments:'ShipmentAllocations', permits:'PermitsList', lots:'PriceLadder', received:'GRNFinalise', units:'StockBoard' }[v]; if(to) go(to); }}>{controls}{body}</Page>;
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+});
+</script></body></html>

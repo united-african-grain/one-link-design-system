@@ -1,5 +1,7 @@
-/** 05 Approval: trade T-0141 (detail page + decision panel). */
-export function Approval({ mobile = false }) {
+/** 05 Approval: trade T-0141 (detail page + decision panel). M6.DS.01 adds Owen's approval record for trade SYN4810 as
+    states beside it (TradingStates.jsx, M6_STATES.Approval); with no state it draws as it always has. */
+export function Approval({ mobile = false, state, onOpen }) {
+  if (M6_STATES.Approval.includes(state)) return <ApprovalM6 state={state} onOpen={onOpen} />;
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
   const panelFull = !useMinWidth(1024);

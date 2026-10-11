@@ -254,7 +254,9 @@ describe('[M4.DS.01] the screens', () => {
   test('[M4.DS.01] Vehicles and transporters in Setup reference data, with owner-operated and unverified vehicles (AC 1h)', () => {
     const nav = literal(read(join(ADMIN, 'Shell.jsx')), 'SETUP_NAV', '\\[', '\\]');
     const ref = nav.find((g) => g.label === 'Reference data').items.map((i) => i.label);
-    assert.deepEqual(ref.slice(-2), ['Vehicles', 'Transporters']);
+    // Quality specifications (M6.DS.01) is added after Transporters; Vehicles and Transporters keep their place.
+    assert.deepEqual(ref.slice(ref.indexOf('Vehicles'), ref.indexOf('Vehicles') + 2), ['Vehicles', 'Transporters']);
+    assert.deepEqual(ref.slice(0, ref.indexOf('Vehicles')).length, 6, 'nothing above them moved');
     assert.deepEqual(ref.slice(0, 2), ['Sites and storage units', 'Corridors and routes'], 'nothing above them moved');
     const list = literal(vehicles, 'VEHICLES', '\\[', '\\]');
     assert.ok(list.some((v) => v.operated === 'Owner-operated' && v.transporter === 'Lakeview Farms Ltd'));

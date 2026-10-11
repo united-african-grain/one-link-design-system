@@ -40,3 +40,18 @@ Owen's screens as S08 J11 locks them, at 390, with his own bottom bar (Home, App
 
 - Mobile Home carries Last refreshed, the KPI tiles, Items to approve and Exceptions. An approval offers Approve and Reject, Reject asking for a comment before it is enabled (UX-22); an exception offers Acknowledge. No other action appears on the phone.
 - Approve, Reject and Acknowledge draw their working state until the decision lands. The approval and the exception are task screens: no bottom bar, the back chevron, the actions full width at the bottom (UX-31).
+
+## Trading and Transport on the phone (`TradingApp.jsx`, M6.DS.01)
+
+The trading screens of the UAG One Link app at 390 (M6.APP.01): Trading's contracts and short list with Trading's own bottom bar (Contracts, Short list), and Transport's day of trucks with Transport's (Day plan, Loading orders). The trade approval on the phone is the Managing Director's `OwnerApproval` above, which shows Trade SYN4810's legs and margin; it is not drawn twice. The rows are the Trading workspace's (`../trading_workspace/Workspace.jsx`), so the phone and the web agree.
+
+| Screen | File | States |
+|---|---|---|
+| AppContracts | `TradingApp.jsx` | By status · Wheat · No signal |
+| AppShortList | `TradingApp.jsx` | Short contracts · Suppliers to call · No signal |
+| AppDayPlan | `TradingApp.jsx` | Today · No signal · No loads |
+
+- Contracts are grouped by status (Pending approval, Approved, Active, Draft), the commodity marker on every row, with tonnes left and, for a sale, its cover.
+- The short list ranks short contracts by severity; a contract opens its suppliers to call, each with the reason and a contact or "no contact on record".
+- The day plan lists today's loads per contract: transporter, truck, where it loads, the loading order, tonnes and whether it has loaded (Planned, Loading, In transit).
+- With no signal the phone shows "No signal. Last refreshed 07:02 CAT" with the warning icon and keeps what it last loaded. No price appears on these screens.

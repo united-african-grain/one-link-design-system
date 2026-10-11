@@ -11,7 +11,9 @@ export const SETUP_NAV = [
   { label: 'Configuration', items: [{ value: 'settings', label: 'Settings' }, { value: 'switches', label: 'Switches' }, { value: 'steps', label: 'Approval steps' }, { value: 'policies', label: 'Policy methods' }, { value: 'figures', label: 'Figures and price tiers' }, { value: 'rules', label: 'Exception rules' }] },
   { label: 'Reference data', items: [{ value: 'sites', label: 'Sites and storage units' }, { value: 'corridors', label: 'Corridors and routes' }, { value: 'products', label: 'Products' }, { value: 'points', label: 'Delivery points' }, { value: 'calendars', label: 'Operating calendars' }, { value: 'lists', label: 'Classes, grades and seasons' },
     // Vehicles and transporters (S10 reference data, M4 round; M4.DS.01): added, nothing above moved.
-    { value: 'vehicles', label: 'Vehicles' }, { value: 'transporters', label: 'Transporters' }] },
+    { value: 'vehicles', label: 'Vehicles' }, { value: 'transporters', label: 'Transporters' },
+    // Quality specifications (S10 reference data, M6 round; M6.DS.01): added after Transporters, nothing above it moved.
+    { value: 'quality', label: 'Quality specifications' }] },
   // Data (S11, M3.DS.01): renamed from Uploads, with Production readiness added (Henry, 5 Oct 2026: entries may be added,
   // renamed or regrouped; the layout does not change).
   // Key uploads (UAG-147; M5.DS.02): added after Production readiness, nothing above it moved.

@@ -1,4 +1,4 @@
-<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Interactive click-through: Command Center, Trade Desk, Warehouse, Stock, Farmer Finance; the Clerk's inbound, outbound and stock control screens; transport planning; the Managing Director's Home, reports and Assistant; Trading's cover board, farm-direct operations and farmer finance" name="One Link desktop app" -->
+<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Interactive click-through: Command Center, Trade Desk, Warehouse, Stock, Farmer Finance; the Clerk's inbound, outbound and stock control screens; transport planning; the Managing Director's Home, reports and Assistant; Trading's cover board, farm-direct operations and farmer finance; the M6 states of the trade board, approval, grading dispute, goods received note and stock board" name="One Link desktop app" -->
 <!-- @startingPoint section="Screens" subtitle="One Link desktop app shell with all owner screens" viewport="1440x900" -->
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>One Link</title>
 <link rel="stylesheet" href="../../styles.css">
@@ -12,7 +12,7 @@
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','Home.jsx','Reports.jsx','Trading.jsx','Operations.jsx','Finance.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx','Outbound.jsx','Transport.jsx','../admin_workspace/Shell.jsx','../admin_workspace/CaptureReview.jsx']).then((K) => {
+loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','Home.jsx','Reports.jsx','Trading.jsx','Operations.jsx','Finance.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx','Outbound.jsx','Transport.jsx','TradingStates.jsx','../admin_workspace/Shell.jsx','../admin_workspace/CaptureReview.jsx']).then((K) => {
   const { Page, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GRNFinalise, GradingDispute, StockBoard, CreditBook, Segmented, ScrollRow } = K;
   // The weighbridge continuity screens (M2.DS.01) open in the Clerk's frame, or the owner's for his Exceptions view.
   // Every state opens directly with ?screen=<Screen>&state=<State>, which the screenshot review uses at 1440 and 390.
@@ -103,15 +103,22 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','Home.jsx','
     const [tdView,setTdView]=React.useState('Trade Board');
     const [covState,setCovState]=React.useState('Board');
     const [stockView,setStockView]=React.useState('Owner');
+    // The M6 states of the existing screens (M6.DS.01) sit beside their own states; with none chosen each draws as it always has.
+    const [apState,setApState]=React.useState('T-0141');
+    const [grnState,setGrnState]=React.useState('Three outcomes');
+    const [dspState,setDspState]=React.useState('DSP-0219');
+    const M6=K.M6_STATES;
     const sync = (module==='warehouse' && whView==='Sync silent') || ccState==='exception' ? 'stalled' : 'live';
     if(continuity) return <Continuity initial={continuity} onLeave={()=>setContinuity(null)}/>;
     let body=null, controls=null;
     if(module==='command'){ controls=<Segmented options={['Calm','Exception','Managing Director screens']} value={ccState==='calm'?'Calm':'Exception'} onChange={v=> v==='Managing Director screens' ? setContinuity('Home') : setCcState(v==='Calm'?'calm':'exception')}/>; body=<CommandCenter state={ccState}/>; }
-    else if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval','Counterparties','Gate prices','Trading screens']} value={tdView} onChange={(v)=> v==='Counterparties' ? setContinuity('CounterpartyFind') : v==='Gate prices' ? setContinuity('GatePrices') : v==='Trading screens' ? setContinuity('CoverHome') : setTdView(v)}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}{tdView==='Coverage'?<Segmented options={['Board','Calculation details']} value={covState} onChange={setCovState}/>:null}</>;
-      body = tdView==='Trade Board' ? <TradeBoard state={tbState}/> : tdView==='Coverage' ? <Coverage state={covState}/> : <Approval/>; }
+    else if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval','Counterparties','Gate prices','Trading screens','Trading workspace']} value={tdView} onChange={(v)=> v==='Counterparties' ? setContinuity('CounterpartyFind') : v==='Gate prices' ? setContinuity('GatePrices') : v==='Trading screens' ? setContinuity('CoverHome') : v==='Trading workspace' ? location.assign('../trading_workspace/index.html') : setTdView(v)}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading',...M6.TradeBoard]} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':tbState==='loading'?'Loading':tbState} onChange={v=>setTbState(v==='Owner'?'default':v==='Restricted'||v==='Loading'?v.toLowerCase():v)}/>:null}{tdView==='Coverage'?<Segmented options={['Board','Calculation details']} value={covState} onChange={setCovState}/>:null}{tdView==='Approval'?<Segmented options={['T-0141',...M6.Approval]} value={apState} onChange={setApState}/>:null}</>;
+      body = tdView==='Trade Board' ? <TradeBoard state={tbState}/> : tdView==='Coverage' ? <Coverage state={covState}/> : apState==='T-0141' ? <Approval/> : <Approval state={apState}/>; }
     else if(module==='warehouse'){ controls=<Segmented options={['Tickets','Sync silent','Empty','GRN finalise','Dispute','Clerk screens','Outbound screens','Transport screens','Farm-direct screens']} value={whView} onChange={(v)=> v==='Clerk screens' ? setContinuity('ClerkHome') : v==='Farm-direct screens' ? setContinuity('FarmDirectConsignments') : v==='Outbound screens' ? setContinuity('ClerkOutbound') : v==='Transport screens' ? setContinuity('TransportHome') : setWhView(v)}/>;
-      body = whView==='GRN finalise' ? <GRNFinalise/> : whView==='Dispute' ? <GradingDispute/> : <Weighbridge state={whView==='Sync silent'?'silent':whView==='Empty'?'empty':'default'}/>; }
-    else if(module==='stock'){ controls=<Segmented options={['Owner','Stock Control','Stock control screens']} value={stockView} onChange={(v)=> v==='Stock control screens' ? setContinuity('StockPosition') : setStockView(v)}/>; body=<StockBoard role={stockView}/>; }
+      if(whView==='GRN finalise') controls=<>{controls}<Segmented options={['Three outcomes',...M6.GRNFinalise]} value={grnState} onChange={setGrnState}/></>;
+      if(whView==='Dispute') controls=<>{controls}<Segmented options={['DSP-0219',...M6.GradingDispute]} value={dspState} onChange={setDspState}/></>;
+      body = whView==='GRN finalise' ? (grnState==='Three outcomes' ? <GRNFinalise/> : <GRNFinalise state={grnState}/>) : whView==='Dispute' ? (dspState==='DSP-0219' ? <GradingDispute/> : <GradingDispute state={dspState}/>) : <Weighbridge state={whView==='Sync silent'?'silent':whView==='Empty'?'empty':'default'}/>; }
+    else if(module==='stock'){ controls=<Segmented options={['Owner','Stock Control',...M6.StockBoard,'Stock control screens']} value={stockView} onChange={(v)=> v==='Stock control screens' ? setContinuity('StockPosition') : setStockView(v)}/>; body=M6.StockBoard.includes(stockView) ? <StockBoard state={stockView}/> : <StockBoard role={stockView}/>; }
     else if(module==='finance'){ controls=<Segmented options={['Credit book','Farmer accounts screens']} value="Credit book" onChange={(v)=> v==='Farmer accounts screens' && setContinuity('FarmerAccount')}/>; body=<CreditBook/>; }
     else { body=<div style={{padding:'80px 0',textAlign:'center',color:'var(--content-tertiary)'}}>Ask AI is out of scope for this kit.</div>; }
     return <Page module={module} onModule={setModule} sync={sync} syncLabel={sync==='stalled'?'Bridge feed silent · last batch 3h 12m ago':undefined}>

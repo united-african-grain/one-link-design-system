@@ -4,6 +4,7 @@ Click-through recreation of the owner-facing platform. `index.html` mounts the s
 
 | Screen | File | States |
 |---|---|---|
+| 01 Command Center | `CommandCenter.jsx` | Calm · Exception (+ sync silent banner and stalled header pill) |
 | 03 Trade Board | `TradeBoard.jsx` | Owner · Restricted · Loading; cards or table view |
 | 04 Coverage: Wheat (local) | `Coverage.jsx` | commodity tabs, firm/declared overlays, season chart |
 | 05 Approval T-0141 | `Approval.jsx` | decision panel with Approve busy |
@@ -162,7 +163,7 @@ Components this card introduced, all in `components/records`: `LoadMeter` (+ `lo
 
 ## The Managing Director's Home and awareness screens (M5.DS.01)
 
-Owen's screens as S08 locks them (J2 to J11, canvas S09 "One Link Owen 1"), in his frame: the AppShell with his navigation (UX-06: Home, Trading, Logistics, Inventory, Finance, Counterparties, Reports, Assistant), Notifications and Help, and no connection pill or digest bell. Home replaces the Command Center screen at source: `CommandCenter.jsx` is gone, and the kit opens on Home. Open any state directly with `?screen=<Screen>&state=<State>`.
+Owen's screens as S08 locks them (J2 to J11, canvas S09 "One Link Owen 1"), in his frame: the AppShell with his navigation (UX-06: Home, Trading, Logistics, Inventory, Finance, Counterparties, Reports, Assistant), Notifications and Help, and no connection pill or digest bell. Home is added beside the Command Center screen (`CommandCenter.jsx`), which stays and still opens first (Henry, 30 Sep 2026: new work adds to the design and never deletes; renaming allowed). Its words that S57 bans are renamed: "Chisamba Shed weighbridge is offline", "last record", "ready to receive". Reach Owen's screens from the Command Center's "Managing Director screens", or open any state directly with `?screen=<Screen>&state=<State>`.
 
 | Screen | File | States |
 |---|---|---|

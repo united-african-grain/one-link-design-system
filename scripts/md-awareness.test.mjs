@@ -184,12 +184,12 @@ describe('[M5.DS.01] the screens', () => {
     assert.ok(setup.SettingRecord.states.includes('Daily summary times'));
   });
 
-  test('[M5.DS.01] every new screen and state opens directly by ?screen=&state=, Owen\'s in his frame, and the kit opens on Home', () => {
+  test('[M5.DS.01] every new screen and state opens directly by ?screen=&state=, Owen\'s in his frame, beside the Command Center', () => {
     const index = read(join(ONE_LINK, 'index.html'));
     for (const f of ['Home.jsx', 'Reports.jsx']) assert.ok(index.includes(`'${f}'`), f);
     assert.match(index, /const M5_STATES = \{ \.\.\.K\.HOME_STATES, \.\.\.K\.REPORTS_STATES \}/);
     assert.match(index, /frame\.who==='md'\) return <K\.MdFrame/);
-    assert.match(index, /React\.useState\(STATES\[params\.get\('screen'\)\] \? params\.get\('screen'\) : 'Home'\)/);
+    assert.match(index, /React\.useState\(STATES\[params\.get\('screen'\)\] \? params\.get\('screen'\) : null\)/, '?screen=Home opens Home; with no screen the Command Center opens first');
     const app = read(join(KITS, 'field_app/index.html'));
     assert.match(app, /'\.\.\/one_link\/Home\.jsx'/);
     assert.match(app, /\.\.\.K\.OWNER_APP_STATES/);
@@ -390,12 +390,16 @@ describe('[M5.DS.01] composition, words and states', () => {
   });
 
   test('REGRESSION: [M5.DS.01] the command centre kit shows no "batch", "feed silent" or "ready for a GRN" copy (AC 6)', () => {
-    assert.equal(existsSync(join(ONE_LINK, 'CommandCenter.jsx')), false, 'the Command Center screen is replaced at source');
-    for (const index of [join(ONE_LINK, 'index.html'), join(KITS, 'one_link_mobile/index.html')]) {
-      const src = read(index);
-      assert.doesNotMatch(src, /CommandCenter/, index);
-      assert.match(src, /'Home\.jsx'/, index);
-    }
+    // The Command Center screen stays and still opens first (Henry, 30 Sep 2026: add, never delete); its banned words are renamed.
+    const cc = read(join(ONE_LINK, 'CommandCenter.jsx'));
+    const ccShown = cc.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+    assert.doesNotMatch(ccShown, /\bbatch\b|feed silent|ready for a GRN/i, 'CommandCenter.jsx');
+    assert.match(ccShown, /Chisamba Shed weighbridge is offline/);
+    const index = read(join(ONE_LINK, 'index.html'));
+    assert.match(index, /'Shell\.jsx','CommandCenter\.jsx','Home\.jsx','Reports\.jsx'/, 'Home is added beside the Command Center');
+    assert.match(index, /const \[module,setModule\]=React\.useState\('command'\)/, 'the Command Center still opens first');
+    assert.match(index, /'Managing Director screens' \? setContinuity\('Home'\)/, 'Home is reachable from the screen index');
+    assert.match(read(join(KITS, 'one_link_mobile/index.html')), /<CommandCenter mobile state="calm"\/>/);
     for (const src of [homeSrc, reportsSrc, ownerAppSrc]) assert.doesNotMatch(src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, ''), /\bbatch\b|feed silent|ready for a GRN/i);
     for (const state of HOME.Home) assert.doesNotMatch(words(webKit, 'Home', state).join(' | '), /batch|feed silent|ready for a GRN|Command Center|digest/i, state);
   });
@@ -572,7 +576,7 @@ describe('[M5.DS.01] KpiTile and DataTable expand', () => {
   test('the build publishes Home, the reports, the phone screens, Assistant settings and the new card', { skip: !existsSync(join(ROOT, 'dist')) && 'run npm run build first' }, () => {
     const kit = read(join(ROOT, 'dist/ui_kits/one_link/ui_kits_one_link_index.kit.js'));
     for (const n of ['MdFrame', 'ExposureReport', 'DailySummary', 'AssistantPage']) assert.ok(kit.includes(n), n);
-    assert.ok(!kit.includes('function CommandCenter('), 'the Command Center screen is gone from the published kit');
+    assert.ok(/CommandCenter/.test(kit), 'the Command Center screen stays in the published kit');
     assert.match(read(join(ROOT, 'dist/_ds_bundle.js')), /KpiTile/);
     assert.ok(existsSync(join(ROOT, 'dist/components/data/awareness.card.html')));
   });

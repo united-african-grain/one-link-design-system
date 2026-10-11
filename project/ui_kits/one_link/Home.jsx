@@ -1,5 +1,5 @@
 /** The Managing Director's Home and the records he works from (M5.DS.01, UAG-139; S08 J2 to J6, canvas S09 "One
-    Link Owen 1"). This file replaces the Command Center kit at source: Home is the page header with Last refreshed, the
+    Link Owen 1"). Home is added beside the Command Center screen, which stays (Henry, 30 Sep 2026). Home is the page header with Last refreshed, the
     three KPI tiles (Total exposure, Uncovered exposure, Coverage), Position by commodity, Inventory by site with each
     row expanding to its contracts, Items to approve, Exceptions grouped by type and sorted by value at risk, and Recent
     changes. Calculation details opens from every tile and figure. Items to approve and Exceptions are list views; an
@@ -278,10 +278,10 @@ const hmStrong = (r, v) => (r.total ? <Text variant="body-3" strong tabular>{v}<
 
 /* ------------------------------------------------------------------ Home */
 
-function HmTiles({ rateSet, onOpen }) {
+function HmTiles({ rateSet, stale, onOpen }) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 'var(--card-gap)' }}>
-      {kpiTiles(HM_TILES.map((t) => <KpiTile key={t.key} label={t.label} value={t.value} caption={t.caption} notSet={!rateSet && t.rate} onOpen={() => onOpen(t.key)} />))}
+      {kpiTiles(HM_TILES.map((t) => <KpiTile key={t.key} label={t.label} value={t.value} caption={stale ? t.caption.replace(HM_AS_OF, HM_STALE_AS_OF) : t.caption} notSet={!rateSet && t.rate} onOpen={() => onOpen(t.key)} />))}
     </div>
   );
 }
@@ -415,7 +415,7 @@ export function Home({ state = 'With items', onOpen, mobile = false }) {
     <Sections>
       {head}
       {stale ? <ConditionBanner>Chisamba Shed weighbridge is offline since 04:15 CAT.</ConditionBanner> : null}
-      <HmTiles rateSet={rateSet} onOpen={(tile) => setCalc({ tile })} />
+      <HmTiles rateSet={rateSet} stale={stale} onOpen={(tile) => setCalc({ tile })} />
       {compact ? <>{rail}{main}</> : <WithRail rail={rail}>{main}</WithRail>}
       {panel ? <CalculationDetails open onClose={() => setCalc(null)} name={panel.name} value={panel.value} components={panel.components} total={panel.total} basis={panel.basis} /> : null}
     </Sections>

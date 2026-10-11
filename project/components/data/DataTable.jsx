@@ -29,10 +29,31 @@ export function DerivedCell({ children, rows = [] }) {
 export function RefCell({ children, href = '#', onOpen }) { return <a href={href} onClick={(e) => { e.preventDefault(); if (onOpen) onOpen(); }} style={{ ...textStyle('body-3', { strong: true, tone: 'brand' }), fontVariantNumeric: 'tabular-nums', textDecoration: 'none' }}>{children}</a>; }
 
 /** Dense register. columns: [{key, label, align, width, render}]. rows: objects; row.correction = {reason, actor, time} adds a compensating row beneath.
+    `expand(row)` returns what a row opens to (its contracts, say), or nothing for a row that does not expand (a Total):
+    a chevron button leads the row, rotates when open and carries aria-expanded; the content sits under the row, indented
+    past the chevron. `expanded` (row keys) makes it controlled; `onExpand(key, open)` hears each press. Left out, the
+    table is drawn exactly as before.
     rowKey names the field that tells rows apart (default 'id'), or is a function of the row when no one field does.
     When its container is narrower than minWidth (default 80px per column) the table scrolls inside its own overflow-x container. */
-export function DataTable({ columns, rows, footer, total, page = 1, pageSize, onPage, rowKey = 'id', groupLabels, minWidth, style }) {
+export function DataTable({ columns: given, rows, footer, total, page = 1, pageSize, onPage, rowKey = 'id', groupLabels, minWidth, expand, expanded, onExpand, expandLabel = 'Show details', style }) {
   const [hoverI, setHoverI] = useState(-1);
+  const [openKeys, setOpenKeys] = useState(() => new Set(expanded || []));
+  // Controlled when `expanded` is passed; otherwise the table holds which rows are open.
+  const isOpen = (k) => (expanded ? expanded.includes(k) : openKeys.has(k));
+  const toggle = (k) => {
+    const next = !isOpen(k);
+    if (!expanded) setOpenKeys((s) => { const n = new Set(s); if (next) n.add(k); else n.delete(k); return n; });
+    if (onExpand) onExpand(k, next);
+  };
+  const columns = expand ? [{ key: '__expand', label: '', width: '40px', render: (r, i) => {
+    if (!expand(r)) return '';
+    const k = keyOf(r, i);
+    const open = isOpen(k);
+    return <button type="button" aria-expanded={open} aria-label={typeof expandLabel === 'function' ? expandLabel(r) : expandLabel} onClick={() => toggle(k)}
+      style={{ width: 28, height: 28, margin: '0 -6px', border: 0, borderRadius: 'var(--radius-xs)', background: 'transparent', color: 'var(--content-secondary)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Icon name="chevron-right" size={16} style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform var(--dur-default) var(--ease-default)' }} />
+    </button>;
+  } }, ...given] : given;
   const outer = useRef(null);
   const outerW = useElementWidth(outer);
   const tableMin = minWidth != null ? minWidth : columns.length * 80;
@@ -60,6 +81,9 @@ export function DataTable({ columns, rows, footer, total, page = 1, pageSize, on
             <span aria-hidden style={{ position: 'absolute', inset: '2px -8px', borderRadius: 'var(--radius-md)', background: 'var(--grouped)', opacity: hoverI === i ? 1 : 0, transition: 'opacity var(--dur-default) var(--ease-default)', pointerEvents: 'none' }} />
             {columns.map((c) => cell(c, r, i))}
           </div>
+          {expand && isOpen(keyOf(r, i)) && expand(r) ? (
+            <div data-expanded-row="" style={{ padding: '4px 0 12px 40px', boxShadow: 'inset 0 -1px 0 var(--border-light)' }}>{expand(r)}</div>
+          ) : null}
           {r.correction ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, height: 32, padding: '0 12px', boxShadow: 'inset 0 -1px 0 var(--border-light)', ...textStyle('body-4', { tone: 'secondary' }), fontVariantNumeric: 'tabular-nums' }}>
               <Icon name="rotate-ccw" size={12} /><span>{r.correction.reason}</span><span style={{ display: 'inline-flex', alignItems: 'center', color: 'var(--content-tertiary)' }}><Dot style={{ marginLeft: 0 }} /><MetaParts meta={[r.correction.actor, r.correction.time]} /></span>

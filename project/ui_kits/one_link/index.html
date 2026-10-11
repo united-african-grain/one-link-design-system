@@ -1,4 +1,4 @@
-<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Interactive click-through: Command Center, Trade Desk, Warehouse, Stock, Farmer Finance; the Clerk's inbound, outbound and stock control screens; transport planning" name="One Link desktop app" -->
+<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Interactive click-through: the Managing Director's Home, reports and Assistant; Trade Desk, Warehouse, Stock, Farmer Finance; the Clerk's inbound, outbound and stock control screens; transport planning" name="One Link desktop app" -->
 <!-- @startingPoint section="Screens" subtitle="One Link desktop app shell with all owner screens" viewport="1440x900" -->
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>One Link</title>
 <link rel="stylesheet" href="../../styles.css">
@@ -12,16 +12,21 @@
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx','Outbound.jsx','Transport.jsx','../admin_workspace/Shell.jsx','../admin_workspace/CaptureReview.jsx']).then((K) => {
-  const { Page, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GRNFinalise, GradingDispute, StockBoard, CreditBook, Segmented, ScrollRow } = K;
+loadKit('../../components/', './', ['Shell.jsx','Home.jsx','Reports.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx','Outbound.jsx','Transport.jsx','../admin_workspace/Shell.jsx','../admin_workspace/CaptureReview.jsx']).then((K) => {
+  const { Page, TradeBoard, Coverage, Approval, Weighbridge, GRNFinalise, GradingDispute, StockBoard, CreditBook, Segmented, ScrollRow } = K;
   // The weighbridge continuity screens (M2.DS.01) open in the Clerk's frame, or the owner's for his Exceptions view.
   // Every state opens directly with ?screen=<Screen>&state=<State>, which the screenshot review uses at 1440 and 390.
   // The inbound, gate price and stock screens (M4.DS.01) open in the Clerk's, the owner's or stock control's frame.
   // Stock control decides Captures in review (M4.DS.03) in the same frame; the administrator reads them in Setup.
   // The outbound screens (M4.DS.02) open in the Clerk's, stock control's (Ryan), Trading's (Jacques) or Transport's (Ashraf) frame.
   const M4_STATES = { ...K.INBOUND_STATES, ...K.STOCK_CONTROL_STATES, ...K.GATE_PRICE_STATES, ...K.CAPTURE_DECISION_STATES, ...K.OUTBOUND_STATES, ...K.TRANSPORT_STATES };
-  const STATES = { ...K.TICKETS_STATES, ...K.EXCEPTIONS_STATES, ...K.COUNTERPARTIES_STATES, ...M4_STATES };
-  const LABEL = { ClerkHome: 'Clerk Home', TicketsList: 'Weighbridge tickets', ScannedSlip: 'Scanned slip', TicketRecord: 'Ticket record', FeedHealth: 'Feed health', ExceptionsList: 'Exceptions', ExceptionRecord: 'Exception record', CounterpartyFind: 'Find a counterparty', CounterpartyView: 'Counterparty', CounterpartyGroup: 'Group',
+  // The Managing Director's Home, records, reports, daily summary and Assistant (M5.DS.01) open in Owen's frame; Home
+  // replaced the Command Center screen at source, and the kit opens on it.
+  const M5_STATES = { ...K.HOME_STATES, ...K.REPORTS_STATES };
+  const STATES = { ...M5_STATES, ...K.TICKETS_STATES, ...K.EXCEPTIONS_STATES, ...K.COUNTERPARTIES_STATES, ...M4_STATES };
+  const LABEL = { Home: 'Home', ItemsToApproveList: 'Items to approve', OwnerExceptions: 'Exceptions, Managing Director', OwnerException: 'Exception EXC-000184',
+    ReportsList: 'Reports', EndOfDayReport: 'End-of-day report', ExposureReport: 'Exposure by commodity', DailySummary: 'Daily summary email', AssistantPage: 'Assistant',
+    ClerkHome: 'Clerk Home', TicketsList: 'Weighbridge tickets', ScannedSlip: 'Scanned slip', TicketRecord: 'Ticket record', FeedHealth: 'Feed health', ExceptionsList: 'Exceptions', ExceptionRecord: 'Exception record', CounterpartyFind: 'Find a counterparty', CounterpartyView: 'Counterparty', CounterpartyGroup: 'Group',
     NewGoodsReceivedNote: 'New goods received note', GoodsReceivedNote: 'Goods received note', LoadOnHold: 'Load on hold', OverDeliveryNotice: 'Over-delivery notice', WarehouseStock: 'Warehouse stock',
     StockPosition: 'Stock position', OnTheRoad: 'On the road', TransferOrder: 'Transfer order', StockTake: 'Stock take', GatePrices: 'Gate prices', NewGatePrice: 'New gate price', GatePriceRecord: 'Gate price', CapturesToReview: 'Captures in review', CaptureDecision: 'Capture',
     ClerkOutbound: 'Clerk Home, Outbound', NewLoadingOrder: 'New loading order', LoadingOrder: 'Loading order', NewDeliveryNote: 'New delivery note', DeliveryNote: 'Delivery note', DeliveryNotes: 'Delivery notes', DirectDelivery: 'Direct delivery',
@@ -33,7 +38,7 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.
     const [state,setState]=React.useState(params.get('screen')===initial && params.get('state') || STATES[initial][0]);
     const go=(s,st)=>{ setScreen(s); setState(st || STATES[s][0]); };
     const Screen=K[screen];
-    const frame = K.TICKETS_STATES[screen] ? K.ticketsFrame(screen, state) : K.EXCEPTIONS_STATES[screen] ? K.exceptionsFrame(screen, state) : M4_STATES[screen] ? m4Frame(screen, state) : K.counterpartiesFrame(screen, state);
+    const frame = K.HOME_STATES[screen] ? K.homeFrame(screen, state) : K.REPORTS_STATES[screen] ? K.reportsFrame(screen, state) : K.TICKETS_STATES[screen] ? K.ticketsFrame(screen, state) : K.EXCEPTIONS_STATES[screen] ? K.exceptionsFrame(screen, state) : M4_STATES[screen] ? m4Frame(screen, state) : K.counterpartiesFrame(screen, state);
     const controls=<ScrollRow align="flex-end" style={{marginBottom:16}}>
       <Segmented options={['Owner screens', ...Object.keys(STATES).map((s)=>LABEL[s])]} value={LABEL[screen]} onChange={(l)=> l==='Owner screens' ? onLeave() : go(Object.keys(LABEL).find((k)=>LABEL[k]===l))}/>
       {STATES[screen].length>1?<Segmented options={STATES[screen]} value={state} onChange={setState}/>:null}
@@ -47,7 +52,13 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.
       : ref==='riverbend' ? go('CounterpartyView') : String(ref).startsWith('EXC') ? go('ExceptionRecord')
       : GRN_STATE[ref] ? go('GoodsReceivedNote', GRN_STATE[ref]) : String(ref).startsWith('LEG') ? go('TransferOrder', ref==='LEG-5088' ? 'Past clearing window' : 'In transit')
       : String(ref).startsWith('c3') ? go('CaptureDecision', ref==='c317' ? 'Late capture' : 'From a revoked phone') : String(ref).startsWith('g') ? go('GatePriceRecord') : go('TicketRecord', ref==='WBT10001606' ? 'Ready' : ref==='WBT10001599' ? 'Closed' : 'From scanned slip');
-    const body=<Screen state={state} onOpen={open}/>;
+    // Owen's screens open one another: a tile's or row's record, View all, View report, a report by its name.
+    const mdOpen=(ref)=> ref==='approvals' ? go('ItemsToApproveList') : ref==='exceptions' ? go('OwnerExceptions') : ref==='exposure' ? go('ExposureReport') : ref==='eod' ? go('EndOfDayReport')
+      : ref==='EXC-000184' ? go('OwnerException') : ref==='riverbend' ? go('CounterpartyView') : null;
+    const body=<Screen state={state} onOpen={M5_STATES[screen] ? mdOpen : open}/>;
+    if(frame.who==='email') return <div><div style={{position:'fixed',right:16,bottom:16,zIndex:60,maxWidth:'calc(100vw - 32px)'}}>{controls}</div>{body}</div>;
+    if(frame.who==='md') return <K.MdFrame module={frame.module} breadcrumb={frame.breadcrumb}
+      onNavigate={(v)=>{ if(v==='home') go('Home'); if(v==='reports') go('ReportsList'); if(v==='assistant') go('AssistantPage'); if(v==='counterparties') go('CounterpartyFind','List view'); }}>{controls}{body}</K.MdFrame>;
     // Owen's Counterparties module (M3.DS.01) opens in his frame, with Counterparties in the navigation.
     // Stock control's frame (canvas S15), and the owner's or a trader's frame for the decisions and gate prices.
     if(frame.who==='stock') return <Page nav={K.STOCK_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.STOCK_USER} sync={null}
@@ -66,18 +77,18 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.
       onModule={(v)=>{ if(v==='home') go('ClerkHome'); if(v==='inventory') go('WarehouseStock'); }} onSection={(v)=>{ if(v==='tickets') go('TicketsList'); if(v==='received') go('NewGoodsReceivedNote'); if(v==='loading') go('LoadingOrder','Ready to load'); if(v==='delivery') go('NewDeliveryNote'); }}>{controls}{body}</Page>;
   }
   function App(){
-    const [continuity,setContinuity]=React.useState(STATES[params.get('screen')] ? params.get('screen') : null);
-    const [module,setModule]=React.useState('command');
-    const [ccState,setCcState]=React.useState('calm');
+    const [continuity,setContinuity]=React.useState(STATES[params.get('screen')] ? params.get('screen') : 'Home');
+    const [module,setModule]=React.useState('trade');
     const [tbState,setTbState]=React.useState('default');
     const [whView,setWhView]=React.useState('Tickets');
     const [tdView,setTdView]=React.useState('Trade Board');
     const [stockView,setStockView]=React.useState('Owner');
-    const sync = (module==='warehouse' && whView==='Sync silent') || ccState==='exception' ? 'stalled' : 'live';
-    if(continuity) return <Continuity initial={continuity} onLeave={()=>setContinuity(null)}/>;
+    const sync = module==='warehouse' && whView==='Sync silent' ? 'stalled' : 'live';
+    if(continuity) return <Continuity initial={continuity} onLeave={()=>{ setModule('trade'); setContinuity(null); }}/>;
     let body=null, controls=null;
-    if(module==='command'){ controls=<Segmented options={['Calm','Exception']} value={ccState==='calm'?'Calm':'Exception'} onChange={v=>setCcState(v==='Calm'?'calm':'exception')}/>; body=<CommandCenter state={ccState}/>; }
-    else if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval','Counterparties','Gate prices']} value={tdView} onChange={(v)=> v==='Counterparties' ? setContinuity('CounterpartyFind') : v==='Gate prices' ? setContinuity('GatePrices') : setTdView(v)}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}</>;
+    // The Command Center screen is replaced by the Managing Director's Home (M5.DS.01): its module opens Home.
+    if(module==='command'){ setContinuity('Home'); return null; }
+    if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval','Counterparties','Gate prices']} value={tdView} onChange={(v)=> v==='Counterparties' ? setContinuity('CounterpartyFind') : v==='Gate prices' ? setContinuity('GatePrices') : setTdView(v)}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}</>;
       body = tdView==='Trade Board' ? <TradeBoard state={tbState}/> : tdView==='Coverage' ? <Coverage/> : <Approval/>; }
     else if(module==='warehouse'){ controls=<Segmented options={['Tickets','Sync silent','Empty','GRN finalise','Dispute','Clerk screens','Outbound screens','Transport screens']} value={whView} onChange={(v)=> v==='Clerk screens' ? setContinuity('ClerkHome') : v==='Outbound screens' ? setContinuity('ClerkOutbound') : v==='Transport screens' ? setContinuity('TransportHome') : setWhView(v)}/>;
       body = whView==='GRN finalise' ? <GRNFinalise/> : whView==='Dispute' ? <GradingDispute/> : <Weighbridge state={whView==='Sync silent'?'silent':whView==='Empty'?'empty':'default'}/>; }

@@ -1,0 +1,57 @@
+<!-- @dsCard group="Components" viewport="1000x900" subtitle="A Home's KPI tiles, each opening Calculation details, with Not set when the exchange rate is missing; a table row that expands to its contracts" name="Home · KPI tile, expanding table row (M5.DS.01)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { KpiTile, kpiTiles, CalculationDetails, NotSet, DataTable, RefCell, CommodityMarker, Card, Text } = DS;
+const L = (t) => <Text variant="caption-1-condensed" tone="tertiary">{t}</Text>;
+const RATE = [{ label: 'Exchange rate', value: 'ZMW 25.00 per USD' }, { label: 'Rates as of', value: '26 Sep 2026' }];
+const NO_RATE = [{ label: 'Exchange rate', value: <NotSet /> }, { label: 'Setting', value: 'Exchange rate source' }, { label: 'Setting owner', value: 'Owner' }];
+const sites = [
+  { id: 'i1', site: 'Chisamba Shed', commodity: 'wheat', name: 'Wheat', tonnes: '2,140', value: '428,000', contracts: [{ id: 'c1', ref: 'SYN4760', tonnes: '1,200', value: '240,000' }, { id: 'c2', ref: 'SYN4771', tonnes: '940', value: '188,000' }] },
+  { id: 'i2', site: 'Mpongwe Depot', commodity: 'wheat', name: 'Wheat', tonnes: '1,860', value: '372,000', contracts: [{ id: 'c3', ref: 'SYN4776', tonnes: '1,860', value: '372,000' }] },
+  { id: 'total', total: true, site: 'Total', tonnes: '4,000', value: '800,000' },
+];
+function Demo(){
+  const [calc, setCalc] = React.useState(null);
+  const [rate, setRate] = React.useState(true);
+  return <div className="col">
+    {L('KPI tiles: at most four, each opens Calculation details; click one')}
+    <div className="tiles">
+      {kpiTiles([
+        <KpiTile key="t" label="Total exposure" value="USD 2.66M" caption="As of 26 Sep 2026, 07:02 CAT" onOpen={() => { setRate(true); setCalc('t'); }}/>,
+        <KpiTile key="u" label="Uncovered exposure" value="USD 579.8K" caption="21.8% of total exposure" onOpen={() => { setRate(true); setCalc('u'); }}/>,
+        <KpiTile key="c" label="Coverage" value="78.2%" caption="As of 26 Sep 2026, 07:02 CAT" onOpen={() => { setRate(true); setCalc('c'); }}/>,
+      ])}
+    </div>
+    {L('With no exchange rate at all: the tile and its panel are Not set, and the panel names the setting and its owner')}
+    <div className="tiles"><KpiTile label="Total exposure" notSet caption="As of 26 Sep 2026, 07:02 CAT" onOpen={() => { setRate(false); setCalc('t'); }}/></div>
+    {L('A row that expands to its contracts; the Total row does not expand')}
+    <Card padding={4}>
+      <DataTable rows={sites} expanded={['i1']} expandLabel={(r) => `Show contracts, ${r.site}`}
+        expand={(r) => (r.total ? null : <DataTable rows={r.contracts} columns={[{ key: 'ref', label: 'Contract', render: (c) => <RefCell>{c.ref}</RefCell> }, { key: 'tonnes', label: 'Tonnes', align: 'right' }, { key: 'value', label: 'Value (USD)', align: 'right' }]}/>)}
+        columns={[{ key: 'site', label: 'Site' }, { key: 'name', label: 'Commodity', render: (r) => (r.total ? '' : <CommodityMarker commodity={r.commodity}>{r.name}</CommodityMarker>) }, { key: 'tonnes', label: 'Tonnes', align: 'right' }, { key: 'value', label: 'Value (USD)', align: 'right' }]}/>
+    </Card>
+    {calc === 'u' ? <CalculationDetails open onClose={() => setCalc(null)} name="Uncovered exposure" value="USD 579,806"
+      components={[{ label: 'Net position short, wheat', value: '341,280' }, { label: 'Net position long, maize', value: '108,800' }, { label: 'Net position short, Urea 50 kg', value: '116,126' }, { label: 'Stock on hold', value: '13,600' }]}
+      total={{ label: 'Total (USD)', value: '579,806' }} basis={RATE}/> : null}
+    {calc === 'c' ? <CalculationDetails open onClose={() => setCalc(null)} name="Coverage" value="78.2%"
+      components={[{ label: 'Total exposure (USD)', value: '2,657,660' }, { label: 'Uncovered exposure (USD)', value: '579,806' }]}
+      total={{ label: 'Coverage, 1 less uncovered over total', value: '78.2%' }} basis={RATE}/> : null}
+    {calc === 't' ? <CalculationDetails open onClose={() => setCalc(null)} name="Total exposure" value={rate ? 'USD 2,657,660' : <NotSet/>}
+      components={[{ label: 'Inventory at cost', value: '1,842,300' }, { label: 'Open purchases', value: '217,600' }, { label: 'Receivables', value: rate ? '574,000' : <NotSet/> }, { label: 'Advances', value: rate ? '23,760' : <NotSet/> }]}
+      total={{ label: 'Total (USD)', value: rate ? '2,657,660' : <NotSet/> }} basis={rate ? RATE : NO_RATE}/> : null}
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

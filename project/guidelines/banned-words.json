@@ -1,5 +1,11 @@
 {
   "about": "Words an owner's screen never shows (build specification section 4, rule 6; M3.DS.01 AC 4). Business language only: the source of a figure is a labelled field such as Source: Trade sheet, 01 Oct 2026. Read by the design system's kit copy lint and, vendored by npm run design-system:sync, by the One Link web copy test. Change it here, then sync.",
   "words": ["batch", "upload", "template", "sync", "virtual warehouse"],
-  "patterns": ["\\berror code\\b", "\\b(?:E|ERR|ERROR)[-_ ]?\\d{2,}\\b"]
+  "patterns": ["\\berror code\\b", "\\b(?:E|ERR|ERROR)[-_ ]?\\d{2,}\\b"],
+  "m5": {
+    "about": "The M5 banned-word list, the epic's single list (M5.DS.01 AC 6, shared with M5.ALR.02 and M5.CC.01): words the Managing Director's path never shows in text or accessible labels (Home and its drill-downs, the daily summary, the end-of-day report, the Assistant and his approvals). Internal reference patterns are banned too: goods received note, delivery note, loading order and weighbridge numbers. Allowed identifiers: contract references (SYN4702), truck registrations and counterparty names. glossary holds the left column of the S57 glossary that names an invented concept; generic words the map itself uses on screen (Stock, Journey, Absent) are left out of it.",
+    "words": ["sync", "synced", "feed", "batch", "upload", "virtual", "template", "ingest", "GRN", "WBT", "ticket", "provenance"],
+    "patterns": ["\\bDN-", "\\bLO-", "\\bGR-", "\\bGRN-?\\d", "\\bGR\\d{6,}", "\\bWBT\\d", "\\bDN\\d{6,}", "\\berror code\\b"],
+    "glossary": ["North Star", "Value at Stake", "Uncovered Value", "Cover Ratio", "Command Center", "Command Centre", "Trust band", "freshness line", "What needs you", "Needs you", "My approvals", "What changed", "Digest", "End-of-day list", "Derivation", "Counterparty 360", "Trade-360", "Trade Desk", "Farmer Finance", "Ask AI", "OCR-verified", "Confirmation chip", "Compensating entry", "Hard block", "Two clocks", "Settlement run", "Season book", "Admin workspace", "settings registry", "Degraded mode", "Capture queue"]
+  }
 }

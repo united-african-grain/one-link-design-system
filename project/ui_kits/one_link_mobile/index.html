@@ -12,10 +12,12 @@
 <style>html,body{margin:0;background:var(--grouped)}#root{display:flex;justify-content:center}@media (max-width:480px){.phone{margin:0!important;border-radius:0!important}}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', '../one_link/', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx']).then((K) => {
-  const { MobileShell, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GradingDispute, StockBoard, CreditBook, SyncStatus } = K;
+loadKit('../../components/', '../one_link/', ['Shell.jsx','Home.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx']).then((K) => {
+  const { MobileShell, MODULES, TradeBoard, Coverage, Approval, Weighbridge, GradingDispute, StockBoard, CreditBook, SyncStatus } = K;
   const SCREENS = {
-    command: { title: 'Command Center', tabs: ['Overview','Trends'], render: () => <CommandCenter mobile state="calm"/> },
+    // The Command Center screen is replaced by the Managing Director's Home (M5.DS.01). His own phone screens are in
+    // the UAG One Link app kit (field_app, S08 J11); this is Home's web page at 390.
+    command: { title: 'Home', tabs: null, render: () => <K.Home mobile/> },
     trade: { title: 'Trade Desk', tabs: ['Trade Board','Coverage','Approvals'], render: (t) => t==='Coverage' ? <Coverage mobile/> : t==='Approvals' ? <Approval mobile/> : <TradeBoard mobile/> },
     warehouse: { title: 'Warehouse', tabs: ['Tickets','Disputes'], render: (t) => t==='Disputes' ? <GradingDispute mobile/> : <Weighbridge mobile/> },
     stock: { title: 'Stock', tabs: ['Board','Counts'], render: () => <StockBoard mobile/> },
@@ -23,10 +25,10 @@ loadKit('../../components/', '../one_link/', ['Shell.jsx','CommandCenter.jsx','T
   };
   function App(){
     const [m,setM]=React.useState('command');
-    const [t,setT]=React.useState(SCREENS.command.tabs[0]);
+    const [t,setT]=React.useState(null);
     const s=SCREENS[m];
     return <div className="phone" style={{boxShadow:'var(--shadow-dialog)',margin:'24px 0',borderRadius:24,overflow:'hidden',maxWidth:'100%'}}>
-      <MobileShell subTabs={s.tabs} subTab={t} onSubTabChange={setT} module={m} onModuleChange={(v)=>{ if(!SCREENS[v]) return; setM(v); setT(SCREENS[v].tabs[0]); }} right={<SyncStatus state="live" label="live · 2m"/>}>
+      <MobileShell title={s.tabs ? undefined : s.title} modules={MODULES.slice(0,5).map((x)=>x.value==='command'?{...x,label:'Home',icon:'house'}:x)} subTabs={s.tabs || undefined} subTab={t} onSubTabChange={setT} module={m} onModuleChange={(v)=>{ if(!SCREENS[v]) return; setM(v); setT(SCREENS[v].tabs ? SCREENS[v].tabs[0] : null); }} right={m==='command' ? null : <SyncStatus state="live" label="live · 2m"/>}>
         {s.render(t)}
       </MobileShell>
     </div>;

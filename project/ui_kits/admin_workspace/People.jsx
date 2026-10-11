@@ -342,13 +342,16 @@ export function BundleRecord({ state = 'Finance' }) {
 /* ------------------------------------------------------------------ Audit logs and the access review */
 
 const ACCESS = [
-  { id: 'a7', time: '26 Sep 2026, 08:44', user: 'N. Phiri', action: 'Exported', resource: 'Access log, 25 to 26 Sep 2026, 7 rows', source: 'Web, 102.144.18.7' },
+  { id: 'a7', time: '26 Sep 2026, 08:44', user: 'N. Phiri', action: 'Exported', resource: 'Access log, 25 to 26 Sep 2026, 9 rows', source: 'Web, 102.144.18.7' },
   { id: 'a6', time: '26 Sep 2026, 08:40', user: 'N. Phiri', action: 'Changed', resource: 'Setting GRN reconcile tolerance', source: 'Web, 102.144.18.7' },
   { id: 'a5', time: '26 Sep 2026, 07:31', user: 'N. Phiri', action: 'Exported', resource: 'Report Receivables ageing, 1 row', source: 'Web, 102.144.18.7' },
   { id: 'a4', time: '26 Sep 2026, 07:15', user: 'T. Mwila', action: 'Opened', resource: 'Contract SYN4702', source: 'Web, 41.72.110.3' },
   { id: 'a3', time: '26 Sep 2026, 07:12', user: 'N. Phiri', action: 'Signed in', resource: '', source: 'Web, 102.144.18.7' },
   { id: 'a2', time: '26 Sep 2026, 06:58', user: 'T. Mwila', action: 'Signed in', resource: '', source: 'Web, 41.72.110.3' },
   { id: 'a1', time: '25 Sep 2026, 17:02', user: 'k.zulu', action: 'Sign-in failed', resource: '', source: 'Web, 197.212.4.90' },
+  // Devices (M4.DS.03): a revocation and an enrolment code are access changes, so they are rows here too.
+  { id: 'a0', time: '25 Sep 2026, 10:30', user: 'N. Phiri', action: 'Revoked', resource: 'Device DEV-0004, reason: Phone reported lost', source: 'Web, 102.144.18.7' },
+  { id: 'a00', time: '25 Sep 2026, 09:15', user: 'N. Phiri', action: 'Issued enrolment code', resource: 'Device DEV-0012', source: 'Web, 102.144.18.7' },
 ];
 
 export function AccessLog({ state = 'Access log' }) {

@@ -5,7 +5,8 @@
 /** The Setup navigation, grouped. Only the items whose milestone has shipped are drawn: pass `shipped` to hide the rest. */
 export const SETUP_NAV = [
   { items: [{ value: 'home', label: 'Setup Home' }] },
-  { label: 'Users and access', items: [{ value: 'users', label: 'Users' }, { value: 'bundles', label: 'Bundles' }] },
+  // Devices (S10 Users and access, M4 round; M4.DS.03): added after Bundles, nothing above it moved.
+  { label: 'Users and access', items: [{ value: 'users', label: 'Users' }, { value: 'bundles', label: 'Bundles' }, { value: 'devices', label: 'Devices' }] },
   { label: 'Configuration', items: [{ value: 'settings', label: 'Settings' }, { value: 'switches', label: 'Switches' }, { value: 'steps', label: 'Approval steps' }, { value: 'policies', label: 'Policy methods' }, { value: 'figures', label: 'Figures and price tiers' }] },
   { label: 'Reference data', items: [{ value: 'sites', label: 'Sites and storage units' }, { value: 'corridors', label: 'Corridors and routes' }, { value: 'products', label: 'Products' }, { value: 'points', label: 'Delivery points' }, { value: 'calendars', label: 'Operating calendars' }, { value: 'lists', label: 'Classes, grades and seasons' },
     // Vehicles and transporters (S10 reference data, M4 round; M4.DS.01): added, nothing above moved.

@@ -22,7 +22,8 @@ export const STOCK_CONTROL_STATES = {
 export const STOCK_NAV = [{ items: [
   { value: 'home', label: 'Home', icon: 'house' },
   { value: 'logistics', label: 'Logistics', icon: 'truck', sections: [{ value: 'road', label: 'On the road' }, { value: 'transfers', label: 'Transfer orders' }] },
-  { value: 'inventory', label: 'Inventory', icon: 'warehouse', sections: [{ value: 'stocktake', label: 'Stock take' }] },
+  // Captures in review (RL-CAPTURE-REVIEW, M4.DS.03): stock control decides late and revoked-phone captures; added, nothing moved.
+  { value: 'inventory', label: 'Inventory', icon: 'warehouse', sections: [{ value: 'stocktake', label: 'Stock take' }, { value: 'review', label: 'Captures in review' }] },
   { value: 'reports', label: 'Reports', icon: 'chart-column' },
 ] }];
 export const STOCK_USER = { initials: 'RD', name: 'R. Daka', meta: 'Stock control' };

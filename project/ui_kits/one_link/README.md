@@ -112,3 +112,14 @@ Rules these screens keep:
 - Sample data is fictional: SYN4702 (delivered basis), SYN4790 (collected basis), Lakeview Farms Ltd, Cameron Estates, Riverbend Milling, Chisamba Shed, Mpongwe Depot. People are T. Mwila (owner), J. Tembo (trading), S. Banda (clerk) and R. Daka (stock control).
 
 Components this card introduced, all in `components/records`: `RunningSum` (+ `runningSumState`, `thousandths`, `tonnes`), `ThreeWayReconcile` (+ `threeWayCheck`), `DecisionActions` and `TransitResidue` (+ `WRITE_OFF_MARKS`).
+
+## Captures in review, stock control's decision (`../admin_workspace/CaptureReview.jsx`, M4.DS.03)
+
+A field capture that arrives more than 24 hours late, or from a revoked phone, waits in Captures in review. Stock control decides it, with Operations as deputy (RL-CAPTURE-REVIEW). The list and the record are the Setup ones, drawn here in stock control's frame (Inventory, Captures in review, added after Stock take) with the decision.
+
+| Screen | File | States |
+|---|---|---|
+| CapturesToReview | `../admin_workspace/CaptureReview.jsx` | In review · Empty |
+| CaptureDecision | `../admin_workspace/CaptureReview.jsx` | Late capture · From a revoked phone · Approving · Reject · Rejecting · Approved · Rejected |
+
+Approve and Reject are the decision's outcomes as data (`DecisionActions`, UX-33). Reject asks for a comment before it is enabled (UX-22), and the decision being saved shows its working state. Device numbers and user names are plain text here: stock control cannot open them.

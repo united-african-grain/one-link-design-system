@@ -29,6 +29,8 @@ export const SECTIONS = [
   { file: 'Records.jsx', states: 'RECORDS_STATES', card: 'M1.DS.03' },
   { file: 'Data.jsx', states: 'DATA_STATES', card: 'M3.DS.01' },
   { file: 'Vehicles.jsx', states: 'VEHICLES_STATES', card: 'M4.DS.01' },
+  { file: 'Devices.jsx', states: 'DEVICES_STATES', card: 'M4.DS.03' },
+  { file: 'CaptureReview.jsx', states: 'CAPTURE_REVIEW_STATES', card: 'M4.DS.03' },
 ];
 
 /** The README's settings and governance table: screen to { file, states }. */

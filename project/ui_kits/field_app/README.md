@@ -1,5 +1,28 @@
-# UI kit: Field app (390 only)
+# UI kit: the UAG One Link app (390 only)
 
-Offline-first driver flow. `DeliveryProof.jsx` covers all three steps (Photo · Sign · Send) and both states: online (Send now) and offline queued (`refresh-cw 1 waiting to send`, action reads "Send when signal returns" and the busy state persists).
+The field staff's phone app, offline first. `index.html` opens on the delivery proof online and offline, and two segmented controls switch the screens and their states. Every state opens directly with `?screen=<Screen>&state=<State>`, which the screenshot review uses at 390.
 
-`index.html` renders the online and offline phones side by side; the commit button advances the steps.
+`DeliveryProof.jsx` covers all three steps (Photo · Sign · Send) and both states: online (Send now) and offline queued (`refresh-cw 1 waiting to send`, action reads "Send when signal returns" and the busy state persists).
+
+## Enrolment, sign-in, field tasks and capture (`FieldApp.jsx`, M4.DS.03)
+
+| Screen | File | States |
+|---|---|---|
+| EnrolPhone | `FieldApp.jsx` | Enrolment code · Wrong code · Code expired · Enrolling |
+| AppSignIn | `FieldApp.jsx` | Email and password · Incorrect credentials · Account locked · No connection · Code · Wrong code · Signing in |
+| PinSet | `FieldApp.jsx` | Choose a PIN · Confirm PIN · Does not match · Saving · Use fingerprint |
+| PinUnlock | `FieldApp.jsx` | Fingerprint · Switching · PIN · Wrong PIN · Unlocking · Locked |
+| FieldTasks | `FieldApp.jsx` | Tasks · Offline · Empty |
+| ProveDelivery | `FieldApp.jsx` | Photograph · Capturing · Signature · Details · Signature missing · Sending · Queued · Synced |
+| DeliveryRefused | `FieldApp.jsx` | Reason · Missing reason · Sending · Queued |
+| PendingSync | `FieldApp.jsx` | Offline · Sending · Damaged file · All synced |
+| SignOutWarning | `FieldApp.jsx` | Pending captures · Signing out |
+| RevokedPhone | `FieldApp.jsx` | Capture blocked |
+
+- The phone is enrolled once with the code the administrator was shown once in Setup. Full sign-in happens once while connected (S08 J1); after that the app opens with the PIN or the fingerprint. Five wrong PINs lock PIN entry until the person signs in again.
+- The signed-out screens keep the app's current sign-in design and wording (Henry's ruling of 30 Sep 2026): the name, one sentence and the ways in, nothing before sign-in. The PIN screens show nothing of the business either.
+- Every capture screen shows the connection status and Pending sync (count) (`CaptureStatus`), and the count is never 0 while a capture waits (`pendingSyncCount`). Task screens hide the bottom bar, carry the back chevron and put the main action full width at the bottom (UX-31). The task list and Pending sync carry the field staff's own bottom bar, Tasks and Pending sync (`MobileShell` `modules`).
+- Proof of delivery needs both the photograph and the receiver's signature (F4.8, F3.9): Send stays disabled until both are captured. Once pressed, Send stays busy until the capture has synced, however long the phone is offline.
+- A capture waiting to send is a `CaptureTile`: busy until synced, and a damaged file reads "File is damaged. Capture it again." with Capture again.
+- A revoked phone reads "Capture is not allowed. This phone is revoked." and says what to do next.
+- Operations words only. No price, value or margin anywhere in the kit.

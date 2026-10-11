@@ -132,3 +132,22 @@ Reference data (S10, M4 round), in the Setup list view and record page. The Refe
 | TransportersList | `Vehicles.jsx` | All |
 
 A vehicle belongs to a transporter or is owner-operated by a farmer. A truck added at the gate is Unverified, with its configuration's default payload, until an administrator verifies it. A referenced vehicle is deactivated, never deleted.
+
+## Devices and Captures in review (`Devices.jsx`, `CaptureReview.jsx`, M4.DS.03)
+
+The phones the UAG One Link app runs on, in Users and access (S10, M4 round): Devices is added after Bundles, nothing above it moves. Setup Home gains the cards Silent devices and Captures in review, each with its count, View all and "No [objects] to display." at 0; they are not drawn before M4 ships (Before reference data).
+
+| Screen | File | States |
+|---|---|---|
+| DevicesList | `Devices.jsx` | All · Silent · No match |
+| NewDevice | `Devices.jsx` | Form · Missing fields · Saving · Enrolment code shown once |
+| DeviceRecord | `Devices.jsx` | Active · Delayed · Offline · Code closed · Reissued code · Revoke · Revoking · Revoked · Related · History |
+| CapturesInReview | `CaptureReview.jsx` | In review · Empty |
+| CaptureReview | `CaptureReview.jsx` | Late capture · From a revoked phone |
+
+- A device's Status is Active, Revoked or Spare. Silent is not a status: an Active phone that has stopped reporting shows Offline in the Connection status column (Connected, Delayed, Offline), an icon and a word with no badge, and is counted on Setup Home's Silent devices card and in the Silent devices view. Offline is the same mark the phone's own `CaptureStatus` draws.
+- The device record's highlights carry Assigned to, Connection status, Last contact, Last sync, App version and Pending sync. A spare phone that has never reported leaves them blank.
+- The enrolment code is the activation code's show-once dialog (`OneTimeCode`, title Enrolment code), reused and not redrawn (S10: user activation, device enrolment and external invitations use the same dialog). Once closed, the record says only "Issued, expires ..." and offers Reissue enrolment code, never the code.
+- Revoke is the destructive action: red outline on the record, a red filled Revoke in its dialog, enabled only once a reason is typed (UX-17, UX-22), with its working state. A revocation and an enrolment code are rows in Audit logs' Access log and in the record's History.
+- Captures in review: a capture that arrived more than 24 hours late or came from a revoked phone (RL-CAPTURE-REVIEW), with its reason, capture time and the phone's revocation time (blank when it was not revoked). In Setup it is read-only: the administrator reads, and Waiting for names Stock control or Operations. The deciding screens, with Approve and Reject with a mandatory comment, are stock control's, drawn in the One Link kit's stock control frame (`CapturesToReview`, `CaptureDecision`).
+- Device numbers and user names are blue links in Setup; dates read DD MMM YYYY, times are 24-hour with CAT on first display, and a missing value is a blank cell.

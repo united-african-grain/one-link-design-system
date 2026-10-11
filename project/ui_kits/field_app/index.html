@@ -1,6 +1,6 @@
-<!-- @dsCard group="Field app" viewport="390x844" subtitle="Delivery proof, online and offline-queued, works with no signal" name="Field app: delivery proof" -->
-<!-- @startingPoint section="Screens" subtitle="Field app delivery proof (offline-first)" viewport="390x844" -->
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Field: delivery proof</title>
+<!-- @dsCard group="Field app" viewport="390x844" subtitle="The UAG One Link app at 390: enrolment, sign-in, PIN and fingerprint, field tasks, proving delivery, a refused delivery, Pending sync, sign-out and a revoked phone, and the offline-first delivery proof" name="UAG One Link app" -->
+<!-- @startingPoint section="Screens" subtitle="The UAG One Link app (field staff) at 390, every state" viewport="390x844" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>UAG One Link app</title>
 <link rel="stylesheet" href="../../styles.css">
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -8,17 +8,36 @@
 <script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
 <script src="../../_ds_bundle.js" onerror="void 0"></script>
 <script src="../../components/_loader.js"></script>
-<style>html,body{margin:0;background:var(--grouped)}#root{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding:24px}@media (max-width:480px){#root{padding:0;gap:16px}#root>div{border-radius:0!important}}</style>
+<style>html,body{margin:0;background:var(--grouped)}#root{display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px}.phones{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}.phone{box-shadow:var(--shadow-dialog);border-radius:24px;overflow:hidden;position:relative}.controls{max-width:100%;box-sizing:border-box}@media (max-width:480px){#root{padding:0;gap:0}.phones{gap:16px}.phone{border-radius:0!important;box-shadow:none}.controls{padding:8px}}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['../one_link/Shell.jsx','DeliveryProof.jsx']).then((K) => {
-  const { MobileShell, DeliveryProof, SyncStatus } = K;
+loadKit('../../components/', './', ['../one_link/Shell.jsx','DeliveryProof.jsx','FieldApp.jsx']).then((K) => {
+  const { MobileShell, DeliveryProof, SyncStatus, Segmented, ScrollRow } = K;
+  // Every screen and state opens directly with ?screen=<Screen>&state=<State>, which the screenshot review uses at 390.
+  // With no screen, the page shows the delivery proof online and offline, as it always has.
+  const STATES = { DeliveryProof: ['Online and offline'], ...K.FIELD_APP_STATES };
+  const LABEL = { DeliveryProof: 'Delivery proof', EnrolPhone: 'Enrol phone', AppSignIn: 'Sign in', PinSet: 'Set PIN', PinUnlock: 'Open with PIN', FieldTasks: 'Field tasks',
+    ProveDelivery: 'Prove delivery', DeliveryRefused: 'Delivery refused', PendingSync: 'Pending sync', SignOutWarning: 'Sign out', RevokedPhone: 'Revoked phone' };
+  const params = new URLSearchParams(location.search);
   function Phone({ offline }){
-    return <div style={{boxShadow:'var(--shadow-dialog)',borderRadius:24,overflow:'hidden'}}>
+    return <div className="phone">
       <MobileShell showBottomBar={false} title="Field" initials="PS" right={<SyncStatus state={offline?'offline':'live'} label={offline?'No signal · 2 waiting to send':'live'}/>}>
         <DeliveryProof offline={offline}/>
       </MobileShell></div>;
   }
-  ReactDOM.createRoot(document.getElementById('root')).render(<><Phone/><Phone offline/></>);
+  function App(){
+    const first = STATES[params.get('screen')] ? params.get('screen') : 'DeliveryProof';
+    const [screen,setScreen]=React.useState(first);
+    const [state,setState]=React.useState(params.get('screen')===first && params.get('state') || STATES[first][0]);
+    const go=(s)=>{ setScreen(s); setState(STATES[s][0]); };
+    const Screen=K[screen];
+    const controls=<div className="controls"><ScrollRow align="flex-end">
+      <Segmented options={Object.keys(STATES).map((s)=>LABEL[s])} value={LABEL[screen]} onChange={(l)=>go(Object.keys(LABEL).find((k)=>LABEL[k]===l))}/>
+      {STATES[screen].length>1?<Segmented options={STATES[screen]} value={state} onChange={setState}/>:null}
+    </ScrollRow></div>;
+    if(screen==='DeliveryProof') return <>{controls}<div className="phones"><Phone/><Phone offline/></div></>;
+    return <>{controls}<div className="phones"><div className="phone"><Screen state={state}/></div></div></>;
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 });
 </script></body></html>

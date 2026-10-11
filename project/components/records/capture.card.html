@@ -1,0 +1,47 @@
+<!-- @dsCard group="Components" viewport="1000x1100" subtitle="The UAG One Link app: a capture tile busy until synced and a damaged file, Pending sync never 0 while one waits, the PIN pad with the fingerprint switch and its lock after five wrong PINs, the phone frame with the back chevron and the field staff's own bar" name="Field capture · Capture tile, PIN pad, phone frame (M4.DS.03)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;align-items:start} .phone{box-shadow:var(--shadow-dialog);border-radius:24px;overflow:hidden;position:relative;max-width:100%}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { CaptureTile, pendingSyncCount, CaptureStatus, PinPad, MobileShell, Card, Text } = DS;
+const L = (t) => <Text variant="caption-1-condensed" tone="tertiary">{t}</Text>;
+const AREAS = [{ value: 'tasks', label: 'Tasks', icon: 'list-checks' }, { value: 'sync', label: 'Pending sync', icon: 'refresh-cw' }];
+function Demo(){
+  const captures = [
+    { kind: 'photo', title: 'Photograph, DN10000437', meta: 'Taken 26 Sep 2026, 11:20 CAT', sync: 'sending' },
+    { kind: 'signature', title: 'Receiver signature, DN10000437', meta: 'Taken 26 Sep 2026, 11:22 CAT', sync: 'queued' },
+    { kind: 'photo', title: 'Photograph, DN10000435', meta: 'Taken 26 Sep 2026, 09:05 CAT', sync: 'damaged' },
+    { kind: 'photo', title: 'Photograph, DN10000431', meta: 'Taken 25 Sep 2026, 15:40 CAT', sync: 'synced' },
+  ];
+  return <div className="col">
+    {L('Capture tile: sending and queued stay busy until synced; a damaged file asks for the capture again')}
+    <Card gap={16}>
+      <CaptureStatus online={false} pending={pendingSyncCount(captures)} />
+      {captures.map((c) => <CaptureTile key={c.title} {...c} />)}
+    </Card>
+    {L('PIN pad: entering, wrong with the fingerprint switch, checking, locked after the fifth wrong PIN')}
+    <div className="grid">
+      <Card><PinPad entered={2} /></Card>
+      <Card><PinPad entered={0} wrong={2} fingerprint error="That PIN is not right. 3 tries left." /></Card>
+      <Card><PinPad entered={4} busy /></Card>
+      <Card><PinPad entered={0} wrong={5} /></Card>
+    </div>
+    {L('Phone frame: a task screen with the back chevron and no bar; a list with the field staff\'s Tasks and Pending sync')}
+    <div className="grid">
+      <div className="phone"><MobileShell title="Prove delivery" onBack={() => {}} showBottomBar={false} initials="PS" height={360}><CaptureStatus online pending={1} /></MobileShell></div>
+      <div className="phone"><MobileShell title="Field tasks" modules={AREAS} module="tasks" initials="PS" height={360} safeArea={0}><CaptureStatus online pending={0} /></MobileShell></div>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

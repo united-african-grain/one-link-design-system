@@ -12,17 +12,18 @@
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx']).then((K) => {
+loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx','../admin_workspace/Shell.jsx','../admin_workspace/CaptureReview.jsx']).then((K) => {
   const { Page, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GRNFinalise, GradingDispute, StockBoard, CreditBook, Segmented, ScrollRow } = K;
   // The weighbridge continuity screens (M2.DS.01) open in the Clerk's frame, or the owner's for his Exceptions view.
   // Every state opens directly with ?screen=<Screen>&state=<State>, which the screenshot review uses at 1440 and 390.
   // The inbound, gate price and stock screens (M4.DS.01) open in the Clerk's, the owner's or stock control's frame.
-  const M4_STATES = { ...K.INBOUND_STATES, ...K.STOCK_CONTROL_STATES, ...K.GATE_PRICE_STATES };
+  // Stock control decides Captures in review (M4.DS.03) in the same frame; the administrator reads them in Setup.
+  const M4_STATES = { ...K.INBOUND_STATES, ...K.STOCK_CONTROL_STATES, ...K.GATE_PRICE_STATES, ...K.CAPTURE_DECISION_STATES };
   const STATES = { ...K.TICKETS_STATES, ...K.EXCEPTIONS_STATES, ...K.COUNTERPARTIES_STATES, ...M4_STATES };
   const LABEL = { ClerkHome: 'Clerk Home', TicketsList: 'Weighbridge tickets', ScannedSlip: 'Scanned slip', TicketRecord: 'Ticket record', FeedHealth: 'Feed health', ExceptionsList: 'Exceptions', ExceptionRecord: 'Exception record', CounterpartyFind: 'Find a counterparty', CounterpartyView: 'Counterparty', CounterpartyGroup: 'Group',
     NewGoodsReceivedNote: 'New goods received note', GoodsReceivedNote: 'Goods received note', LoadOnHold: 'Load on hold', OverDeliveryNotice: 'Over-delivery notice', WarehouseStock: 'Warehouse stock',
-    StockPosition: 'Stock position', OnTheRoad: 'On the road', TransferOrder: 'Transfer order', StockTake: 'Stock take', GatePrices: 'Gate prices', NewGatePrice: 'New gate price', GatePriceRecord: 'Gate price' };
-  const m4Frame = (screen, state) => K.INBOUND_STATES[screen] ? K.inboundFrame(screen, state) : K.STOCK_CONTROL_STATES[screen] ? K.stockControlFrame(screen, state) : K.gatePriceFrame(screen, state);
+    StockPosition: 'Stock position', OnTheRoad: 'On the road', TransferOrder: 'Transfer order', StockTake: 'Stock take', GatePrices: 'Gate prices', NewGatePrice: 'New gate price', GatePriceRecord: 'Gate price', CapturesToReview: 'Captures in review', CaptureDecision: 'Capture' };
+  const m4Frame = (screen, state) => K.INBOUND_STATES[screen] ? K.inboundFrame(screen, state) : K.STOCK_CONTROL_STATES[screen] ? K.stockControlFrame(screen, state) : K.CAPTURE_DECISION_STATES[screen] ? K.captureDecisionFrame(screen, state) : K.gatePriceFrame(screen, state);
   const params = new URLSearchParams(location.search);
   function Continuity({ initial, onLeave }){
     const [screen,setScreen]=React.useState(initial);
@@ -37,12 +38,12 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.
     const GRN_STATE = { GRN10000375: 'Returned', GRN10000377: 'On hold', GRN10000379: 'Weight dispute', GRN10000380: 'Booked' };
     const open=(ref)=> ref==='riverbend' ? go('CounterpartyView') : String(ref).startsWith('EXC') ? go('ExceptionRecord')
       : GRN_STATE[ref] ? go('GoodsReceivedNote', GRN_STATE[ref]) : String(ref).startsWith('LEG') ? go('TransferOrder', ref==='LEG-5088' ? 'Past clearing window' : 'In transit')
-      : String(ref).startsWith('g') ? go('GatePriceRecord') : go('TicketRecord', ref==='WBT10001606' ? 'Ready' : ref==='WBT10001599' ? 'Closed' : 'From scanned slip');
+      : String(ref).startsWith('c3') ? go('CaptureDecision', ref==='c317' ? 'Late capture' : 'From a revoked phone') : String(ref).startsWith('g') ? go('GatePriceRecord') : go('TicketRecord', ref==='WBT10001606' ? 'Ready' : ref==='WBT10001599' ? 'Closed' : 'From scanned slip');
     const body=<Screen state={state} onOpen={open}/>;
     // Owen's Counterparties module (M3.DS.01) opens in his frame, with Counterparties in the navigation.
     // Stock control's frame (canvas S15), and the owner's or a trader's frame for the decisions and gate prices.
     if(frame.who==='stock') return <Page nav={K.STOCK_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.STOCK_USER} sync={null}
-      onModule={(v)=>{ if(v==='home') go('StockPosition'); }} onSection={(v)=>{ if(v==='road') go('OnTheRoad'); if(v==='transfers') go('TransferOrder'); if(v==='stocktake') go('StockTake'); }}>{controls}{body}</Page>;
+      onModule={(v)=>{ if(v==='home') go('StockPosition'); }} onSection={(v)=>{ if(v==='road') go('OnTheRoad'); if(v==='transfers') go('TransferOrder'); if(v==='stocktake') go('StockTake'); if(v==='review') go('CapturesToReview'); }}>{controls}{body}</Page>;
     if(frame.who==='owner' || frame.who==='trading') return <Page nav={K.OWEN_NAV} module={frame.module} breadcrumb={frame.breadcrumb} sync={null}
       user={frame.who==='trading' ? { initials: 'JT', name: 'J. Tembo', meta: 'Trading' } : K.OWEN}>{controls}{body}</Page>;
     if(frame.module==='counterparties') return <Page nav={K.OWEN_NAV} module="counterparties" breadcrumb={frame.breadcrumb} user={K.OWEN} sync={null}>{controls}{body}</Page>;

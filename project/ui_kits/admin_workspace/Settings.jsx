@@ -85,6 +85,18 @@ export function SetupHome({ state = 'Needs attention', onSection }) {
           <CardRows rows={USERS_ROWS} onOpen={() => onSection && onSection('users')} />
         </CountCard>
       </div>
+      {/* M4 (S10 end state; M4.DS.03): Silent devices and Captures in review, drawn once Devices has shipped, in their own
+          row at the width of the cards above, so the M1 cards keep their size. */}
+      {state === 'Before reference data' ? null : (
+        <div style={{ display: 'grid', gridTemplateColumns: narrow ? 'minmax(0,1fr)' : 'repeat(auto-fill, minmax(max(260px, calc((100% - 2 * var(--card-gap)) / 3)), 1fr))', gap: 'var(--card-gap)', alignItems: 'start' }}>
+          <CountCard title="Silent devices" objects="devices" count={calm ? 0 : silentDevices().length} action={<HeaderLink onClick={() => onSection && onSection('devices')}>View all</HeaderLink>}>
+            <CardRows rows={silentDevices().map((d) => ({ id: d.id, name: d.ref, sub: `${d.user}, last contact ${d.contact} CAT`, status: CONNECTION_STATUS.Offline }))} onOpen={() => onSection && onSection('devices')} />
+          </CountCard>
+          <CountCard title="Captures in review" objects="captures" count={calm ? 0 : CAPTURES.length} action={<HeaderLink onClick={() => onSection && onSection('captures')}>View all</HeaderLink>}>
+            <CardRows rows={CAPTURES.map((c) => ({ id: c.id, name: c.ref, sub: `${c.reason}, captured ${c.captured} CAT`, status: <StatusMark kind="pending" label="Pending approval" size="body-4" /> }))} onOpen={() => onSection && onSection('captures')} />
+          </CountCard>
+        </div>
+      )}
       <Card gap={8} title="Recent changes" headerRight={<HeaderLink onClick={() => onSection && onSection('audit')}>View audit log</HeaderLink>}>
         <div style={{ margin: '0 -16px -16px' }}>
           <SetupTable rowKey="id" columns={[

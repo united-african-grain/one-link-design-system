@@ -7,6 +7,10 @@ export interface MobileShellProps {
   onSubTabChange?: (v: string) => void;
   module?: string;
   onModuleChange?: (v: string) => void;
+  /** The bottom bar's areas when they are not the owner's modules (the UAG One Link app: Tasks, Pending sync). Default: the first five MODULES. */
+  modules?: Array<{ value: string; label: string; icon: string }>;
+  /** Draws the back chevron before the title (UX-31: detail and task screens). Left out, no chevron. */
+  onBack?: () => void;
   initials?: string;
   right?: React.ReactNode;
   children?: React.ReactNode;

@@ -160,3 +160,36 @@ Rules these screens keep:
 - Sample data is fictional: SYN4702 (delivered), SYN4790 (collected), FRT-218-S, FRT-221-S, Riverbend Milling, Lakeview Farms Ltd, Cameron Estates, Northside Haulage, Kafue Transport Ltd, Copperbelt Haulage Ltd, Lusaka Freight Ltd. People are S. Banda (clerk), R. Daka (stock control), J. Tembo (trading), A. Mwale (transport), T. Mwila (owner) and G. Phiri (field staff); the rate card figures are examples.
 
 Components this card introduced, all in `components/records`: `LoadMeter` (+ `loadState`, `loadUsed`, `LOAD_MARKS`), `CountMatch` (+ `bagCountState`, `bagCountReason`, `COUNT_MARKS`), `OutboundReconcile` (+ `outboundCheck`), `VarianceReconcile` (+ `weighbridgeVariance`, `variancePct`) and `ProofOfDelivery` (+ `proofState`, `PROOF_MARKS`, `PROOF_ITEM_MARKS`). `ReconcileCard` gains an opt-in `mark`.
+
+## The Managing Director's Home and awareness screens (M5.DS.01)
+
+Owen's screens as S08 locks them (J2 to J11, canvas S09 "One Link Owen 1"), in his frame: the AppShell with his navigation (UX-06: Home, Trading, Logistics, Inventory, Finance, Counterparties, Reports, Assistant), Notifications and Help, and no connection pill or digest bell. Home is added beside the Command Center screen (`CommandCenter.jsx`), which stays and still opens first (Henry, 30 Sep 2026: new work adds to the design and never deletes; renaming allowed). Its words that S57 bans are renamed: "Chisamba Shed weighbridge is offline", "last record", "ready to receive". Reach Owen's screens from the Command Center's "Managing Director screens", or open any state directly with `?screen=<Screen>&state=<State>`.
+
+| Screen | File | States |
+|---|---|---|
+| Home | `Home.jsx` | With items · No items · Stale data · Calculation details · Rate not set · Row expanded · Loading |
+| ItemsToApproveList | `Home.jsx` | With items · No items |
+| OwnerExceptions | `Home.jsx` | Open · Acknowledged · Exporting · No items |
+| OwnerException | `Home.jsx` | Open · Acknowledge · Acknowledging · Acknowledged · Related · History |
+| ReportsList | `Reports.jsx` | All · No match |
+| EndOfDayReport | `Reports.jsx` | With items · No items · Exporting |
+| ExposureReport | `Reports.jsx` | Report · Calculation details · Rate not set · Exporting |
+| DailySummary | `Reports.jsx` | With items · No items |
+| AssistantPage | `Reports.jsx` | Question · Working · Answer · Withheld answer |
+
+Owen's phone screens are in the UAG One Link app kit (`../field_app/OwnerApp.jsx`); Assistant settings and the daily summary times are in Setup (`../admin_workspace/AssistantSettings.jsx`, `Settings.jsx`).
+
+Rules these screens keep:
+
+- Home is read only: the page header reads Home with Last refreshed, the date, 24-hour time and CAT, a green check when current and an amber warning past its threshold; no breadcrumb and no action button. View report and View all are links. No edit control on any of Owen's screens (S08, C8-2).
+- Three KPI tiles, Total exposure, Uncovered exposure and Coverage (`KpiTile`, at most four through `kpiTiles`), each opening Calculation details with its components, the bold total, the exchange rate as "ZMW 25.00 per USD" and Rates as of. With no rate at all the dependent figure, the tile and its panel show Not set with the amber warning, and the panel names the setting, Exchange rate source, and its owner (S08 J3, UX-16). No Price sensitivity tile until U-14 is answered.
+- Position by commodity: stock, open purchases, open sales, net position as Long, Short or Flat in tonnes, and value in USD; every figure opens Calculation details. Grain paid for and not yet delivered counts as an open purchase (Map D-41). Exposure by commodity, opened by View report, adds Committed, In transit and Held for others, shown apart and never added in. Every value is the weighted average cost roll-up in US dollars (Map D-16).
+- Inventory by site: site, commodity, tonnes, weighted average cost and value in USD, each row expanding to its contracts with a chevron (`DataTable` `expand`).
+- Items to approve and Exceptions carry their counts; Exceptions are grouped by type (Position, Inventory, Counterparty, Execution, a type with nothing open left out) and sorted by value at risk. Recent changes lists Record, Change, By and Date, newest first: approvals, holds and contract status changes since the last daily summary.
+- An empty card keeps its title with count 0 and reads "No [objects] to display.". Record numbers and names are blue links. Statuses are an icon and a word (Pending approval, Open, Acknowledged, In transit, On hold). Money carries its code before the amount, K or M only in KPI tiles and the email's tiles; dates read DD MMM YYYY, times 24-hour with CAT on first display.
+- The Daily summary email carries the KPI tiles, Items to approve, new and open exceptions sorted by value at risk, and Recent changes, every item a link to its record; it never prints the times it is sent at. The End-of-day report lists open exceptions, pending approvals and loads not yet reconciled, with filters and Export.
+- The Assistant is a page from the navigation: a question, an answer showing the figure with the records it used as links, an answer withheld when its figures cannot be confirmed against the records, and the working state while it reads.
+- Business language only, in text and accessible labels: no word on the M5 banned-word list and no left-column term of the S57 glossary (`guidelines/banned-words.json`, `m5`). Owen holds every tier, so no Restricted field appears on his screens. Any button that runs, acknowledges or asks draws its working state.
+- Sample data is the S08 example data on the golden fixture names: Riverbend Milling, Lakeview Farms Ltd, Cameron Estates, Mpongwe Valley Farms, Northfield Agro Supplies, Chisamba Shed, Mpongwe Depot, Hired store, Mkushi. People are T. Mwila (Managing Director), J. Tembo (Trading), R. Daka (stock control), A. Mwale (Logistics) and M. Chanda (Operations).
+
+Components this card introduced: `KpiTile` (+ `kpiTiles`, `KPI_TILE_CAP`) in `components/data`, and `DataTable`'s opt-in `expand` (with `expanded`, `onExpand`, `expandLabel`).

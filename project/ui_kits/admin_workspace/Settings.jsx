@@ -7,7 +7,7 @@ export const SETTINGS_STATES = {
   SetupHome: ['Needs attention', 'Nothing waiting', 'Before reference data'],
   UserMenuWithSetup: ['Administrator', 'Without the Administrator bundle'],
   SettingsList: ['All', 'High impact', 'Not set', 'No match'],
-  SettingRecord: ['Change scheduled', 'No change scheduled', 'Schedule change', 'Value in the past', 'Scheduling', 'High-impact confirmation', 'Lookup', 'History', 'Commercial'],
+  SettingRecord: ['Change scheduled', 'No change scheduled', 'Schedule change', 'Value in the past', 'Scheduling', 'High-impact confirmation', 'Lookup', 'History', 'Commercial', 'Daily summary times'],
   ScopedValues: ['Bagged at Chisamba Shed', 'Default case'],
   SwitchesList: ['All', 'No match', 'Weight source per site'],
   SwitchRecord: ['On', 'Off', 'Propose change', 'Submitting', 'Pending approval', 'Rejected', 'Precondition not met'],
@@ -22,7 +22,7 @@ export const SETTINGS_STATES = {
 
 /** The record a screen's state shows, for the breadcrumb. */
 export function recordTitle(screen, state) {
-  if (screen === 'SettingRecord') return state === 'Commercial' ? 'Hired store storage rate' : (state === 'No change scheduled' || state === 'High-impact confirmation') ? 'Bag-count tolerance' : 'GRN reconcile tolerance';
+  if (screen === 'SettingRecord') return state === 'Daily summary times' ? 'Daily summary times' : state === 'Commercial' ? 'Hired store storage rate' : (state === 'No change scheduled' || state === 'High-impact confirmation') ? 'Bag-count tolerance' : 'GRN reconcile tolerance';
   if (screen === 'ScopedValues') return 'GRN reconcile tolerance';
   if (screen === 'SwitchRecord') return state === 'Off' ? 'External access' : 'Weight source, Chisamba Shed';
   if (screen === 'ApprovalStepRecord') return state === 'Variance hold' ? 'Variance hold' : 'Gate price';
@@ -138,6 +138,9 @@ const SETTINGS = [
   { id: 'ret', name: 'Retention', area: 'Audit', inForce: '8 years', applies: 'Default', owner: 'Administrator' },
   { id: 'store', name: 'Hired store storage rate', area: 'Storage', notSet: true, applies: 'Per site', owner: 'Owner', commercial: true },
   { id: 'fx', name: 'Exchange rate source', area: 'Finance', notSet: true, applies: 'Default', owner: 'Owner' },
+  // The daily summary times (S08: a Setup setting, never printed on a screen; M5.DS.01), Henry's D-22 times as its
+  // starting values.
+  { id: 'summary', name: 'Daily summary times', area: 'Notifications', inForce: '11:30, 15:00, 17:30', applies: 'Default', owner: 'Owner' },
 ];
 
 export function SettingsList({ state = 'All', onOpen }) {
@@ -233,6 +236,23 @@ function Lookup() {
 export function SettingRecord({ state = 'Change scheduled' }) {
   const [tab, setTab] = useState(state === 'History' ? 'History' : 'Details');
   useEffect(() => setTab(state === 'History' ? 'History' : 'Details'), [state]);
+  if (state === 'Daily summary times') {
+    // The setting record pattern with owner and status and no explanatory text (S08, M5.DS.01).
+    return (
+      <Sections>
+        <SetupHead title="Daily summary times" />
+        <RecordHighlights kind="Setting" title="Daily summary times" status={ACTIVE} tab={tab} onTab={setTab}
+          actions={<Button size="small">Schedule change</Button>}
+          fields={[{ label: 'In force', value: '11:30, 15:00, 17:30 CAT' }, { label: 'Next change', value: '' }, { label: 'Area', value: 'Notifications' }, { label: 'Type', value: 'Times of day (CAT)' }, { label: 'Owner', value: 'Owner' }]} />
+        {tab === 'History' ? <HistoryCard rows={[{ id: 'd1', field: 'Value', user: 'N. Phiri', old: '', next: '11:30, 15:00, 17:30', date: '01 Oct 2026, 09:00', reason: 'Initial value' }]} /> : (
+          <CountCard title="Values" objects="values" count={1}>
+            <SetupTable rowKey="id" columns={[{ key: 'value', label: 'Value', width: '200px', tabular: true }, { key: 'scope', label: 'Scope' }, { key: 'from', label: 'Effective from', tabular: true }, { key: 'to', label: 'Effective to', tabular: true }, { key: 'status', label: 'Status', width: '170px', render: () => ACTIVE }]}
+              rows={[{ id: 'd1', value: '11:30, 15:00, 17:30', scope: 'Default', from: '01 Oct 2026, 00:00', to: '' }]} />
+          </CountCard>
+        )}
+      </Sections>
+    );
+  }
   if (state === 'Commercial') {
     return (
       <Sections>

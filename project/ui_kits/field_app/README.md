@@ -26,3 +26,17 @@ The field staff's phone app, offline first. `index.html` opens on the delivery p
 - A capture waiting to send is a `CaptureTile`: busy until synced, and a damaged file reads "File is damaged. Capture it again." with Capture again.
 - A revoked phone reads "Capture is not allowed. This phone is revoked." and says what to do next.
 - Operations words only. No price, value or margin anywhere in the kit.
+
+## The Managing Director on the phone (`OwnerApp.jsx`, M5.DS.01)
+
+Owen's screens as S08 J11 locks them, at 390, with his own bottom bar (Home, Approvals, Exceptions). The figures are Home's (`../one_link/Home.jsx`), so the phone and the web agree.
+
+| Screen | File | States |
+|---|---|---|
+| OwnerHome | `OwnerApp.jsx` | With items · No items · Stale data |
+| OwnerList | `OwnerApp.jsx` | Items to approve · Exceptions · No items |
+| OwnerApproval | `OwnerApp.jsx` | Pending approval · Approving · Reject · Rejecting · Approved |
+| OwnerMobileException | `OwnerApp.jsx` | Open · Acknowledging · Acknowledged |
+
+- Mobile Home carries Last refreshed, the KPI tiles, Items to approve and Exceptions. An approval offers Approve and Reject, Reject asking for a comment before it is enabled (UX-22); an exception offers Acknowledge. No other action appears on the phone.
+- Approve, Reject and Acknowledge draw their working state until the decision lands. The approval and the exception are task screens: no bottom bar, the back chevron, the actions full width at the bottom (UX-31).

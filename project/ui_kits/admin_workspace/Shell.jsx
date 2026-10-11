@@ -14,7 +14,8 @@ export const SETUP_NAV = [
   // Data (S11, M3.DS.01): renamed from Uploads, with Production readiness added (Henry, 5 Oct 2026: entries may be added,
   // renamed or regrouped; the layout does not change).
   { label: 'Data', items: [{ value: 'templates', label: 'Templates' }, { value: 'uploads', label: 'Upload history' }, { value: 'readiness', label: 'Production readiness' }] },
-  { label: 'Security and audit', items: [{ value: 'audit', label: 'Audit logs' }, { value: 'review', label: 'Access review' }] },
+  // Assistant settings (S10 Security and audit, M5 round; M5.DS.01): added after Access review, nothing above it moved.
+  { label: 'Security and audit', items: [{ value: 'audit', label: 'Audit logs' }, { value: 'review', label: 'Access review' }, { value: 'assistant', label: 'Assistant settings' }] },
 ];
 
 export const ADMIN = { initials: 'NP', name: 'N. Phiri', email: 'n.phiri@example.com', meta: 'Administrator' };
@@ -25,11 +26,12 @@ export function shippedNav(shipped) {
   return SETUP_NAV.map((g) => ({ ...g, items: g.items.filter((i) => shipped.includes(i.value)) })).filter((g) => g.items.length);
 }
 
-/** The Setup frame. `section` is the active navigation item; `crumbs` follow "Setup" (UX-04). */
-export function SetupFrame({ section = 'home', onSection, crumbs = [], shipped, onExit, children }) {
+/** The Setup frame. `section` is the active navigation item; `crumbs` follow "Setup" (UX-04). `user` is the
+    administrator unless a screen is drawn as someone else sees it (the Managing Director's view of the Assistant log). */
+export function SetupFrame({ section = 'home', onSection, crumbs = [], shipped, onExit, user = ADMIN, children }) {
   return (
     <AppShell nav={shippedNav(shipped)} module={section} onNavigate={onSection} home="home" context="Setup"
-      breadcrumb={['Setup', ...crumbs]} sync={null} showDigest={false} searchPlaceholder="Search Setup" user={ADMIN}
+      breadcrumb={['Setup', ...crumbs]} sync={null} showDigest={false} searchPlaceholder="Search Setup" user={user}
       right={<><Button variant="outline" size="xsmall" onClick={onExit}>Exit Setup</Button><IconButton icon="circle-help" label="Help" /></>}>
       {children}
     </AppShell>

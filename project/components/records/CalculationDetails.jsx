@@ -42,7 +42,10 @@ export function CalculationDetails({ open = true, name, value, components = [], 
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           <span style={textStyle('body-3', { tone: 'secondary' })}>{name}</span>
-          <span style={{ ...textStyle('heading-2-condensed', { tabular: true }) }}>{value}</span>
+          {/* A figure is set in the condensed face; a state in the figure's place (Not set) keeps its own words and case. */}
+          {typeof value === 'string' || typeof value === 'number'
+            ? <span style={{ ...textStyle('heading-2-condensed', { tabular: true }) }}>{value}</span>
+            : <span style={{ display: 'inline-flex', alignItems: 'center', minHeight: 24 }}>{value}</span>}
         </div>
         {rows.length ? <CalcRows rows={rows} /> : null}
         {basis.length ? (

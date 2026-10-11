@@ -44,7 +44,7 @@ export function CommandCenter({ state = 'calm', mobile = false }) {
           {exception ? (
             <>
               <RailRow severity="critical" subject="GR10000377 · counterparty dispute" context="Kapiri Farms says 30.0t vs 29.7t" right={<Button size="xsmall" variant="outline">Review</Button>} style={{ padding: '10px 12px' }} />
-              <RailRow severity="high" subject="Weighbridge feed silent" context="last batch 3h 12m ago · tickets can still be photographed" right={<Button size="xsmall" variant="outline">Open tickets</Button>} style={{ padding: '10px 12px' }} />
+              <RailRow severity="high" subject="Chisamba Shed weighbridge offline" context="last record 3h 12m ago · tickets can still be photographed" right={<Button size="xsmall" variant="outline">Open tickets</Button>} style={{ padding: '10px 12px' }} />
             </>
           ) : <EmptyState meta="Checked 07:02 · next digest 13:00" />}
         </Card>
@@ -55,7 +55,7 @@ export function CommandCenter({ state = 'calm', mobile = false }) {
           <RailRow subject="GR10000377 · Kapiri Farms" context="30.02t received" status={<StatusMark kind={exception ? 'attention' : 'clean'} size="body-4" />} right={<Text variant="heading-3-condensed">30.02t</Text>} style={{ padding: '10px 12px' }} />
           <RailRow subject="GR10000360 · Northstar Commodities" context="28.20t received" status={<StatusMark kind="clean" size="body-4" />} right={<Text variant="heading-3-condensed">28.20t</Text>} style={{ padding: '10px 12px' }} />
           <RailRow subject="DN10000441 · Crest Milling" context="120t dispatched" status={<StatusMark kind="awaiting" size="body-4" />} right={<Text variant="heading-3-condensed">120t</Text>} style={{ padding: '10px 12px' }} />
-          <RailRow subject="WBT10001605 · Northstar Commodities" context="net 28.20t · ready for a GRN" status={<ProvenanceChip kind="synced" />} style={{ padding: '10px 12px' }} />
+          <RailRow subject="WBT10001605 · Northstar Commodities" context="net 28.20t · ready to receive" status={<ProvenanceChip kind="synced" />} style={{ padding: '10px 12px' }} />
         </Card>
       </div>
     </>
@@ -71,7 +71,7 @@ export function CommandCenter({ state = 'calm', mobile = false }) {
     return (
       <>
         {head}
-        {exception ? <Banner tone="error" title="Weighbridge feed silent">position may look flat. Tickets can still be photographed.</Banner> : null}
+        {exception ? <Banner tone="error" title="Chisamba Shed weighbridge is offline">position may look flat. Tickets can still be photographed.</Banner> : null}
         {banner}
         {hero}
         {tiles}
@@ -83,7 +83,7 @@ export function CommandCenter({ state = 'calm', mobile = false }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
       {head}
       <WithRail rail={rail}>
-        {exception ? <Banner tone="error" title="Weighbridge feed silent">position may look flat. Tickets can still be photographed.</Banner> : null}
+        {exception ? <Banner tone="error" title="Chisamba Shed weighbridge is offline">position may look flat. Tickets can still be photographed.</Banner> : null}
         {banner}
         {hero}
         {tiles}

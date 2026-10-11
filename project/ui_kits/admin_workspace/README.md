@@ -20,7 +20,7 @@ It reuses `Sections`, `ScrollRow` and `PageHead` from `../one_link/Shell.jsx`.
 | SetupHome | `Settings.jsx` | Needs attention · Nothing waiting · Before reference data |
 | UserMenuWithSetup | `Settings.jsx` | Administrator · Without the Administrator bundle |
 | SettingsList | `Settings.jsx` | All · High impact · Not set · No match |
-| SettingRecord | `Settings.jsx` | Change scheduled · No change scheduled · Schedule change · Value in the past · Scheduling · High-impact confirmation · Lookup · History · Commercial |
+| SettingRecord | `Settings.jsx` | Change scheduled · No change scheduled · Schedule change · Value in the past · Scheduling · High-impact confirmation · Lookup · History · Commercial · Daily summary times |
 | ScopedValues | `Settings.jsx` | Bagged at Chisamba Shed · Default case |
 | SwitchesList | `Settings.jsx` | All · No match · Weight source per site |
 | SwitchRecord | `Settings.jsx` | On · Off · Propose change · Submitting · Pending approval · Rejected · Precondition not met |
@@ -151,3 +151,15 @@ The phones the UAG One Link app runs on, in Users and access (S10, M4 round): De
 - Revoke is the destructive action: red outline on the record, a red filled Revoke in its dialog, enabled only once a reason is typed (UX-17, UX-22), with its working state. A revocation and an enrolment code are rows in Audit logs' Access log and in the record's History.
 - Captures in review: a capture that arrived more than 24 hours late or came from a revoked phone (RL-CAPTURE-REVIEW), with its reason, capture time and the phone's revocation time (blank when it was not revoked). In Setup it is read-only: the administrator reads, and Waiting for names Stock control or Operations. The deciding screens, with Approve and Reject with a mandatory comment, are stock control's, drawn in the One Link kit's stock control frame (`CapturesToReview`, `CaptureDecision`).
 - Device numbers and user names are blue links in Setup; dates read DD MMM YYYY, times are 24-hour with CAT on first display, and a missing value is a blank cell.
+
+## Assistant settings and the daily summary times (`AssistantSettings.jsx`, `Settings.jsx`, M5.DS.01)
+
+What configures the Managing Director's screens (S10 M5 round, S08). Security and audit gains Assistant settings after Access review; nothing above it moves. No canvas draws it, so it is drawn as Proposed in the Setup record pattern.
+
+| Screen | File | States |
+|---|---|---|
+| AssistantSettings | `AssistantSettings.jsx` | Allowlist · Log, administrator view · Log, Managing Director view · Exporting log |
+
+- The record holds the Assistant allowlist (model, provider, how it is reached, provider data sharing, status) and the Assistant log (M5.AI.01). The log has two views: the Managing Director's carries each question and response; the administrator's carries the user, time, model, duration and outcome only, with the question and response columns left out, not drawn restricted. Export draws its working state.
+- The daily summary times are a setting in the Settings list and the setting record pattern (`SettingRecord`, Daily summary times): owner and status, the times in force (11:30, 15:00 and 17:30 CAT, Henry's D-22 starting values) and no explanatory text. No screen prints them (S08).
+- There is no tile catalogue, no trust-check settings and no zone 3 metric settings: Home has three fixed KPI tiles (S08).

@@ -27,6 +27,15 @@ export interface DataTableProps<Row = any> {
   groupLabels?: Array<{ label: string; span?: number }>;
   /** Below this container width (default 80px × columns) the table scrolls in its own overflow-x container. */
   minWidth?: number;
+  /** What a row opens to (Inventory by site: its contracts), or nothing for a row that does not expand (a Total).
+      Given, a chevron button leads each expandable row, with aria-expanded, and the content sits under the row. */
+  expand?: (row: Row) => React.ReactNode | null | undefined;
+  /** The keys of the open rows: makes expansion controlled. Left out, the table holds it. */
+  expanded?: Array<string | number>;
+  /** A chevron was pressed: the row's key and whether it is now open. */
+  onExpand?: (key: string | number, open: boolean) => void;
+  /** The chevron's accessible name: "Show contracts", or a function of the row. Default "Show details". */
+  expandLabel?: string | ((row: Row) => string);
   style?: React.CSSProperties;
 }
 export function DataTable<Row = any>(props: DataTableProps<Row>): JSX.Element;

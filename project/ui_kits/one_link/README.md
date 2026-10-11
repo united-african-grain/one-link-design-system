@@ -6,7 +6,7 @@ Click-through recreation of the owner-facing platform. `index.html` mounts the s
 |---|---|---|
 | 01 Command Center | `CommandCenter.jsx` | Calm · Exception (+ sync silent banner and stalled header pill) |
 | 03 Trade Board | `TradeBoard.jsx` | Owner · Restricted · Loading; cards or table view |
-| 04 Coverage: Wheat (local) | `Coverage.jsx` | commodity tabs, firm/declared overlays, season chart; Board · Calculation details (short = sold minus firm secured, M5.DS.02) |
+| 04 Coverage: Wheat (local) | `Coverage.jsx` | commodity tabs, firm/declared overlays, season chart; Board · Calculation details (short = sold minus firm secured, M5.DS.02) · In transit (supply on the way beside the gap, M7.DS.01) |
 | 05 Approval T-0141 | `Approval.jsx` | decision panel with Approve busy |
 | 06 Weighbridge tickets | `Weighbridge.jsx` → `Weighbridge` | default · sync silent · empty (a ticket weighed in only shows `ReadinessChip`) |
 | 07 GRN finalise | `Weighbridge.jsx` → `GRNFinalise` | within tolerance · held · hard block |
@@ -87,7 +87,7 @@ The inbound half of the Operations kit and the stock control screens (canvases S
 | LoadOnHold | `Inbound.jsx` | On hold · Reject · Rejecting · Rejected · Releasing · Released · Escalated |
 | OverDeliveryNotice | `Inbound.jsx` | Open · Acknowledge · Acknowledging · Acknowledged · Stock control |
 | WarehouseStock | `Inbound.jsx` | All · Exporting · Empty |
-| StockPosition | `StockControl.jsx` | Position · Calculation details · No gate price in force |
+| StockPosition | `StockControl.jsx` | Position · Calculation details · No gate price in force · Stock by route · Direct share |
 | OnTheRoad | `StockControl.jsx` | All · Past window · Empty |
 | TransferOrder | `StockControl.jsx` | In transit · Past clearing window · Cleared · Within allowance · Transit difference · Requesting write-off · Write-off pending approval |
 | StockTake | `StockControl.jsx` | Counted · Request write-off · Requesting write-off · Write-off pending approval · Third-party count · Adjustments to book |

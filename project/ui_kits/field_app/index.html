@@ -1,4 +1,4 @@
-<!-- @dsCard group="Field app" viewport="390x844" subtitle="The UAG One Link app at 390: the Managing Director's Home, approvals and exceptions; Trading's contracts and short list and Transport's day plan; enrolment, sign-in, PIN and fingerprint, field tasks, proving delivery, a refused delivery, Pending sync, sign-out and a revoked phone, and the offline-first delivery proof" name="UAG One Link app" -->
+<!-- @dsCard group="Field app" viewport="390x844" subtitle="The UAG One Link app at 390: the Managing Director's Home, approvals and exceptions; Trading's contracts and short list and Transport's day plan; the import schedule, Record offload, Finance's pipeline and stock control's stock; enrolment, sign-in, PIN and fingerprint, field tasks, proving delivery, a refused delivery, Pending sync, sign-out and a revoked phone, and the offline-first delivery proof" name="UAG One Link app" -->
 <!-- @startingPoint section="Screens" subtitle="The UAG One Link app (field staff) at 390, every state" viewport="390x844" -->
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>UAG One Link app</title>
 <link rel="stylesheet" href="../../styles.css">
@@ -11,17 +11,19 @@
 <style>html,body{margin:0;background:var(--grouped)}#root{display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px}.phones{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}.phone{box-shadow:var(--shadow-dialog);border-radius:24px;overflow:hidden;position:relative}.controls{max-width:100%;box-sizing:border-box}@media (max-width:480px){#root{padding:0;gap:0}.phones{gap:16px}.phone{border-radius:0!important;box-shadow:none}.controls{padding:8px}}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['../one_link/Shell.jsx','../one_link/Home.jsx','../one_link/TradingStates.jsx','../trading_workspace/Workspace.jsx','DeliveryProof.jsx','FieldApp.jsx','OwnerApp.jsx','TradingApp.jsx']).then((K) => {
+loadKit('../../components/', './', ['../one_link/Shell.jsx','../one_link/Home.jsx','../one_link/TradingStates.jsx','../trading_workspace/Workspace.jsx','DeliveryProof.jsx','FieldApp.jsx','OwnerApp.jsx','TradingApp.jsx','../imports/Schedule.jsx','ImportsApp.jsx']).then((K) => {
   const { MobileShell, DeliveryProof, SyncStatus, Segmented, ScrollRow } = K;
   // Every screen and state opens directly with ?screen=<Screen>&state=<State>, which the screenshot review uses at 390.
   // With no screen, the page shows the delivery proof online and offline, as it always has.
   // The Managing Director's phone screens (M5.DS.01, S08 J11) share Home's figures with the web kit.
+  // Imports on the phone (M7.DS.01): the operations lead's schedule and Record offload, Finance's pipeline, stock control's stock.
   // Trading's and Transport's phone screens (M6.DS.01) share the Trading workspace's rows; the trade approval is the Managing Director's.
-  const STATES = { DeliveryProof: ['Online and offline'], ...K.FIELD_APP_STATES, ...K.OWNER_APP_STATES, ...K.TRADING_APP_STATES };
+  const STATES = { DeliveryProof: ['Online and offline'], ...K.FIELD_APP_STATES, ...K.OWNER_APP_STATES, ...K.TRADING_APP_STATES, ...K.IMPORTS_APP_STATES };
   const LABEL = { DeliveryProof: 'Delivery proof', EnrolPhone: 'Enrol phone', AppSignIn: 'Sign in', PinSet: 'Set PIN', PinUnlock: 'Open with PIN', FieldTasks: 'Field tasks',
     ProveDelivery: 'Prove delivery', DeliveryRefused: 'Delivery refused', PendingSync: 'Pending sync', SignOutWarning: 'Sign out', RevokedPhone: 'Revoked phone',
     OwnerHome: 'Managing Director, Home', OwnerList: 'Managing Director, lists', OwnerApproval: 'Managing Director, approval', OwnerMobileException: 'Managing Director, exception',
-    AppContracts: 'Trading, contracts', AppShortList: 'Trading, short list', AppDayPlan: 'Transport, day plan' };
+    AppContracts: 'Trading, contracts', AppShortList: 'Trading, short list', AppDayPlan: 'Transport, day plan',
+    ImportScheduleApp: 'Operations, import schedule', RecordOffloadApp: 'Operations, record offload', PipelineApp: 'Finance, pipeline', StockApp: 'Stock control, Home' };
   const params = new URLSearchParams(location.search);
   function Phone({ offline }){
     return <div className="phone">

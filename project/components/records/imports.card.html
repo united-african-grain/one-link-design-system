@@ -1,0 +1,45 @@
+<!-- @dsCard group="Components" viewport="1000x1100" subtitle="An import truck leg's five checkpoints with status, date, recorded by and Source; a position the transporter reported is a labelled Source, never a badge and never Weighbridge; the phone's stacked list" name="Imports · Checkpoint timeline (M7.DS.01)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .phone{max-width:358px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { CheckpointTimeline, ReconcileCard, Card, Text } = DS;
+const L = (t) => <Text variant="caption-1-condensed" tone="tertiary">{t}</Text>;
+const atBorder = [
+  { key: 'loaded', status: 'done', date: '22 Sep 2026, 08:40', by: 'K. Zulu', source: 'port-schedule' },
+  { key: 'in-transit', status: 'done', date: '22 Sep 2026, 09:10', by: 'System', source: 'port-schedule' },
+  { key: 'border-arrival', status: 'done', date: '24 Sep 2026, 11:20', by: 'M. Chanda', source: 'transporter-call' },
+  { key: 'border-departure', status: 'waiting' },
+];
+const offloaded = [
+  { key: 'loaded', status: 'done', date: '19 Sep 2026, 07:55', by: 'K. Zulu', source: 'port-schedule' },
+  { key: 'in-transit', status: 'done', date: '19 Sep 2026, 08:30', by: 'System', source: 'port-schedule' },
+  { key: 'border-arrival', status: 'done', date: '21 Sep 2026, 10:10', by: 'M. Chanda', source: 'transporter-message' },
+  { key: 'border-departure', status: 'done', date: '21 Sep 2026, 15:40', by: 'M. Chanda', source: 'clearing-agent' },
+  { key: 'offloaded', status: 'done', date: '23 Sep 2026, 11:30', by: 'M. Chanda', source: 'mill-offload-sheet' },
+];
+function Demo(){
+  return <div className="col">
+    {L('At the border, not departed: the border arrival came from a transporter call; the departure is waiting; nothing reached is blank')}
+    <Card title="Checkpoints" padding={4}><CheckpointTimeline checkpoints={atBorder}/></Card>
+    {L('Offloaded within allowance: the weight sources (Port schedule, Mill offload sheet) sit on the weight checkpoints, apart from the reported positions')}
+    <Card title="Checkpoints" padding={4}><CheckpointTimeline checkpoints={offloaded}/></Card>
+    <ReconcileCard outcome="allowance" status="Within allowance" rows={[{ label: 'Loaded', value: '34.100 t' }, { label: 'Offloaded', value: '34.020 t' }, { label: 'Difference', value: '0.080 t', strong: true }, { label: 'Loss allowance', value: '0.080 t a truck' }]}/>
+    {L('A weighbridge reading offered for a reported position is not drawn: the Source stays blank, never Weighbridge')}
+    <Card title="Checkpoints" padding={4}><CheckpointTimeline checkpoints={[{ key: 'border-arrival', status: 'done', date: '24 Sep 2026, 11:20', by: 'M. Chanda', source: 'weighbridge' }]}/></Card>
+    {L('On the phone: the same five, stacked')}
+    <div className="phone"><Card padding={16}><CheckpointTimeline variant="list" checkpoints={atBorder}/></Card></div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

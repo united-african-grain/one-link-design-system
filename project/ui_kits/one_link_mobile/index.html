@@ -12,7 +12,7 @@
 <style>html,body{margin:0;background:var(--grouped)}#root{display:flex;justify-content:center}@media (max-width:480px){.phone{margin:0!important;border-radius:0!important}}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', '../one_link/', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx']).then((K) => {
+loadKit('../../components/', '../one_link/', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','TradingStates.jsx']).then((K) => {
   const { MobileShell, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GradingDispute, StockBoard, CreditBook, SyncStatus } = K;
   const SCREENS = {
     command: { title: 'Command Center', tabs: ['Overview','Trends'], render: () => <CommandCenter mobile state="calm"/> },

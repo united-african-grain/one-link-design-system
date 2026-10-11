@@ -176,3 +176,15 @@ What the stale-input flags and the exceptions run on (S10 A6, the M5 round; UAG-
 - Key uploads: Upload, Owner, Who may upload, Threshold, Last imported and Status. Who may upload is set per template by the administrator (Map D-39); the supply forecast's is Not set until UAG says who (U-29). Last imported carries the warning icon past its threshold (UX-24). Status is the latest upload's, in S57's import words: Validating, Ready to import, Imported, Failed.
 - Exception rules: Rule, Threshold, Owner, Daily summary, End-of-day report and Status (Active, Off). The names are UX-34's.
 - The exchange rate table is Finance's, in One Link's own frame (`../one_link/Finance.jsx`, ExchangeRates), beside the Exchange rate source setting, which stays in Settings with its owner.
+
+## Quality specifications (`QualitySpecs.jsx`, M6.DS.01)
+
+Screen (k) of the Trading workspace (M6.REF.01), under Setup, Reference data, Quality specifications (S10), added after Transporters; nothing above it moves. No canvas draws it, so it is drawn as Proposed in the Setup list view and record pattern. The Trading workspace kit (`../trading_workspace/`) lists it with its other screens.
+
+| Screen | File | States |
+|---|---|---|
+| QualitySpecifications | `QualitySpecs.jsx` | Specifications · Editor · Missing field · Saving · Version 4 saved |
+
+- The list shows each specification with its product, the version in force, the product default (exactly one per product) and how many contracts use it.
+- A new version lists each parameter with its unit, limit, step, deduction per step and reject limit, and its earlier versions. A parameter missing any of the four cannot be saved: "Save is not allowed. Broken grain has no step." A saved version is never edited; contracts keep the version they were written on.
+- Quality is operational, not money: no price tier applies and no figure is restricted.

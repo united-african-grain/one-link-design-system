@@ -33,6 +33,7 @@ export const SECTIONS = [
   { file: 'CaptureReview.jsx', states: 'CAPTURE_REVIEW_STATES', card: 'M4.DS.03' },
   { file: 'AssistantSettings.jsx', states: 'ASSISTANT_SETTINGS_STATES', card: 'M5.DS.01' },
   { file: 'Monitoring.jsx', states: 'MONITORING_STATES', card: 'M5.DS.02' },
+  { file: 'QualitySpecs.jsx', states: 'QUALITY_SPEC_STATES', card: 'M6.DS.01' },
 ];
 
 /** The README's settings and governance table: screen to { file, states }. */

@@ -8,8 +8,10 @@ const STACKS = [
   { id: 'C1', product: 'Soya meal', grade: 'comm.', owner: 'Own', mt: '5,917', count: '12 May', flag: 'uncounted 82 days', flagKind: 'attention' },
 ];
 
-/** 09 Stock board: Kafue Road, Lusaka (Stock). Owner and Stock Control views. */
-export function StockBoard({ role = 'Owner', mobile = false }) {
+/** 09 Stock board: Kafue Road, Lusaka (Stock). Owner and Stock Control views. M6.DS.01 adds stack, bay and silo
+    grouping, third-party sites and stock owned by others as states beside them (TradingStates.jsx, M6_STATES.StockBoard). */
+export function StockBoard({ role = 'Owner', mobile = false, state }) {
+  if (M6_STATES.StockBoard.includes(state)) return <StockBoardM6 state={state} />;
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [owners, setOwners] = useState('All owners');

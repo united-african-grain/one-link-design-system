@@ -231,3 +231,21 @@ Rules these screens keep:
 - Sample data is fictional, on the golden fixture names: Riverbend Milling (the canvas's mill), Lakeview Farms Ltd, Cameron Estates, Kapiri Farms, Chisomo Agri, Chongwe Growers Ltd, Mpongwe Valley Farms, Chisamba Shed. People are J. Tembo (Trading), M. Chanda (Operations), N. Phiri (Finance) and T. Mwila (Managing Director).
 
 Component change this card made: `ChartCard` reads a token colour (`color: 'var(--commodity-wheat)'`, a price line's `var(--warning-strong)`) from the page through `chartColor`, so a kit screen never writes a hex. Plain colours draw as before.
+
+## The M6 states of the existing screens (M6.DS.01)
+
+The states M6 needs on the existing kit screens, added beside each screen's own states, which draw exactly as before (Henry, 30 Sep 2026: new work adds to the design and never deletes). `TradingStates.jsx` holds them; TradeBoard, Approval, GradingDispute, GRNFinalise and StockBoard hand it one of these states. Choose them from each screen's state control here, or open them in their own frames in the Trading workspace kit (`../trading_workspace/`), which Trade Desk's "Trading workspace" opens.
+
+| Screen | File | States |
+|---|---|---|
+| TradeBoard | `TradingStates.jsx` | Trades by status · Amendment pending approval · Close suggested · Closed with balance · Gate purchase |
+| Approval | `TradingStates.jsx` | Pending approval · Approving · Reject · Rejecting · Approved · Deputy decision · Requester's view · History |
+| GradingDispute | `TradingStates.jsx` | Re-test recorded · Deciding · Decided |
+| GRNFinalise | `TradingStates.jsx` | Failed quality · Saving route · Held for drying · Awaiting diversion · Rejected and returned |
+| StockBoard | `TradingStates.jsx` | By storage unit · Third-party sites · Owned by others |
+
+- The trade board lists trades with the statuses Draft, Pending approval, Approved, Active and Closed. An amendment waiting for a decision is a Pending approval item on its trade and a suggested close an exception on it; neither changes the trade's status. A closed trade opens to its Remaining balance and each leg's contracted, delivered and remaining tonnes. Gate purchase is a plain-text Type, its gate price in kwacha per tonne and its value in US dollars with the exchange rate and its date.
+- The approval record is Owen's (S09 "Trade SYN4810, pending approval"): highlights with Counterparty, Commodity, Quantity, Margin, Owner, Submitted and Waiting for; Trade information with Rates as of and Exchange rate; Purchase legs with a Total row; Approval history; Approve and Reject, Reject asking "Reject trade SYN4810?" with a comment first. A deputy's decision reads Approved by and On behalf of: Managing Director, with the authority snapshot; the requester's view has no Approve.
+- A grading dispute keeps both results with their assessor, instrument and time; the re-test supersedes the first only once decided, and the money is corrected by a correction beside the original, which stays.
+- A goods received note that failed quality offers three routes (Return to farmer, Dry on site, Divert), each with a reason, then reads Held for drying, Awaiting diversion or Rejected. The Clerk's layout carries no price.
+- Stock groups by stack, bay, silo and drying bay, with third-party sites and stock owned by others shown apart and never in the own position; capacity counts every owner. Stock control's layout carries no price or value.

@@ -63,8 +63,10 @@ export function Weighbridge({ state = 'default', mobile = false }) {
   return <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>{head}<Tabs tabs={['Tickets', 'Goods received', 'Dispatch']} value="Tickets" /><WithRail rail={rail}>{body}</WithRail></div>;
 }
 
-/** 07 GRN finalise: three outcomes, GR10000356 · Maize (white) · Harvest Co-op. */
-export function GRNFinalise({ mobile = false }) {
+/** 07 GRN finalise: three outcomes, GR10000356 · Maize (white) · Harvest Co-op. M6.DS.01 adds a load that failed
+    quality and its routes as states beside them (TradingStates.jsx, M6_STATES.GRNFinalise). */
+export function GRNFinalise({ mobile = false, state }) {
+  if (M6_STATES.GRNFinalise.includes(state)) return <GRNFinaliseM6 state={state} />;
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [busy, setBusy] = useState(false);
@@ -91,8 +93,10 @@ export function GRNFinalise({ mobile = false }) {
   );
 }
 
-/** 08 Grading dispute: GR10000377 · DSP-0219 (Warehouse). */
-export function GradingDispute({ mobile = false }) {
+/** 08 Grading dispute: GR10000377 · DSP-0219 (Warehouse). M6.DS.01 adds a re-test superseding a result and the
+    decision as states beside it (TradingStates.jsx, M6_STATES.GradingDispute). */
+export function GradingDispute({ mobile = false, state }) {
+  if (M6_STATES.GradingDispute.includes(state)) return <GradingDisputeM6 state={state} />;
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
   const panelFull = !useMinWidth(1024);

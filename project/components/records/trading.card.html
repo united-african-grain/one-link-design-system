@@ -1,0 +1,68 @@
+<!-- @dsCard group="Components" viewport="1000x1000" subtitle="Trading: a margin per leg and in total, negative as a signal, Not set when its transport rate is missing, Restricted without the contract tier; a mill's permit headroom moving as an allocation is typed, refused past the permit" name="Trading · Margin cell, permit headroom (M6.DS.01)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;align-items:start}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { MarginCell, PermitHeadroom, CalculationDetails, NotSet, DataTable, CommodityMarker, Card, Field, Input, Text } = DS;
+const L = (t) => <Text variant="caption-1-condensed" tone="tertiary">{t}</Text>;
+const legs = [
+  { id: 'A', supplier: 'Lakeview Farms Ltd', pickup: 'Mkushi', tonnes: '700', buy: '246.40', rate: '13.65', perT: '11.95', margin: '8,365.00' },
+  { id: 'B', supplier: 'Cameron Estates', pickup: 'Chisamba', tonnes: '500', buy: '258.00', rate: '15.60', perT: '-1.60', margin: '-800.00' },
+  { id: 'C', supplier: 'Mpongwe Valley Farms', pickup: 'Mpongwe', tonnes: '300', buy: '250.00', rate: '', perT: '', margin: '' },
+];
+function Demo(){
+  const [calc, setCalc] = React.useState(false);
+  const [typed, setTyped] = React.useState('100');
+  return <div className="col">
+    {L('Margin cell: per leg and per tonne; a negative leg is a signal; a missing transport rate is Not set, never 0; click leg C\'s margin')}
+    <Card padding={4}>
+      <DataTable rowKey="id" minWidth={760} rows={legs} columns={[
+        { key: 'id', label: 'Leg', width: '56px' },
+        { key: 'supplier', label: 'Supplier', width: 'minmax(150px, 1fr)' },
+        { key: 'pickup', label: 'Pickup district', width: '120px' },
+        { key: 'tonnes', label: 'Quantity (t)', width: '100px', align: 'right' },
+        { key: 'buy', label: 'Price (USD per t)', width: '130px', align: 'right' },
+        { key: 'rate', label: 'Transport (USD per t)', width: '150px', align: 'right', render: (r) => (r.rate ? r.rate : <NotSet size="body-4" />) },
+        { key: 'perT', label: 'Margin (USD per t)', width: '140px', align: 'right', render: (r) => <MarginCell value={r.perT} notSet={!r.rate} size="body-4" /> },
+        { key: 'margin', label: 'Margin (USD)', width: '120px', align: 'right', render: (r) => <MarginCell value={r.margin} notSet={!r.rate} size="body-4" onOpen={() => setCalc(true)} /> },
+      ]}/>
+    </Card>
+    <div className="grid">
+      <Card title="As a record field">
+        <div style={{display:'flex',flexDirection:'column',gap:8}}>
+          <MarginCell value="17,920.00" currency="USD" />
+          <MarginCell value="11.95" currency="USD" unit="per t" />
+          <MarginCell value="-800.00" currency="USD" />
+          <MarginCell notSet />
+        </div>
+      </Card>
+      <Card title="Without the contract tier, on a shared layout">
+        <div style={{display:'flex',alignItems:'center',gap:8}}><Text variant="body-3" tone="secondary">Margin</Text><MarginCell restricted /></div>
+      </Card>
+    </div>
+    {L('Permit headroom: type an allocation; past the permit it is refused naming the permit, the headroom and the excess')}
+    <div className="grid">
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <Field label="Allocate (t)"><Input align="right" value={typed} onChange={(e) => setTyped(e.target.value)} /></Field>
+        <PermitHeadroom permit="SI-2026-014" mill="Riverbend Milling" holder="Riverbend Milling" period="01 May 2026 to 30 Apr 2027" wanted="10,400" allowed="10,000" booked="9,950" adding={typed} onOpen={() => {}} />
+      </div>
+      <PermitHeadroom permit="SI-2026-021" mill="Crestline Milling" holder="Own" period="01 May 2026 to 30 Apr 2027" allowed="6,000" booked="4,800" />
+    </div>
+    <CalculationDetails open={calc} onClose={() => setCalc(false)} name="Margin, leg C" value={<NotSet />}
+      components={[{ label: 'Sale price (USD per t)', value: '272.00' }, { label: 'Purchase price (USD per t)', value: '250.00' }, { label: 'Transport (USD per t)', value: <NotSet /> }]}
+      total={{ label: 'Margin (USD)', value: <NotSet /> }}
+      basis={[{ label: 'Missing rate', value: 'No transport rate for Mpongwe to Riverbend Mill Kitwe intake' }, { label: 'Setting owner', value: 'Trading' }]} />
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

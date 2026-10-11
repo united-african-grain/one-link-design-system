@@ -5,8 +5,10 @@ const TRADES = [
   { id: 4, ref: 'ZAM4688', cp: 'Impala Milling', com: 'Wheat (import)', color: 'var(--commodity-wheat)', mt: '5,200', sell: '506', buy: '488', margin: 'K93,600', del: '5,141 / 5,200t offloaded', share: 0.99, chip: '5,141t' },
 ];
 
-/** 03 Trade Board (Trade Desk): owner, restricted and loading variants. */
-export function TradeBoard({ state = 'default', mobile = false }) {
+/** 03 Trade Board (Trade Desk): owner, restricted and loading variants. M6.DS.01 adds the trade statuses beside them
+    (TradingStates.jsx, M6_STATES.TradeBoard); the variants above draw as they always have. */
+export function TradeBoard({ state = 'default', mobile = false, onOpen }) {
+  if (M6_STATES.TradeBoard.includes(state)) return <TradeBoardM6 state={state} onOpen={onOpen} />;
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [stage, setStage] = useState('Contracted');

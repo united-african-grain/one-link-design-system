@@ -163,3 +163,16 @@ What configures the Managing Director's screens (S10 M5 round, S08). Security an
 - The record holds the Assistant allowlist (model, provider, how it is reached, provider data sharing, status) and the Assistant log (M5.AI.01). The log has two views: the Managing Director's carries each question and response; the administrator's carries the user, time, model, duration and outcome only, with the question and response columns left out, not drawn restricted. Export draws its working state.
 - The daily summary times are a setting in the Settings list and the setting record pattern (`SettingRecord`, Daily summary times): owner and status, the times in force (11:30, 15:00 and 17:30 CAT, Henry's D-22 starting values) and no explanatory text. No screen prints them (S08).
 - There is no tile catalogue, no trust-check settings and no zone 3 metric settings: Home has three fixed KPI tiles (S08).
+
+## Key uploads and exception rules (`Monitoring.jsx`, M5.DS.02)
+
+What the stale-input flags and the exceptions run on (S10 A6, the M5 round; UAG-147, UAG-151). No canvas draws them, so they are drawn as Proposed in the Setup list view. Key uploads is added to the Data group after Production readiness, Exception rules to Configuration after Figures and price tiers; nothing above them moves.
+
+| Screen | File | States |
+|---|---|---|
+| KeyUploadsList | `Monitoring.jsx` | All · Past threshold · Add key upload · Saving · No match |
+| ExceptionRulesList | `Monitoring.jsx` | All · Switched off · No match |
+
+- Key uploads: Upload, Owner, Who may upload, Threshold, Last imported and Status. Who may upload is set per template by the administrator (Map D-39); the supply forecast's is Not set until UAG says who (U-29). Last imported carries the warning icon past its threshold (UX-24). Status is the latest upload's, in S57's import words: Validating, Ready to import, Imported, Failed.
+- Exception rules: Rule, Threshold, Owner, Daily summary, End-of-day report and Status (Active, Off). The names are UX-34's.
+- The exchange rate table is Finance's, in One Link's own frame (`../one_link/Finance.jsx`, ExchangeRates), beside the Exchange rate source setting, which stays in Settings with its owner.

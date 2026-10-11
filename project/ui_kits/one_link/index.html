@@ -1,4 +1,4 @@
-<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Interactive click-through: Command Center, Trade Desk, Warehouse, Stock, Farmer Finance; the Clerk's inbound, outbound and stock control screens; transport planning; the Managing Director's Home, reports and Assistant" name="One Link desktop app" -->
+<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Interactive click-through: Command Center, Trade Desk, Warehouse, Stock, Farmer Finance; the Clerk's inbound, outbound and stock control screens; transport planning; the Managing Director's Home, reports and Assistant; Trading's cover board, farm-direct operations and farmer finance" name="One Link desktop app" -->
 <!-- @startingPoint section="Screens" subtitle="One Link desktop app shell with all owner screens" viewport="1440x900" -->
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>One Link</title>
 <link rel="stylesheet" href="../../styles.css">
@@ -12,7 +12,7 @@
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','Home.jsx','Reports.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx','Outbound.jsx','Transport.jsx','../admin_workspace/Shell.jsx','../admin_workspace/CaptureReview.jsx']).then((K) => {
+loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','Home.jsx','Reports.jsx','Trading.jsx','Operations.jsx','Finance.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx','Outbound.jsx','Transport.jsx','../admin_workspace/Shell.jsx','../admin_workspace/CaptureReview.jsx']).then((K) => {
   const { Page, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GRNFinalise, GradingDispute, StockBoard, CreditBook, Segmented, ScrollRow } = K;
   // The weighbridge continuity screens (M2.DS.01) open in the Clerk's frame, or the owner's for his Exceptions view.
   // Every state opens directly with ?screen=<Screen>&state=<State>, which the screenshot review uses at 1440 and 390.
@@ -23,8 +23,14 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','Home.jsx','
   // The Managing Director's Home, records, reports, daily summary and Assistant (M5.DS.01) open in Owen's frame, added
   // beside the Command Center screen, which stays and still opens first (Henry, 30 Sep 2026: add, never delete).
   const M5_STATES = { ...K.HOME_STATES, ...K.REPORTS_STATES };
-  const STATES = { ...M5_STATES, ...K.TICKETS_STATES, ...K.EXCEPTIONS_STATES, ...K.COUNTERPARTIES_STATES, ...M4_STATES };
+  // Trading's cover board and priority list, the farm-direct and Follow-up screens, and farmer finance (M5.DS.02) open in
+  // Trading's (J. Tembo), Operations' (M. Chanda) or Finance's (N. Phiri) frame, added beside the screens above.
+  const M5B_STATES = { ...K.COVER_STATES, ...K.OPS_STATES, ...K.FINANCE_STATES };
+  const STATES = { ...M5_STATES, ...M5B_STATES, ...K.TICKETS_STATES, ...K.EXCEPTIONS_STATES, ...K.COUNTERPARTIES_STATES, ...M4_STATES };
   const LABEL = { Home: 'Home', ItemsToApproveList: 'Items to approve', OwnerExceptions: 'Exceptions, Managing Director', OwnerException: 'Exception EXC-000184',
+    CoverHome: 'Home, Trading', ForwardView: 'Forward view', PriorityList: 'Priority list',
+    FarmDirectConsignments: 'Farm-direct consignments', NewConsignment: 'New consignment', Consignment: 'Consignment', FarmDirectUpload: 'Farm-direct loads preview', FollowUp: 'Exceptions, Follow-up', VarianceDecision: 'Variance decision',
+    FarmerAccount: 'Farmer account', CreditBookFarmer: 'Credit book, farmer', StatementRun: 'Statement run', StatementLayout: 'Statement layout', ExchangeRates: 'Exchange rates',
     ReportsList: 'Reports', EndOfDayReport: 'End-of-day report', ExposureReport: 'Exposure by commodity', DailySummary: 'Daily summary email', AssistantPage: 'Assistant',
     ClerkHome: 'Clerk Home', TicketsList: 'Weighbridge tickets', ScannedSlip: 'Scanned slip', TicketRecord: 'Ticket record', FeedHealth: 'Feed health', ExceptionsList: 'Exceptions', ExceptionRecord: 'Exception record', CounterpartyFind: 'Find a counterparty', CounterpartyView: 'Counterparty', CounterpartyGroup: 'Group',
     NewGoodsReceivedNote: 'New goods received note', GoodsReceivedNote: 'Goods received note', LoadOnHold: 'Load on hold', OverDeliveryNotice: 'Over-delivery notice', WarehouseStock: 'Warehouse stock',
@@ -38,7 +44,7 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','Home.jsx','
     const [state,setState]=React.useState(params.get('screen')===initial && params.get('state') || STATES[initial][0]);
     const go=(s,st)=>{ setScreen(s); setState(st || STATES[s][0]); };
     const Screen=K[screen];
-    const frame = K.HOME_STATES[screen] ? K.homeFrame(screen, state) : K.REPORTS_STATES[screen] ? K.reportsFrame(screen, state) : K.TICKETS_STATES[screen] ? K.ticketsFrame(screen, state) : K.EXCEPTIONS_STATES[screen] ? K.exceptionsFrame(screen, state) : M4_STATES[screen] ? m4Frame(screen, state) : K.counterpartiesFrame(screen, state);
+    const frame = K.COVER_STATES[screen] ? K.coverFrame(screen, state) : K.OPS_STATES[screen] ? K.opsFrame(screen, state) : K.FINANCE_STATES[screen] ? K.financeFrame(screen, state) : K.HOME_STATES[screen] ? K.homeFrame(screen, state) : K.REPORTS_STATES[screen] ? K.reportsFrame(screen, state) : K.TICKETS_STATES[screen] ? K.ticketsFrame(screen, state) : K.EXCEPTIONS_STATES[screen] ? K.exceptionsFrame(screen, state) : M4_STATES[screen] ? m4Frame(screen, state) : K.counterpartiesFrame(screen, state);
     const controls=<ScrollRow align="flex-end" style={{marginBottom:16}}>
       <Segmented options={['Owner screens', ...Object.keys(STATES).map((s)=>LABEL[s])]} value={LABEL[screen]} onChange={(l)=> l==='Owner screens' ? onLeave() : go(Object.keys(LABEL).find((k)=>LABEL[k]===l))}/>
       {STATES[screen].length>1?<Segmented options={STATES[screen]} value={state} onChange={setState}/>:null}
@@ -55,7 +61,19 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','Home.jsx','
     // Owen's screens open one another: a tile's or row's record, View all, View report, a report by its name.
     const mdOpen=(ref)=> ref==='approvals' ? go('ItemsToApproveList') : ref==='exceptions' ? go('OwnerExceptions') : ref==='exposure' ? go('ExposureReport') : ref==='eod' ? go('EndOfDayReport')
       : ref==='EXC-000184' ? go('OwnerException') : ref==='riverbend' ? go('CounterpartyView') : null;
-    const body=<Screen state={state} onOpen={M5_STATES[screen] ? mdOpen : open}/>;
+    // Trading's, Operations' and Finance's screens open one another (M5.DS.02).
+    const FD_STATE = { 'FD-0142': 'Grade below contract', 'FD-0139': 'Both sides', 'FD-0145': 'Mill side only', 'FD-0146': 'Loaded side only', 'FD-0149': 'Beyond allowance' };
+    const EXC_RECORD = Object.fromEntries(K.OPS_EXCEPTIONS.map((e) => [e.id, e.record]));
+    const m5bOpen=(ref)=> ref==='priority' ? go('PriorityList') : ref==='forward' ? go('ForwardView') : ref==='new' ? go('NewConsignment') : ref==='import' ? go('FarmDirectUpload')
+      : ref==='statement' ? go('StatementRun','Run history') : ref==='setting' ? null : ref==='EXC-000205' ? go('VarianceDecision', screen==='FollowUp' ? 'Operations, read only' : 'Open')
+      : FD_STATE[ref] ? go('Consignment', FD_STATE[ref]) : FD_STATE[EXC_RECORD[ref]] ? go('Consignment', FD_STATE[EXC_RECORD[ref]]) : null;
+    const body=<Screen state={state} onOpen={M5_STATES[screen] ? mdOpen : M5B_STATES[screen] ? m5bOpen : open}/>;
+    if(frame.who==='cover' || frame.who==='trading-view') return <Page nav={K.CV_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.TRADING_USER} sync={null}
+      onModule={(v)=>{ if(v==='home') go('CoverHome'); }} onSection={(v)=>{ if(v==='priority') go('PriorityList'); if(v==='forward') go('ForwardView'); }}>{controls}{body}</Page>;
+    if(frame.who==='ops') return <Page nav={K.OPS_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.OPS_USER} sync={null}
+      onModule={(v)=>{ if(v==='home') go('FollowUp'); }} onSection={(v)=>{ if(v==='farm-direct') go('FarmDirectConsignments'); }}>{controls}{body}</Page>;
+    if(frame.who==='fin') return <Page nav={K.FIN_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.FIN_USER} sync={null}
+      onSection={(v)=>{ if(v==='accounts') go('FarmerAccount'); if(v==='credit') go('CreditBookFarmer'); if(v==='statements') go('StatementRun'); if(v==='rates') go('ExchangeRates'); }}>{controls}{body}</Page>;
     if(frame.who==='email') return <div><div style={{position:'fixed',right:16,bottom:16,zIndex:60,maxWidth:'calc(100vw - 32px)'}}>{controls}</div>{body}</div>;
     if(frame.who==='md') return <K.MdFrame module={frame.module} breadcrumb={frame.breadcrumb}
       onNavigate={(v)=>{ if(v==='home') go('Home'); if(v==='reports') go('ReportsList'); if(v==='assistant') go('AssistantPage'); if(v==='counterparties') go('CounterpartyFind','List view'); }}>{controls}{body}</K.MdFrame>;
@@ -83,17 +101,18 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','Home.jsx','
     const [tbState,setTbState]=React.useState('default');
     const [whView,setWhView]=React.useState('Tickets');
     const [tdView,setTdView]=React.useState('Trade Board');
+    const [covState,setCovState]=React.useState('Board');
     const [stockView,setStockView]=React.useState('Owner');
     const sync = (module==='warehouse' && whView==='Sync silent') || ccState==='exception' ? 'stalled' : 'live';
     if(continuity) return <Continuity initial={continuity} onLeave={()=>setContinuity(null)}/>;
     let body=null, controls=null;
     if(module==='command'){ controls=<Segmented options={['Calm','Exception','Managing Director screens']} value={ccState==='calm'?'Calm':'Exception'} onChange={v=> v==='Managing Director screens' ? setContinuity('Home') : setCcState(v==='Calm'?'calm':'exception')}/>; body=<CommandCenter state={ccState}/>; }
-    else if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval','Counterparties','Gate prices']} value={tdView} onChange={(v)=> v==='Counterparties' ? setContinuity('CounterpartyFind') : v==='Gate prices' ? setContinuity('GatePrices') : setTdView(v)}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}</>;
-      body = tdView==='Trade Board' ? <TradeBoard state={tbState}/> : tdView==='Coverage' ? <Coverage/> : <Approval/>; }
-    else if(module==='warehouse'){ controls=<Segmented options={['Tickets','Sync silent','Empty','GRN finalise','Dispute','Clerk screens','Outbound screens','Transport screens']} value={whView} onChange={(v)=> v==='Clerk screens' ? setContinuity('ClerkHome') : v==='Outbound screens' ? setContinuity('ClerkOutbound') : v==='Transport screens' ? setContinuity('TransportHome') : setWhView(v)}/>;
+    else if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval','Counterparties','Gate prices','Trading screens']} value={tdView} onChange={(v)=> v==='Counterparties' ? setContinuity('CounterpartyFind') : v==='Gate prices' ? setContinuity('GatePrices') : v==='Trading screens' ? setContinuity('CoverHome') : setTdView(v)}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}{tdView==='Coverage'?<Segmented options={['Board','Calculation details']} value={covState} onChange={setCovState}/>:null}</>;
+      body = tdView==='Trade Board' ? <TradeBoard state={tbState}/> : tdView==='Coverage' ? <Coverage state={covState}/> : <Approval/>; }
+    else if(module==='warehouse'){ controls=<Segmented options={['Tickets','Sync silent','Empty','GRN finalise','Dispute','Clerk screens','Outbound screens','Transport screens','Farm-direct screens']} value={whView} onChange={(v)=> v==='Clerk screens' ? setContinuity('ClerkHome') : v==='Farm-direct screens' ? setContinuity('FarmDirectConsignments') : v==='Outbound screens' ? setContinuity('ClerkOutbound') : v==='Transport screens' ? setContinuity('TransportHome') : setWhView(v)}/>;
       body = whView==='GRN finalise' ? <GRNFinalise/> : whView==='Dispute' ? <GradingDispute/> : <Weighbridge state={whView==='Sync silent'?'silent':whView==='Empty'?'empty':'default'}/>; }
     else if(module==='stock'){ controls=<Segmented options={['Owner','Stock Control','Stock control screens']} value={stockView} onChange={(v)=> v==='Stock control screens' ? setContinuity('StockPosition') : setStockView(v)}/>; body=<StockBoard role={stockView}/>; }
-    else if(module==='finance'){ body=<CreditBook/>; }
+    else if(module==='finance'){ controls=<Segmented options={['Credit book','Farmer accounts screens']} value="Credit book" onChange={(v)=> v==='Farmer accounts screens' && setContinuity('FarmerAccount')}/>; body=<CreditBook/>; }
     else { body=<div style={{padding:'80px 0',textAlign:'center',color:'var(--content-tertiary)'}}>Ask AI is out of scope for this kit.</div>; }
     return <Page module={module} onModule={setModule} sync={sync} syncLabel={sync==='stalled'?'Bridge feed silent · last batch 3h 12m ago':undefined}>
       {controls?<ScrollRow align="flex-end" style={{marginBottom:16}}>{controls}</ScrollRow>:null}

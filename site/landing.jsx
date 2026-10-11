@@ -174,7 +174,7 @@
     ];
     return (
       <Stack>
-        <Card interactive commodityColor={c.color} title={`Coverage · ${c.label}`} meta={['Season 2026', 'Site: all']} footer="Short = target − firm − declared, netted across mills">
+        <Card interactive commodityColor={c.color} title={`Coverage · ${c.label}`} meta={['Season 2026', 'Site: all']} footer="Short = sold minus firm secured, netted across mills">
           {mills.map(([name, target, firm, declared, windowLabel, trend]) => (
             <CardRow key={name} leading={<Avatar initials={name.split(' ').map((w) => w[0]).join('').slice(0, 2)} commodityColor={c.color} />}
               name={name} sub={`target ${fmt(target)} · window ${windowLabel}`}

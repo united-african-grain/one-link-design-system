@@ -55,3 +55,18 @@ The trading screens of the UAG One Link app at 390 (M6.APP.01): Trading's contra
 - The short list ranks short contracts by severity; a contract opens its suppliers to call, each with the reason and a contact or "no contact on record".
 - The day plan lists today's loads per contract: transporter, truck, where it loads, the loading order, tonnes and whether it has loaded (Planned, Loading, In transit).
 - With no signal the phone shows "No signal. Last refreshed 07:02 CAT" with the warning icon and keeps what it last loaded. No price appears on these screens.
+
+## Imports on the phone (`ImportsApp.jsx`, M7.DS.01)
+
+The operations lead's import schedule and Record offload (S16 AL3, AL4; canvas S17 "Record offload on the app"), Finance's pipeline and stock control's stock, at 390. The legs, checkpoints and loss allowance are the Imports kit's (`../imports/Schedule.jsx`), so the phone and the web agree.
+
+| Screen | File | States |
+|---|---|---|
+| ImportScheduleApp | `ImportsApp.jsx` | Schedule · Leg KAL-11 · Offline · No legs |
+| RecordOffloadApp | `ImportsApp.jsx` | Weight entered · Missing weight · Beyond tolerance · Recording · Queued · Recorded |
+| PipelineApp | `ImportsApp.jsx` | Pipeline · No rate today · Loading |
+| StockApp | `ImportsApp.jsx` | Position · On the road · Loading |
+
+- Record offload is a capture screen (UX-31): the connection status and Pending sync (count), the back chevron, no bottom bar, and the full-width 48 px Record offload at the bottom, busy until the offload has synced however long the phone is offline. The source is the mill's (Mill phone call, Mill offload sheet, Mill email); the difference against the loss allowance, 0.080 t a truck for bulk grain, is computed, never typed.
+- A truck leg's checkpoints are `CheckpointTimeline` stacked (`variant="list"`): a position the transporter reported shows its Source, never a badge.
+- Finance's pipeline: Still to invoice in tonnes, Today's USD rate (Not set when it has not been entered), Receivables ageing and Payables ageing in USD. The schedule and stock control's screens carry no money.

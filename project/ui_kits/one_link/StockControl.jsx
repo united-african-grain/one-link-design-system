@@ -12,7 +12,8 @@
     Farms Ltd, Cameron Estates, Riverbend Milling. */
 
 export const STOCK_CONTROL_STATES = {
-  StockPosition: ['Position', 'Calculation details', 'No gate price in force'],
+  // Stock by route and Direct share (M7.DS.01, UAG-99): added after the existing states, which are unchanged.
+  StockPosition: ['Position', 'Calculation details', 'No gate price in force', 'Stock by route', 'Direct share'],
   OnTheRoad: ['All', 'Past window', 'Empty'],
   TransferOrder: ['In transit', 'Past clearing window', 'Cleared', 'Within allowance', 'Transit difference', 'Requesting write-off', 'Write-off pending approval'],
   StockTake: ['Counted', 'Request write-off', 'Requesting write-off', 'Write-off pending approval', 'Third-party count', 'Adjustments to book'],
@@ -83,6 +84,8 @@ export function StockPosition({ state = 'Position' }) {
   useEffect(() => setCalc(state === 'Calculation details'), [state]);
   const open = () => setCalc(true);
   const noPrice = state === 'No gate price in force';
+  // M7's states draw stock by route beside the position; the states above them are drawn exactly as before.
+  if (state === 'Stock by route' || state === 'Direct share') return <SkStockByRoute state={state} />;
   const meta = <>
     <span>Chisamba Shed</span><Dot style={{ margin: 0 }} /><span>Last refreshed 26 Sep 2026, 07:48 CAT</span><Dot style={{ margin: 0 }} />
     <span data-gate-price="" style={{ display: 'inline-flex', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>Gate price today, maize: {noPrice ? <NoPriceInForce /> : <Text variant="body-3" strong tabular>ZMW 6,800.00 per t</Text>}</span>
@@ -136,6 +139,60 @@ export function StockPosition({ state = 'Position' }) {
         total={{ value: '820.000 t' }}
         basis={[{ label: 'Bags', value: '16,400' }, { label: 'Pack net weight', value: '50.00 kg' }, { label: 'Bay', value: 'B1' }, { label: 'Owner', value: 'Own' }]}
         action={{ label: 'View goods received notes' }} />
+    </Sections>
+  );
+}
+
+/* ------------------------------------------------------------------ Stock by route on Ryan's Home (M7.DS.01, S14 R1 to R3) */
+
+/** Fertiliser by route this season (S14): what each route has on the road and what it has dispatched, and the direct
+    share, Direct delivery over everything dispatched. The share is computed from the legs, never typed, and no share
+    is assumed (U-23). Tonnes only: stock control sees no price or value (UX-10). */
+export const SK_ROUTES = [
+  { id: 'physical', route: 'Physical warehouse', road: '130', dispatched: '4,700', share: '89.5%' },
+  { id: 'virtual', route: 'Virtual warehouse', road: '40', dispatched: '300', share: '5.7%' },
+  { id: 'direct', route: 'Direct delivery', road: '40', dispatched: '250', share: '4.8%' },
+  { id: 'total', total: true, route: 'Total', road: '210', dispatched: '5,250', share: '100.0%' },
+];
+
+/** Ryan's Home with stock by route: the position by product and pack with On the road beside Physical warehouse,
+    Virtual warehouse, Committed, On hold and Free; four tiles (UX-08); stock by route with the direct share, which
+    opens Calculation details; Import dispatch report as the Home's action (UX-05). */
+function SkStockByRoute({ state }) {
+  const [calc, setCalc] = useState(state === 'Direct share');
+  useEffect(() => setCalc(state === 'Direct share'), [state]);
+  const open = () => setCalc(true);
+  const fig = (key) => (r) => (r.total ? wbStrong(r, r[key]) : <SkFigure onOpen={open}>{r[key]}</SkFigure>);
+  return (
+    <Sections>
+      <WbHead title="Home" meta={<StatusMark kind="clean" label="Last refreshed 26 Sep 2026, 07:48 CAT" size="body-3" />}
+        right={<><Button variant="outline" size="small" icon="plus">New loading order</Button><Button size="small" icon="upload">Import dispatch report</Button></>} />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 'var(--card-gap)' }}>
+        <SkTile label="Physical warehouse" value="924" note="In the shed" onOpen={open} />
+        <SkTile label="Virtual warehouse" value="0" note="Received, not delivered" onOpen={open} />
+        <SkTile label="On the road" value="210" note="7 legs" onOpen={open} />
+        <SkTile label="Free" value="607" note="Available for loading orders" onOpen={open} />
+      </div>
+      <WbTable title="Position by product, Chisamba Shed" columns={[
+        { key: 'product', label: 'Product', width: '120px', render: (r) => (r.total ? wbStrong(r, 'Total') : <CommodityMarker commodity="fertilizer">{r.product}</CommodityMarker>) },
+        { key: 'pack', label: 'Pack', width: '120px' },
+        { key: 'road', label: 'On the road (t)', width: '120px', align: 'right', render: fig('road') },
+        { key: 'physical', label: 'Physical warehouse (t)', width: '170px', align: 'right', render: fig('physical') },
+        { key: 'virtual', label: 'Virtual warehouse (t)', width: '160px', align: 'right', render: fig('virtual') },
+        { key: 'committed', label: 'Committed (t)', width: '116px', align: 'right', render: fig('committed') },
+        { key: 'hold', label: 'On hold (t)', width: '100px', align: 'right', render: fig('hold') },
+        { key: 'free', label: 'Free (t)', width: 'minmax(80px, 1fr)', align: 'right', render: fig('free') },
+      ]} rows={SK_POSITION} objects="products" />
+      <WbTable title="Stock by route" action={<span data-direct-share=""><SkFigure onOpen={open}>Direct share 4.8%</SkFigure></span>} columns={[
+        { key: 'route', label: 'Route', width: 'minmax(170px, 1fr)', render: (r) => wbStrong(r, r.route) },
+        { key: 'road', label: 'On the road (t)', width: '130px', align: 'right', render: fig('road') },
+        { key: 'dispatched', label: 'Dispatched this season (t)', width: '200px', align: 'right', render: fig('dispatched') },
+        { key: 'share', label: 'Share of dispatched', width: '160px', align: 'right', render: (r) => wbStrong(r, r.share) },
+      ]} rows={SK_ROUTES} objects="routes" />
+      <CalculationDetails open={calc} onClose={() => setCalc(false)} name="Direct share, season 2026" value="4.8%"
+        components={[{ label: 'Direct delivery, dispatched', value: '250 t' }, { label: 'All routes, dispatched', value: '5,250 t' }]}
+        total={{ label: 'Direct share', value: '4.8%' }}
+        basis={[{ label: 'From', value: 'Dispatch reports, 01 Jul 2026 to 26 Sep 2026' }, { label: 'Legs', value: '175' }]} />
     </Sections>
   );
 }

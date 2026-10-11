@@ -18,13 +18,24 @@ export const COVERAGE_SHORT = {
   basis: [{ label: 'Declared, expected and not subtracted', value: '10,500 MT' }, { label: 'Could cover, not subtracted', value: '1,840 MT' }, { label: 'Netted across mills, Horizon Milling over', value: '8,039 MT' }],
 };
 
-/** 04 Coverage: Wheat (local) (Trade Desk). `state` 'Calculation details' opens the short figure's panel. */
+/** Supply on the way by mill (M7.DS.01, UAG-99): imported legs loaded and not yet offloaded, the same 640 MT as Could
+    cover's stock in transit. Shown beside the gap and never subtracted from it. */
+export const COVERAGE_IN_TRANSIT = [
+  { id: 'kvm', mill: 'Kafue Valley Milling (KVM)', sold: '15,000', firm: '6,900', transit: '300', short: '8,100' },
+  { id: 'crest', mill: 'Crest Milling', sold: '25,000', firm: '10,939', transit: '270', short: '14,061' },
+  { id: 'greenfield', mill: 'Greenfield Agri', sold: '44,000', firm: '23,061', transit: '70', short: '20,939' },
+  { id: 'total', total: true, mill: 'Total', sold: '', firm: '', transit: '640', short: '' },
+];
+
+/** 04 Coverage: Wheat (local) (Trade Desk). `state` 'Calculation details' opens the short figure's panel; 'In transit'
+    (M7.DS.01) adds supply on the way beside the gap and the in-transit column by mill, the other states unchanged. */
 export function Coverage({ mobile = false, state = 'Board' }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [com, setCom] = useState('wheat-local');
   const [calc, setCalc] = useState(state === 'Calculation details');
   useEffect(() => setCalc(state === 'Calculation details'), [state]);
+  const transit = state === 'In transit';
   const wheat = 'var(--commodity-wheat)';
   const series = useMemo(() => Array.from({ length: 26 }, (_, i) => ({ time: '2026-06-' + String(i + 1).padStart(2, '0'), value: 92000 + i * 700 + Math.sin(i / 3) * 1200 })), []);
   const initials = (s) => s.replace(/[^A-Za-z ]/g, '').split(' ').filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
@@ -38,10 +49,25 @@ export function Coverage({ mobile = false, state = 'Board' }) {
         <Figure label="short" value="35,061" unit="MT" size="heading-2-condensed" derivation="sold minus firm secured" />
         <Button size="xsmall" variant="outline" onClick={() => setCalc(true)}>View details</Button>
       </div>,
+      ...(transit ? [<Figure label="supply on the way" value="640" unit="MT" size="heading-2-condensed" derivation="imported legs loaded, not yet offloaded, never subtracted"
+        derivationRows={COVERAGE_IN_TRANSIT.filter((m) => !m.total).map((m) => ({ label: m.mill, value: m.transit })).concat([{ label: 'Supply on the way', value: '640', total: true }])} />] : []),
       <Figure label="could cover" value="1,840" unit="MT" size="heading-2-condensed" derivation="uncommitted stock and stock in transit, never subtracted"
         derivationRows={[{ label: 'Uncommitted stock', value: '1,200' }, { label: 'Stock in transit', value: '640' }, { label: 'Could cover', value: '1,840', total: true }]} />,
     ]} />
   );
+
+  const strong = (r, v) => (r.total ? <Text variant="body-3" strong tabular>{v}</Text> : v);
+  const inTransit = transit ? (
+    <Card title="In transit by mill" meta="imported legs loaded, not yet offloaded" padding={16}>
+      <DataTable rowKey="id" rows={COVERAGE_IN_TRANSIT} minWidth={560} columns={[
+        { key: 'mill', label: 'Mill', width: 'minmax(170px, 1fr)', render: (r) => strong(r, r.mill) },
+        { key: 'sold', label: 'Sold (MT)', width: '100px', align: 'right', render: (r) => strong(r, r.sold) },
+        { key: 'firm', label: 'Firm secured (MT)', width: '140px', align: 'right', render: (r) => strong(r, r.firm) },
+        { key: 'short', label: 'Short (MT)', width: '100px', align: 'right', render: (r) => strong(r, r.short) },
+        { key: 'transit', label: 'In transit (MT)', width: '120px', align: 'right', render: (r) => strong(r, r.transit) },
+      ]} />
+    </Card>
+  ) : null;
 
   const cards = (
     <div style={{ display: 'grid', gridTemplateColumns: compact ? 'minmax(0,1fr)' : 'repeat(2, minmax(0,1fr))', gap: 16 }}>
@@ -83,12 +109,12 @@ export function Coverage({ mobile = false, state = 'Board' }) {
   const foot = <Text variant="body-4" tone="tertiary">Firm secured = signed purchase legs · Declared = expected supply, non-binding, drawn dashed and never subtracted · Short = sold minus firm secured, netted across mills · Could cover = uncommitted stock and stock in transit, never subtracted.</Text>;
   const panel = calc ? <CalculationDetails open onClose={() => setCalc(false)} name={COVERAGE_SHORT.name} value={COVERAGE_SHORT.value} components={COVERAGE_SHORT.components} total={COVERAGE_SHORT.total} basis={COVERAGE_SHORT.basis} /> : null;
 
-  if (mobile) return <>{head}{figures}{cards}{rail}{foot}{panel}</>;
+  if (mobile) return <>{head}{figures}{inTransit}{cards}{rail}{foot}{panel}</>;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
       {head}
       <Tabs tabs={['Trade Board', 'Coverage', 'Approvals']} value="Coverage" />
-      <WithRail rail={rail}>{figures}{cards}{foot}</WithRail>
+      <WithRail rail={rail}>{figures}{inTransit}{cards}{foot}</WithRail>
       {panel}
     </div>
   );

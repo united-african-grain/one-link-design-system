@@ -13,7 +13,7 @@
     people are T. Mwila (owner), J. Tembo (trading), S. Banda (clerk) and R. Daka (stock control). */
 
 export const INBOUND_STATES = {
-  NewGoodsReceivedNote: ['Grain', 'Grain, beyond tolerance', 'Grain, tally in bags', 'Fertiliser', 'Fertiliser, count short', 'Gate purchase', 'Transfer', 'Saving draft', 'Finalising'],
+  NewGoodsReceivedNote: ['Grain', 'Grain, beyond tolerance', 'Grain, tally in bags', 'Grain, over legal payload', 'Fertiliser', 'Fertiliser, count short', 'Gate purchase', 'Transfer', 'Saving draft', 'Finalising'],
   GoodsReceivedNote: ['Booked', 'On hold', 'Escalated', 'Returned', 'Re-finalising', 'Weight dispute', 'Re-weigh slip', 'Gate purchase', 'Gate purchase, valued', 'Over-delivery', 'Related', 'History'],
   LoadOnHold: ['On hold', 'Reject', 'Rejecting', 'Rejected', 'Releasing', 'Released', 'Escalated'],
   OverDeliveryNotice: ['Open', 'Acknowledge', 'Acknowledging', 'Acknowledged', 'Stock control'],
@@ -129,17 +129,21 @@ export function NewGoodsReceivedNote({ state = 'Grain' }) {
   const transfer = state === 'Transfer';
   const beyond = state === 'Grain, beyond tolerance';
   const bags = state === 'Grain, tally in bags';
+  // M4.CAP.01 on inbound (M4.DS.02 AC 1(h)): a receipt is never blocked for capacity; the near-miss is recorded.
+  const heavy = state === 'Grain, over legal payload';
   const ticket = fert ? { ref: 'WBT10001608', truck: 'BCA 2210', net: '30.060', status: 'confirmed' }
     : gate ? { ref: 'WBT10001609', truck: 'ALB 7714', net: '8.420', status: 'pending' }
     : transfer ? { ref: 'WBT10001617', truck: 'BCA 2214', net: '29.950', status: 'confirmed' }
     : beyond ? { ref: 'WBT10001597', truck: 'ABZ 4501', net: '32.140', status: 'pending' }
+    : heavy ? { ref: 'WBT10001619', truck: 'BAP 9229', net: '35.100', status: 'pending' }
     : { ref: 'WBT10001606', truck: 'ABZ 4412', net: '32.140', status: 'pending' };
   const lines = beyond ? IN_GRAIN_LINES_HELD
     : gate ? [{ id: 'l1', line: '1', commodity: 'Maize', grade: 'Grade 1', shed: 'Shed A', stack: 'A3', owner: 'Own', weight: '8.420' }]
     : transfer ? [{ id: 'l1', line: '1', commodity: 'Maize', grade: 'Grade 1', shed: 'Shed A', stack: 'A3', owner: 'Own', weight: '29.950' }]
+    : heavy ? [{ id: 'l1', line: '1', commodity: 'Wheat', grade: 'Grade 1', shed: 'Shed A', stack: 'A1', owner: 'Own', weight: '35.100' }]
     : IN_GRAIN_LINES;
-  const linesTotal = beyond ? '31.700' : gate ? '8.420' : transfer ? '29.950' : '32.060';
-  const tally = beyond ? '31.700' : gate ? '8.420' : transfer ? '29.950' : bags ? '32.050' : '32.060';
+  const linesTotal = beyond ? '31.700' : gate ? '8.420' : transfer ? '29.950' : heavy ? '35.100' : '32.060';
+  const tally = beyond ? '31.700' : gate ? '8.420' : transfer ? '29.950' : heavy ? '35.100' : bags ? '32.050' : '32.060';
   const head = (
     <WbHead title="New goods received note" right={<>
       <Button variant="outline" size="small" loading={saving} disabled={finalising}>Save draft</Button>
@@ -226,10 +230,17 @@ export function NewGoodsReceivedNote({ state = 'Grain' }) {
       { label: 'Ticket net', value: ticket.net }, { label: 'Lines total', value: linesTotal }, { label: 'Offload tally', value: tally },
     ]} />
   );
+  const payload = heavy ? (
+    <Card title="Legal payload">
+      <LoadMeter kind="payload" label="Ticket net" total={ticket.net} limit="34.000" approachShare={0.95}
+        rows={[{ label: 'Legal payload', value: '34.000 t' }, { label: 'Excess', value: '1.100 t', strong: true }]} />
+      <WbFacts min={140} fields={[['Receipt', 'Not blocked'], ['Near-miss', 'Recorded on finalise'], ['Transporter', 'Copperbelt Haulage Ltd']]} />
+    </Card>
+  ) : null;
   return (
     <Sections>
       {head}
-      <InSide side={reconcile}>{ticketCard}{delivery}<InGrainLines lines={lines} disabled={busy} total={linesTotal} target={ticket.net} />{tallyCard}</InSide>
+      <InSide side={heavy ? <>{reconcile}{payload}</> : reconcile}>{ticketCard}{delivery}<InGrainLines lines={lines} disabled={busy} total={linesTotal} target={ticket.net} />{tallyCard}</InSide>
     </Sections>
   );
 }

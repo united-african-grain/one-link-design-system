@@ -12,6 +12,9 @@ export interface ReconcileCardProps {
   outcome?: 'within' | 'allowance' | 'beyond';
   /** Overrides the status word, keeping the outcome's icon. */
   status?: React.ReactNode;
+  /** A closing line of the check's own in place of the outcome's (M4.DS.02): CountMatch's Count sheet matches or
+      Count mismatch. Left out, the outcome's status line is drawn as before. */
+  mark?: React.ReactNode;
   style?: React.CSSProperties;
 }
 export function ReconcileCard(props: ReconcileCardProps): JSX.Element;

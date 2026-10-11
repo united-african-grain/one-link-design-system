@@ -82,7 +82,7 @@ The inbound half of the Operations kit and the stock control screens (canvases S
 
 | Screen | File | States |
 |---|---|---|
-| NewGoodsReceivedNote | `Inbound.jsx` | Grain · Grain, beyond tolerance · Grain, tally in bags · Fertiliser · Fertiliser, count short · Gate purchase · Transfer · Saving draft · Finalising |
+| NewGoodsReceivedNote | `Inbound.jsx` | Grain · Grain, beyond tolerance · Grain, tally in bags · Grain, over legal payload · Fertiliser · Fertiliser, count short · Gate purchase · Transfer · Saving draft · Finalising |
 | GoodsReceivedNote | `Inbound.jsx` | Booked · On hold · Escalated · Returned · Re-finalising · Weight dispute · Re-weigh slip · Gate purchase · Gate purchase, valued · Over-delivery · Related · History |
 | LoadOnHold | `Inbound.jsx` | On hold · Reject · Rejecting · Rejected · Releasing · Released · Escalated |
 | OverDeliveryNotice | `Inbound.jsx` | Open · Acknowledge · Acknowledging · Acknowledged · Stock control |
@@ -123,3 +123,40 @@ A field capture that arrives more than 24 hours late, or from a revoked phone, w
 | CaptureDecision | `../admin_workspace/CaptureReview.jsx` | Late capture · From a revoked phone · Approving · Reject · Rejecting · Approved · Rejected |
 
 Approve and Reject are the decision's outcomes as data (`DecisionActions`, UX-33). Reject asks for a comment before it is enabled (UX-22), and the decision being saved shows its working state. Device numbers and user names are plain text here: stock control cannot open them.
+
+## Outbound and transport (M4.DS.02)
+
+The outbound half of the Operations kit (canvases S13, S15 and S59; S12 C1, C4, C5, S14 R5 to R7, S47 JQ5) and Ashraf's transport screens. The Clerk's screens open in his frame (Logistics highlighted on loading order and delivery note pages, UX-04; Loading orders and Delivery notes added under Logistics), Ryan's in stock control's frame (Loading orders, Delivery notes and Direct deliveries added under Logistics), Jacques's grain orders and Trading's view of a note in Trading's frame, and Ashraf's in his own (Home, Trading, Logistics with Transport planning, Loading orders and Transporters, Reports). From Warehouse choose "Outbound screens" or "Transport screens", or open any state directly with `?screen=<Screen>&state=<State>`.
+
+| Screen | File | States |
+|---|---|---|
+| ClerkOutbound | `Outbound.jsx` | All · Loading orders due · Ready to dispatch · Proof missing · Empty |
+| NewLoadingOrder | `Outbound.jsx` | Within maximum · Approaching · At maximum · Over · No truck yet · Saving draft · Committing · Grain · Commit refused |
+| LoadingOrder | `Outbound.jsx` | Committed · Awaiting truck · Ready to load · Close short · Closing · Closed short · Closed within tolerance · Trading view · Transport view · Related · History |
+| NewDeliveryNote | `Outbound.jsx` | Grain · Grain, at legal payload · Grain, over legal payload · Override payload · Overriding · Fertiliser · Bag count mismatch · Supervised recount · Saving draft · Shipping |
+| DeliveryNote | `Outbound.jsx` | Ready to dispatch · Shipping · Superseded weighing · Variance flagged · Variance flagged, clerk · Override variance · Overriding variance · Within variance · Shipped · Proof missing · Pending sync · In review · Delivery refused · Delivered · Received beside shipped · Superseded proof · Reversed · Closed · Trading view · Related · History |
+| DeliveryNotes | `Outbound.jsx` | All · Physical · Virtual · Direct · Today · Exporting · Empty |
+| DirectDelivery | `Outbound.jsx` | Counts match · Count difference · Finalising · Finalised · Virtual warehouse · On hold |
+| TransportHome | `Transport.jsx` | Home · Empty |
+| LoadsNeedTruck | `Transport.jsx` | Needs a truck · Truck assigned · All · Assign truck · Over the legal payload · Assigning · Empty |
+| TransportPlanning | `Transport.jsx` | By farm · By contract · Day plan |
+| Transporters | `Transport.jsx` | Transporters · Trucks · Rates |
+| TransportersUpload | `Transport.jsx` | Ready to import · Row to fix · Importing · Imported |
+
+The Clerk's Home Outbound tab is `ClerkOutbound`; the Inbound tab (`ClerkHome`) now counts it and opens it. The inbound form gains Grain, over legal payload: a receipt is never blocked for capacity, and the near-miss is recorded.
+
+Rules these screens keep:
+
+- Loading orders are raised and committed by Ryan (fertiliser) or Jacques (grain), never the clerk (Map D-37). The clerk opens a committed order Ready to load with Create delivery note as his only action. Ashraf gives the order its transporter and truck and never commits it.
+- One boundary for a load against its limit (`LoadMeter`): Approaching from the payload approach setting (95%), At maximum at exactly the limit, a warning that needs no override, and Over above it. On the loading order Over reads "Over by 0.255 t" and disables Commit; on a grain delivery note Over legal payload needs an override with a reason, recorded as a near-miss. Ashraf's Assign truck draws the same meter against the truck's legal payload.
+- Commit is refused against stock not received: "Commit is not allowed. Stock not received." (`Refusal`). Ship is refused on a bag count mismatch, "Ship is not allowed. Bag count 399 does not match count sheet 400." (`CountMatch`, no warn mode), and on a fertiliser note beyond the allowed variance until Ryan overrides with a reason (`VarianceReconcile`, Override variance, Ryan only).
+- The delivery note's Reconcile card shows Ordered, Loaded and Ticket net side by side with the pair that is out named (`OutboundReconcile`); its legal payload is its own card. Superseded weighings and superseded proof are kept beside what replaced them.
+- Proof of delivery (`ProofOfDelivery`) lists Photograph, Receiver signature and Receiver name: Awaiting proof inside the window, Proof missing after it (with the condition banner), Pending sync, In review and Delivery refused as states of their own, Delivered, and the received quantity beside the shipped one.
+- The outbound queue's counts (Loading orders due, Ready to dispatch, Proof missing) are filters on the list, never tiles (UX-08). Its statuses are M4.QUE.02's, one or two words with an icon, in its order: Short load, Refused, Slip unconfirmed, Count mismatch, Variance flagged, Over legal payload, Proof missing, Price changed, Below plan, Window ended, Ready to load past its age (Age with the warning icon), a transfer Ready to load, Ready to dispatch, In review, Pending sync, Ready to load.
+- No price, value or margin on any Clerk or stock control layout (UX-10). Trading's view of the same loading order or delivery note shows the sell price and value; Transport's view of the shared loading order shows the `Restricted` mark. Margin is parked with realised margin and is not drawn.
+- A weight's Source (Weighbridge or Scanned slip) and its Counterparty status are separate fields. A direct delivery's quantity source is "Supplier document, Farmer confirmation"; it has no UAG weighbridge.
+- Loading order, delivery note, ticket, leg and contract references are blue links where the viewer can open them; customers and the sale contract are plain text for the Clerk and Ryan. Route is plain text (UX-26).
+- Every commit, ship, close, override, assign, finalise and export button draws its working state.
+- Sample data is fictional: SYN4702 (delivered), SYN4790 (collected), FRT-218-S, FRT-221-S, Riverbend Milling, Lakeview Farms Ltd, Cameron Estates, Northside Haulage, Kafue Transport Ltd, Copperbelt Haulage Ltd, Lusaka Freight Ltd. People are S. Banda (clerk), R. Daka (stock control), J. Tembo (trading), A. Mwale (transport), T. Mwila (owner) and G. Phiri (field staff); the rate card figures are examples.
+
+Components this card introduced, all in `components/records`: `LoadMeter` (+ `loadState`, `loadUsed`, `LOAD_MARKS`), `CountMatch` (+ `bagCountState`, `bagCountReason`, `COUNT_MARKS`), `OutboundReconcile` (+ `outboundCheck`), `VarianceReconcile` (+ `weighbridgeVariance`, `variancePct`) and `ProofOfDelivery` (+ `proofState`, `PROOF_MARKS`, `PROOF_ITEM_MARKS`). `ReconcileCard` gains an opt-in `mark`.

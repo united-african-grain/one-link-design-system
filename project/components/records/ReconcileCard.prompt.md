@@ -12,4 +12,6 @@ Where a record or form checks one quantity against another (map UX-20). Rows of 
 />
 ```
 
+`mark` puts a check's own closing line in place of the outcome's: the bag count's `CountMatch` (M4.DS.02). The outbound figures (ordered, loaded, ticket net) are `OutboundReconcile`, and the fertiliser weighbridge check is `VarianceReconcile`; both compose this card.
+
 `ReconcilePanel` (within, held, block) is kept for the screens built before the map's convention.

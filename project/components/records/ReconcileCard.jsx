@@ -12,9 +12,10 @@ const RECONCILE_OUTCOMES = {
 /**
  * The Reconcile card (map UX-20): where a record or form checks one quantity against another, a
  * card at the right with label and value rows, the key difference in bold, and a closing status
- * line with its icon: Within tolerance, Within allowance or Beyond tolerance.
+ * line with its icon: Within tolerance, Within allowance or Beyond tolerance. `mark` (M4.DS.02) is a closing line of
+ * the check's own, such as a bag count's Count sheet matches or Count mismatch; left out, the line is drawn as before.
  */
-export function ReconcileCard({ title = 'Reconcile', rows = [], outcome = 'within', status, style }) {
+export function ReconcileCard({ title = 'Reconcile', rows = [], outcome = 'within', status, mark, style }) {
   const o = RECONCILE_OUTCOMES[outcome] || RECONCILE_OUTCOMES.within;
   return (
     <Card title={title} style={style}>
@@ -26,7 +27,7 @@ export function ReconcileCard({ title = 'Reconcile', rows = [], outcome = 'withi
           </React.Fragment>
         ))}
       </dl>
-      <StatusMark kind={o.kind} label={status || o.word} />
+      {mark || <StatusMark kind={o.kind} label={status || o.word} />}
     </Card>
   );
 }

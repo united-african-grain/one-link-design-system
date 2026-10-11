@@ -1,0 +1,63 @@
+<!-- @dsCard group="Components" viewport="1000x1500" subtitle="Outbound: a load against its limit with one boundary, the bag count against the count sheet, the delivery note's reconcile and weighbridge variance, and the proof of delivery in each of its states" name="Outbound · Load meter, count match, reconciles, proof of delivery (M4.DS.02)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px;align-items:start}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { LoadMeter, CountMatch, bagCountReason, OutboundReconcile, VarianceReconcile, ProofOfDelivery, ReconcileCard, Refusal, Card, Text } = DS;
+const L = (t) => <Text variant="caption-1-condensed" tone="tertiary">{t}</Text>;
+const truck = [{ label: 'Maximum order weight', value: '30.000 t' }, { label: 'Truck loading weight', value: '30.000 t' }];
+const meter = (p) => <Card title="Load"><LoadMeter label={null} rows={truck} {...p}/></Card>;
+const missing = [{ item: 'Photograph', status: 'missing' }, { item: 'Receiver signature', status: 'missing' }, { item: 'Receiver name', status: 'missing' }];
+const got = (s) => [{ item: 'Photograph', status: s, captured: '26 Sep 2026, 14:40, G. Phiri' }, { item: 'Receiver signature', status: s, captured: '26 Sep 2026, 14:41, G. Phiri' }, { item: 'Receiver name', status: s, captured: '26 Sep 2026, 14:41, G. Phiri' }];
+function Demo(){
+  return <div className="col">
+    {L('Load meter on a loading order: Within maximum, Approaching (95%, a setting), At maximum, Over')}
+    <div className="grid">
+      {meter({ total: '27.240', limit: '30.000' })}
+      {meter({ total: '29.500', limit: '30.000' })}
+      {meter({ total: '30.000', limit: '30.000' })}
+      {meter({ total: '30.255', limit: '30.000' })}
+    </div>
+    {L('Load meter against a legal payload: Within payload, At legal payload, Over legal payload')}
+    <div className="grid">
+      <Card><LoadMeter kind="payload" label="Ticket net" total="31.200" limit="34.000" rows={[{ label: 'Legal payload', value: '34.000 t' }]}/></Card>
+      <Card><LoadMeter kind="payload" label="Ticket net" total="34.000" limit="34.000" rows={[{ label: 'Legal payload', value: '34.000 t' }]}/></Card>
+      <Card><LoadMeter kind="payload" label="Ticket net" total="36.200" limit="34.000" rows={[{ label: 'Legal payload', value: '34.000 t' }, { label: 'Excess', value: '2.200 t', strong: true }]}/></Card>
+    </div>
+    {L('Count match: the bag count against the signed count sheet; any difference blocks Ship')}
+    <div className="grid">
+      <ReconcileCard rows={[{ label: 'Bags, count sheet', value: '400' }, { label: 'Bags, loaded', value: '400', strong: true }]} mark={<CountMatch sheet="400" loaded="400"/>}/>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}><ReconcileCard rows={[{ label: 'Bags, count sheet', value: '400' }, { label: 'Bags, loaded', value: '399', strong: true }]} mark={<CountMatch sheet="400" loaded="399"/>}/><Refusal action="Ship" reason={bagCountReason('400', '399')}/></div>
+    </div>
+    {L('Outbound reconcile: ordered, loaded and ticket net, the pair that is out named')}
+    <div className="grid">
+      <OutboundReconcile ordered="34.000" loaded="34.120" net="34.120" tolerance="0.080"/>
+      <OutboundReconcile ordered="34.000" loaded="34.120" net="33.940" tolerance="0.080"/>
+      <OutboundReconcile ordered="34.000" loaded="32.000" net="32.020" tolerance="0.080"/>
+    </div>
+    {L('Variance reconcile: weighbridge net against theoretical weight, within the allowed variance or Variance flagged')}
+    <div className="grid">
+      <VarianceReconcile theoretical="27.240" net="27.380" allowedPct={1} extra={[{ label: 'Count sheet', value: 'Matches' }]}/>
+      <VarianceReconcile theoretical="27.240" net="27.610" allowedPct={1} extra={[{ label: 'Count sheet', value: 'Matches' }]}/>
+    </div>
+    {L('Proof of delivery: Proof missing, Pending sync, In review, Delivery refused, Delivered with received beside shipped, superseded proof')}
+    <ProofOfDelivery items={missing}/>
+    <ProofOfDelivery items={got('pending-sync')}/>
+    <ProofOfDelivery items={got('in-review')}/>
+    <ProofOfDelivery items={[{ item: 'Photograph', status: 'refused', captured: '26 Sep 2026, 14:40, G. Phiri' }, { item: 'Receiver name', status: 'received', captured: '26 Sep 2026, 14:41, G. Phiri' }]} facts={[['Refusal reason', 'Damaged bags']]}/>
+    <ProofOfDelivery items={got('received')} facts={[['Shipped', '33.880 t'], ['Received', '33.640 t'], ['Difference', '0.240 t']]}/>
+    <ProofOfDelivery items={[{ item: 'Photograph', status: 'superseded', captured: '26 Sep 2026, 14:40, G. Phiri' }, ...got('received')]}/>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

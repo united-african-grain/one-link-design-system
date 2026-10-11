@@ -1,4 +1,4 @@
-<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Interactive click-through: Command Center, Trade Desk, Warehouse, Stock, Farmer Finance; the Clerk's inbound and stock control screens" name="One Link desktop app" -->
+<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Interactive click-through: Command Center, Trade Desk, Warehouse, Stock, Farmer Finance; the Clerk's inbound, outbound and stock control screens; transport planning" name="One Link desktop app" -->
 <!-- @startingPoint section="Screens" subtitle="One Link desktop app shell with all owner screens" viewport="1440x900" -->
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>One Link</title>
 <link rel="stylesheet" href="../../styles.css">
@@ -12,18 +12,21 @@
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx','../admin_workspace/Shell.jsx','../admin_workspace/CaptureReview.jsx']).then((K) => {
+loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.jsx','Coverage.jsx','Approval.jsx','Weighbridge.jsx','StockBoard.jsx','CreditBook.jsx','Tickets.jsx','Exceptions.jsx','Counterparties.jsx','Inbound.jsx','StockControl.jsx','GatePrice.jsx','Outbound.jsx','Transport.jsx','../admin_workspace/Shell.jsx','../admin_workspace/CaptureReview.jsx']).then((K) => {
   const { Page, CommandCenter, TradeBoard, Coverage, Approval, Weighbridge, GRNFinalise, GradingDispute, StockBoard, CreditBook, Segmented, ScrollRow } = K;
   // The weighbridge continuity screens (M2.DS.01) open in the Clerk's frame, or the owner's for his Exceptions view.
   // Every state opens directly with ?screen=<Screen>&state=<State>, which the screenshot review uses at 1440 and 390.
   // The inbound, gate price and stock screens (M4.DS.01) open in the Clerk's, the owner's or stock control's frame.
   // Stock control decides Captures in review (M4.DS.03) in the same frame; the administrator reads them in Setup.
-  const M4_STATES = { ...K.INBOUND_STATES, ...K.STOCK_CONTROL_STATES, ...K.GATE_PRICE_STATES, ...K.CAPTURE_DECISION_STATES };
+  // The outbound screens (M4.DS.02) open in the Clerk's, stock control's (Ryan), Trading's (Jacques) or Transport's (Ashraf) frame.
+  const M4_STATES = { ...K.INBOUND_STATES, ...K.STOCK_CONTROL_STATES, ...K.GATE_PRICE_STATES, ...K.CAPTURE_DECISION_STATES, ...K.OUTBOUND_STATES, ...K.TRANSPORT_STATES };
   const STATES = { ...K.TICKETS_STATES, ...K.EXCEPTIONS_STATES, ...K.COUNTERPARTIES_STATES, ...M4_STATES };
   const LABEL = { ClerkHome: 'Clerk Home', TicketsList: 'Weighbridge tickets', ScannedSlip: 'Scanned slip', TicketRecord: 'Ticket record', FeedHealth: 'Feed health', ExceptionsList: 'Exceptions', ExceptionRecord: 'Exception record', CounterpartyFind: 'Find a counterparty', CounterpartyView: 'Counterparty', CounterpartyGroup: 'Group',
     NewGoodsReceivedNote: 'New goods received note', GoodsReceivedNote: 'Goods received note', LoadOnHold: 'Load on hold', OverDeliveryNotice: 'Over-delivery notice', WarehouseStock: 'Warehouse stock',
-    StockPosition: 'Stock position', OnTheRoad: 'On the road', TransferOrder: 'Transfer order', StockTake: 'Stock take', GatePrices: 'Gate prices', NewGatePrice: 'New gate price', GatePriceRecord: 'Gate price', CapturesToReview: 'Captures in review', CaptureDecision: 'Capture' };
-  const m4Frame = (screen, state) => K.INBOUND_STATES[screen] ? K.inboundFrame(screen, state) : K.STOCK_CONTROL_STATES[screen] ? K.stockControlFrame(screen, state) : K.CAPTURE_DECISION_STATES[screen] ? K.captureDecisionFrame(screen, state) : K.gatePriceFrame(screen, state);
+    StockPosition: 'Stock position', OnTheRoad: 'On the road', TransferOrder: 'Transfer order', StockTake: 'Stock take', GatePrices: 'Gate prices', NewGatePrice: 'New gate price', GatePriceRecord: 'Gate price', CapturesToReview: 'Captures in review', CaptureDecision: 'Capture',
+    ClerkOutbound: 'Clerk Home, Outbound', NewLoadingOrder: 'New loading order', LoadingOrder: 'Loading order', NewDeliveryNote: 'New delivery note', DeliveryNote: 'Delivery note', DeliveryNotes: 'Delivery notes', DirectDelivery: 'Direct delivery',
+    TransportHome: 'Transport Home', LoadsNeedTruck: 'Loading orders, Transport', TransportPlanning: 'Transport planning', Transporters: 'Transporters and trucks', TransportersUpload: 'Transporters upload' };
+  const m4Frame = (screen, state) => K.OUTBOUND_STATES[screen] ? K.outboundFrame(screen, state) : K.TRANSPORT_STATES[screen] ? K.transportFrame(screen, state) : K.INBOUND_STATES[screen] ? K.inboundFrame(screen, state) : K.STOCK_CONTROL_STATES[screen] ? K.stockControlFrame(screen, state) : K.CAPTURE_DECISION_STATES[screen] ? K.captureDecisionFrame(screen, state) : K.gatePriceFrame(screen, state);
   const params = new URLSearchParams(location.search);
   function Continuity({ initial, onLeave }){
     const [screen,setScreen]=React.useState(initial);
@@ -36,20 +39,31 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.
       {STATES[screen].length>1?<Segmented options={STATES[screen]} value={state} onChange={setState}/>:null}
     </ScrollRow>;
     const GRN_STATE = { GRN10000375: 'Returned', GRN10000377: 'On hold', GRN10000379: 'Weight dispute', GRN10000380: 'Booked' };
-    const open=(ref)=> ref==='riverbend' ? go('CounterpartyView') : String(ref).startsWith('EXC') ? go('ExceptionRecord')
+    const LO_STATE = { 'LO-2231': 'Committed', 'LO-2236': 'Close short', 'LO-2243': 'Awaiting truck', 'LO-2241': 'Awaiting truck', 'LO-2242': 'Awaiting truck' };
+    const DN_STATE = { 'DN-0875': 'Proof missing', 'DN-0883': 'In review', 'DN-0884': 'Variance flagged, clerk', 'DN-0885': 'Pending sync', 'DN-0886': 'Delivery refused', 'DN-0889': 'Bag count mismatch', 'DN-0890': 'Grain, over legal payload' };
+    const open=(ref)=> ref==='outbound' ? go('ClerkOutbound') : ref==='inbound' ? go('ClerkHome') : ref==='planning' ? go('TransportPlanning') : ref==='loading' ? go('LoadsNeedTruck')
+      : String(ref).startsWith('LO-') || String(ref).startsWith('TR-') ? go('LoadingOrder', LO_STATE[ref] || 'Ready to load')
+      : ref==='DN-0889' || ref==='DN-0890' ? go('NewDeliveryNote', DN_STATE[ref]) : String(ref).startsWith('DN-') ? go('DeliveryNote', DN_STATE[ref] || 'Ready to dispatch')
+      : ref==='riverbend' ? go('CounterpartyView') : String(ref).startsWith('EXC') ? go('ExceptionRecord')
       : GRN_STATE[ref] ? go('GoodsReceivedNote', GRN_STATE[ref]) : String(ref).startsWith('LEG') ? go('TransferOrder', ref==='LEG-5088' ? 'Past clearing window' : 'In transit')
       : String(ref).startsWith('c3') ? go('CaptureDecision', ref==='c317' ? 'Late capture' : 'From a revoked phone') : String(ref).startsWith('g') ? go('GatePriceRecord') : go('TicketRecord', ref==='WBT10001606' ? 'Ready' : ref==='WBT10001599' ? 'Closed' : 'From scanned slip');
     const body=<Screen state={state} onOpen={open}/>;
     // Owen's Counterparties module (M3.DS.01) opens in his frame, with Counterparties in the navigation.
     // Stock control's frame (canvas S15), and the owner's or a trader's frame for the decisions and gate prices.
     if(frame.who==='stock') return <Page nav={K.STOCK_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.STOCK_USER} sync={null}
-      onModule={(v)=>{ if(v==='home') go('StockPosition'); }} onSection={(v)=>{ if(v==='road') go('OnTheRoad'); if(v==='transfers') go('TransferOrder'); if(v==='stocktake') go('StockTake'); if(v==='review') go('CapturesToReview'); }}>{controls}{body}</Page>;
+      onModule={(v)=>{ if(v==='home') go('StockPosition'); }} onSection={(v)=>{ if(v==='road') go('OnTheRoad'); if(v==='transfers') go('TransferOrder'); if(v==='stocktake') go('StockTake'); if(v==='review') go('CapturesToReview');
+        if(v==='loading') go('NewLoadingOrder'); if(v==='delivery') go('DeliveryNotes'); if(v==='direct') go('DirectDelivery'); }}>{controls}{body}</Page>;
+    // Jacques's frame for grain loading orders (S47 JQ5) and Trading's view of a note; Ashraf's for transport (S59).
+    if(frame.who==='jacques') return <Page nav={K.TRADING_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.TRADING_USER} sync={null}
+      onSection={(v)=>{ if(v==='loading') go('NewLoadingOrder','Grain'); if(v==='delivery') go('DeliveryNote','Trading view'); }}>{controls}{body}</Page>;
+    if(frame.who==='transport') return <Page nav={K.TRANSPORT_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.TRANSPORT_USER} sync={null}
+      onModule={(v)=>{ if(v==='home') go('TransportHome'); }} onSection={(v)=>{ if(v==='planning') go('TransportPlanning'); if(v==='loading') go('LoadsNeedTruck'); if(v==='transporters') go('Transporters'); }}>{controls}{body}</Page>;
     if(frame.who==='owner' || frame.who==='trading') return <Page nav={K.OWEN_NAV} module={frame.module} breadcrumb={frame.breadcrumb} sync={null}
       user={frame.who==='trading' ? { initials: 'JT', name: 'J. Tembo', meta: 'Trading' } : K.OWEN}>{controls}{body}</Page>;
     if(frame.module==='counterparties') return <Page nav={K.OWEN_NAV} module="counterparties" breadcrumb={frame.breadcrumb} user={K.OWEN} sync={null}>{controls}{body}</Page>;
     if(frame.owner) return <Page module={frame.module} breadcrumb={frame.breadcrumb} sync={null}>{controls}{body}</Page>;
     return <Page nav={K.CLERK_NAV} module={frame.module} section={frame.section} breadcrumb={frame.breadcrumb} user={K.CLERK} sync={null}
-      onModule={(v)=>{ if(v==='home') go('ClerkHome'); if(v==='inventory') go('WarehouseStock'); }} onSection={(v)=>{ if(v==='tickets') go('TicketsList'); if(v==='received') go('NewGoodsReceivedNote'); }}>{controls}{body}</Page>;
+      onModule={(v)=>{ if(v==='home') go('ClerkHome'); if(v==='inventory') go('WarehouseStock'); }} onSection={(v)=>{ if(v==='tickets') go('TicketsList'); if(v==='received') go('NewGoodsReceivedNote'); if(v==='loading') go('LoadingOrder','Ready to load'); if(v==='delivery') go('NewDeliveryNote'); }}>{controls}{body}</Page>;
   }
   function App(){
     const [continuity,setContinuity]=React.useState(STATES[params.get('screen')] ? params.get('screen') : null);
@@ -65,7 +79,7 @@ loadKit('../../components/', './', ['Shell.jsx','CommandCenter.jsx','TradeBoard.
     if(module==='command'){ controls=<Segmented options={['Calm','Exception']} value={ccState==='calm'?'Calm':'Exception'} onChange={v=>setCcState(v==='Calm'?'calm':'exception')}/>; body=<CommandCenter state={ccState}/>; }
     else if(module==='trade'){ controls=<><Segmented options={['Trade Board','Coverage','Approval','Counterparties','Gate prices']} value={tdView} onChange={(v)=> v==='Counterparties' ? setContinuity('CounterpartyFind') : v==='Gate prices' ? setContinuity('GatePrices') : setTdView(v)}/>{tdView==='Trade Board'?<Segmented options={['Owner','Restricted','Loading']} value={tbState==='default'?'Owner':tbState==='restricted'?'Restricted':'Loading'} onChange={v=>setTbState(v==='Owner'?'default':v.toLowerCase())}/>:null}</>;
       body = tdView==='Trade Board' ? <TradeBoard state={tbState}/> : tdView==='Coverage' ? <Coverage/> : <Approval/>; }
-    else if(module==='warehouse'){ controls=<Segmented options={['Tickets','Sync silent','Empty','GRN finalise','Dispute','Clerk screens']} value={whView} onChange={(v)=> v==='Clerk screens' ? setContinuity('ClerkHome') : setWhView(v)}/>;
+    else if(module==='warehouse'){ controls=<Segmented options={['Tickets','Sync silent','Empty','GRN finalise','Dispute','Clerk screens','Outbound screens','Transport screens']} value={whView} onChange={(v)=> v==='Clerk screens' ? setContinuity('ClerkHome') : v==='Outbound screens' ? setContinuity('ClerkOutbound') : v==='Transport screens' ? setContinuity('TransportHome') : setWhView(v)}/>;
       body = whView==='GRN finalise' ? <GRNFinalise/> : whView==='Dispute' ? <GradingDispute/> : <Weighbridge state={whView==='Sync silent'?'silent':whView==='Empty'?'empty':'default'}/>; }
     else if(module==='stock'){ controls=<Segmented options={['Owner','Stock Control','Stock control screens']} value={stockView} onChange={(v)=> v==='Stock control screens' ? setContinuity('StockPosition') : setStockView(v)}/>; body=<StockBoard role={stockView}/>; }
     else if(module==='finance'){ body=<CreditBook/>; }

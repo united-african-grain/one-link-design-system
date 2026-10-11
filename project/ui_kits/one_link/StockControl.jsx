@@ -21,7 +21,8 @@ export const STOCK_CONTROL_STATES = {
 /** Ryan's navigation (canvas S15): Home, Logistics, Inventory, Reports. */
 export const STOCK_NAV = [{ items: [
   { value: 'home', label: 'Home', icon: 'house' },
-  { value: 'logistics', label: 'Logistics', icon: 'truck', sections: [{ value: 'road', label: 'On the road' }, { value: 'transfers', label: 'Transfer orders' }] },
+  // Loading orders, Delivery notes and Direct deliveries (M4.DS.02, S14 R5 to R7): added after Transfer orders, nothing moved.
+  { value: 'logistics', label: 'Logistics', icon: 'truck', sections: [{ value: 'road', label: 'On the road' }, { value: 'transfers', label: 'Transfer orders' }, { value: 'loading', label: 'Loading orders' }, { value: 'delivery', label: 'Delivery notes' }, { value: 'direct', label: 'Direct deliveries' }] },
   // Captures in review (RL-CAPTURE-REVIEW, M4.DS.03): stock control decides late and revoked-phone captures; added, nothing moved.
   { value: 'inventory', label: 'Inventory', icon: 'warehouse', sections: [{ value: 'stocktake', label: 'Stock take' }, { value: 'review', label: 'Captures in review' }] },
   { value: 'reports', label: 'Reports', icon: 'chart-column' },

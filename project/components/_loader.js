@@ -1,7 +1,7 @@
 /* Card-only helper: loads the component sources directly when the compiled bundle isn't present yet.
    Prefers window.<Namespace> from _ds_bundle.js when available. */
 (function () {
-  // Order matters: a file comes after what it composes (the map's states, UAG-248, then Setup's pieces, UAG-5, then the weighbridge continuity pieces, UAG-32, then the template, upload and counterparty pieces, UAG-41, then the inbound, gate price and stock pieces, UAG-53, then the UAG One Link app's capture tile and PIN pad, UAG-185, come last).
+  // Order matters: a file comes after what it composes (the map's states, UAG-248, then Setup's pieces, UAG-5, then the weighbridge continuity pieces, UAG-32, then the template, upload and counterparty pieces, UAG-41, then the inbound, gate price and stock pieces, UAG-53, then the UAG One Link app's capture tile and PIN pad, UAG-185, then the outbound load meter, count match, reconciles and proof of delivery, UAG-184, come last).
   var FILES = [
     'core/Icon.jsx', 'core/Interaction.jsx', 'core/Text.jsx', 'core/Avatar.jsx', 'core/Logo.jsx',
     'actions/Button.jsx', 'actions/PressButton.jsx', 'actions/Capsule.jsx', 'actions/Segmented.jsx', 'actions/LineStepper.jsx', 'actions/AssistantLauncher.jsx',
@@ -16,7 +16,8 @@
     'records/ReadinessChip.jsx', 'records/EvidenceViewer.jsx', 'records/FieldCheck.jsx', 'records/SecondConfirmation.jsx', 'records/ExceptionList.jsx',
     'data/SourceLine.jsx', 'records/ColumnMapping.jsx', 'records/VersionCompare.jsx', 'records/CounterpartyOverview.jsx',
     'records/RunningSum.jsx', 'records/ThreeWayReconcile.jsx', 'records/DecisionActions.jsx', 'records/TransitResidue.jsx',
-    'records/CaptureTile.jsx', 'inputs/PinPad.jsx'
+    'records/CaptureTile.jsx', 'inputs/PinPad.jsx',
+    'records/LoadMeter.jsx', 'records/CountMatch.jsx', 'records/OutboundReconcile.jsx', 'records/VarianceReconcile.jsx', 'records/ProofOfDelivery.jsx'
   ];
   function findBundle() {
     try { for (var k in window) { try { var v = window[k]; if (v && typeof v === 'object' && v.Button && v.Icon && v.Text) return v; } catch (e) {} } } catch (e) {}

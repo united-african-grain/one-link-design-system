@@ -20,7 +20,8 @@ export const TICKETS_STATES = {
 /** The Clerk's navigation (canvas S13): Home, Logistics with its sections, Inventory, Reports. */
 export const CLERK_NAV = [{ items: [
   { value: 'home', label: 'Home', icon: 'house' },
-  { value: 'logistics', label: 'Logistics', icon: 'truck', sections: [{ value: 'tickets', label: 'Weighbridge tickets' }, { value: 'received', label: 'Goods received' }] },
+  // Loading orders and Delivery notes (M4.DS.02): added after Goods received, nothing moved.
+  { value: 'logistics', label: 'Logistics', icon: 'truck', sections: [{ value: 'tickets', label: 'Weighbridge tickets' }, { value: 'received', label: 'Goods received' }, { value: 'loading', label: 'Loading orders' }, { value: 'delivery', label: 'Delivery notes' }] },
   { value: 'inventory', label: 'Inventory', icon: 'warehouse' },
   { value: 'reports', label: 'Reports', icon: 'chart-column' },
 ] }];
@@ -161,7 +162,8 @@ export function ClerkHome({ state = 'Inbound', onOpen }) {
     <Sections>
       <WbHead title="Home" meta={meta} right={<Button variant="outline" size="small" icon="scan-line">Scan slip</Button>} />
       {offline ? <OfflineBanner /> : null}
-      <Tabs tabs={[{ value: 'Inbound', label: 'Inbound', count: all.length }, { value: 'Outbound', label: 'Outbound', count: 4 }]} value="Inbound" />
+      {/* The Outbound tab is the outbound queue (M4.DS.02, Outbound.jsx ClerkOutbound); its count is that queue's. */}
+      <Tabs tabs={[{ value: 'Inbound', label: 'Inbound', count: all.length }, { value: 'Outbound', label: 'Outbound', count: OUTBOUND_QUEUE.length }]} value="Inbound" onChange={(v) => v === 'Outbound' && onOpen && onOpen('outbound')} />
       <ScrollRow>
         <Capsule selected={!filter} count={all.length}>All</Capsule>
         {QUEUE_FILTERS.map(([label, s]) => <Capsule key={s} selected={!!filter && filter[1] === s} count={count(s)}>{label}</Capsule>)}

@@ -6,13 +6,13 @@ Click-through recreation of the owner-facing platform. `index.html` mounts the s
 |---|---|---|
 | 01 Command Center | `CommandCenter.jsx` | Calm · Exception (+ sync silent banner and stalled header pill) |
 | 03 Trade Board | `TradeBoard.jsx` | Owner · Restricted · Loading; cards or table view |
-| 04 Coverage: Wheat (local) | `Coverage.jsx` | commodity tabs, firm/declared overlays, season chart |
+| 04 Coverage: Wheat (local) | `Coverage.jsx` | commodity tabs, firm/declared overlays, season chart; Board · Calculation details (short = sold minus firm secured, M5.DS.02) |
 | 05 Approval T-0141 | `Approval.jsx` | decision panel with Approve busy |
 | 06 Weighbridge tickets | `Weighbridge.jsx` → `Weighbridge` | default · sync silent · empty (a ticket weighed in only shows `ReadinessChip`) |
 | 07 GRN finalise | `Weighbridge.jsx` → `GRNFinalise` | within tolerance · held · hard block |
 | 08 Grading dispute | `Weighbridge.jsx` → `GradingDispute` | Resolve case busy |
 | 09 Stock board | `StockBoard.jsx` | Owner · Stock Control (restricted cells) |
-| 10 Credit book | `CreditBook.jsx` | planning-price stepper rescoring |
+| 10 Credit book | `CreditBook.jsx` | approved price, read only, with its approval date and history (M5.DS.02) |
 
 `Shell.jsx` holds the layout parts every screen shares: `Page`, `WithRail`, `PageHead`, `SectionLabel`, `FigureStrip`.
 
@@ -193,3 +193,41 @@ Rules these screens keep:
 - Sample data is the S08 example data on the golden fixture names: Riverbend Milling, Lakeview Farms Ltd, Cameron Estates, Mpongwe Valley Farms, Northfield Agro Supplies, Chisamba Shed, Mpongwe Depot, Hired store, Mkushi. People are T. Mwila (Managing Director), J. Tembo (Trading), R. Daka (stock control), A. Mwale (Logistics) and M. Chanda (Operations).
 
 Components this card introduced: `KpiTile` (+ `kpiTiles`, `KPI_TILE_CAP`) in `components/data`, and `DataTable`'s opt-in `expand` (with `expanded`, `onExpand`, `expandLabel`).
+
+## Trading, operations and farmer finance (M5.DS.02)
+
+The working screens M5's demonstration steps happen on (S47 JQ1 and JQ2, canvas S50; S16 AL6 and AL7, canvas S17; canvas S60): Trading's Home, the cover board, with its forward view and priority list; the farm-direct consignments, their capture, record and import preview, and the Exceptions list with Follow-up as the operations lead's saved view; the farm-direct variance decision; the farmer account, the credit book's farmer detail, the statement run and the statement layout approval; and the exchange rate table. They open in Trading's frame (J. Tembo: Home, Trading with Priority list and Forward view, Logistics, Inventory, Counterparties, Reports, Assistant), Operations' (M. Chanda: Home, Logistics with Farm-direct, Finance, Counterparties, Reports) or Finance's (N. Phiri: Home, Finance with Farmer accounts, Credit book, Farmer statements and Exchange rates, Counterparties, Reports). From Trade Desk choose "Trading screens", from Warehouse "Farm-direct screens", from Farmer Finance "Farmer accounts screens", or open any state directly with `?screen=<Screen>&state=<State>`. The key-upload list and the exception rules are in Setup (`../admin_workspace/Monitoring.jsx`).
+
+| Screen | File | States |
+|---|---|---|
+| CoverHome | `Trading.jsx` | Current · Stale data · Upload failed · Upload missing · Calculation details · Could cover · Loading |
+| ForwardView | `Trading.jsx` | Next 30 days · Next 90 days · Week opened · Loading · Error |
+| PriorityList | `Trading.jsx` | Short contracts · Suppliers to call · Acknowledging · Acknowledged · Without the contract tier · All covered |
+| FarmDirectConsignments | `Operations.jsx` | All · Waiting for a side · Exporting · Empty |
+| NewConsignment | `Operations.jsx` | Loaded side · Mill side · Missing fields · Saving |
+| Consignment | `Operations.jsx` | Loaded side only · Mill side only · Both sides · Grade below contract · Acknowledging · Beyond allowance · Related · History |
+| FarmDirectUpload | `Operations.jsx` | Validating · Ready to import · Row to fix · Importing · Imported · Failed |
+| FollowUp | `Operations.jsx` | Follow-up · Acknowledged · Exporting · No items |
+| VarianceDecision | `Operations.jsx` | Open · Correct a side · Deciding · Decided · Operations, read only |
+| FarmerAccount | `Finance.jsx` | Details · Calculation details · Without the farmer account tier · Related · History · Loading |
+| CreditBookFarmer | `Finance.jsx` | Red band · Amber band · Chart loading · Price history |
+| StatementRun | `Finance.jsx` | Preview · Running · Run history · Downloading · No approved layout |
+| StatementLayout | `Finance.jsx` | Pending approval · Approving · Reject · Rejecting · Approved · Rejected |
+| ExchangeRates | `Finance.jsx` | Rates · Enter rate · Saving · Rate already entered · Correct rate · Correcting · No rate today |
+
+Two kit details were corrected at source, by rewording, with nothing deleted: the Coverage screen's short figure is sold minus firm secured, opening Calculation details with Sold and Firm secured as rows and the gap as the bold total, declared supply drawn dashed and never subtracted, and uncommitted stock and stock in transit in their own Could cover figure; the Credit book's market-price stepper is now the approved price, read only, with its approval date, who approved it, how it changes (Approval of a new price) and its history. No control on either screen edits a price or runs a what-if.
+
+Rules these screens keep:
+
+- Short is sold minus firm secured, never typed (RL-COVER-DERIVED, RL-NO-REKEY-COV). Expected is shown apart and drawn dashed beyond the cover bar; Could cover sits in its own column; neither reduces the gap. Every Short and Could cover figure opens Calculation details. Weighed loads not yet received are labelled fields (loads and tonnage) in their own card.
+- Freshness is Last refreshed with the green check, or amber with the warning icon past its threshold, and one condition banner naming the input that is stale, failed or missing (UX-23, UX-24). The forward view is a ChartCard, its key drawn with ShareBar swatches.
+- The priority list ranks short contracts by severity, then value at risk; each opens its suppliers to call, each with its reason and its contact or "no contact on record". Acknowledge marks a quiet supplier seen and never resolves it. Without the contract tier the value at risk column is left out.
+- A farm-direct consignment is a load: In transit with the loaded side, Delivered with the mill side, Reconciled once the difference and grade are settled; what it waits for is the field Waiting for (UX-32). The mill's offloaded weight and grade count on both legs and set what the farmer is paid on; the farmer's loaded weight is kept to show the difference (Map D-36). The Reconcile card closes with the weight line and the grade line.
+- Exceptions is one list; Follow-up is the operations lead's saved view, ranked by value at risk, with Type, Exception, Record, Value at risk (USD), Owner, Age and Status. A weight difference beyond allowance is read only for Operations; Trading or the Managing Director decides it with exactly three outcomes: Accept the mill's offloaded weight, Correct a side, with a reason, or Send for re-weigh (`DecisionActions`, UAG-150).
+- Farmer figures carry the Farmer account tier: on the shared farmer account layout, Trading sees the `Restricted` lock in each figure's place, and the money columns are left out of its tables. Finance's figures are USD with two decimals; the LTV is facility over crop value at the approved price, banded green, amber from 20.00% and red from 22.00%, on a ChartCard baseline with both lines.
+- A statement run keeps every earlier run, marked Superseded and still downloadable, with its layout version, language and fingerprint. A statement in a language with no approved layout is refused. A layout is approved by Operations on sample data (Sample Farm Ltd), carries its language, and needs a comment to reject.
+- Rates read "ZMW 25.00 per USD" with their date, beside the Exchange rate source setting and its owner. A second rate for a date is refused; a correction needs a reason and keeps the original row beside it, marked Corrected.
+- Operations screens carry operations data only: no price or value on a consignment; value at risk appears on the exceptions. Every save, import, run, approve, acknowledge, decide, correct and export button draws its working state.
+- Sample data is fictional, on the golden fixture names: Riverbend Milling (the canvas's mill), Lakeview Farms Ltd, Cameron Estates, Kapiri Farms, Chisomo Agri, Chongwe Growers Ltd, Mpongwe Valley Farms, Chisamba Shed. People are J. Tembo (Trading), M. Chanda (Operations), N. Phiri (Finance) and T. Mwila (Managing Director).
+
+Component change this card made: `ChartCard` reads a token colour (`color: 'var(--commodity-wheat)'`, a price line's `var(--warning-strong)`) from the page through `chartColor`, so a kit screen never writes a hex. Plain colours draw as before.

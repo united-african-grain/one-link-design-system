@@ -7,13 +7,15 @@ export const SETUP_NAV = [
   { items: [{ value: 'home', label: 'Setup Home' }] },
   // Devices (S10 Users and access, M4 round; M4.DS.03): added after Bundles, nothing above it moved.
   { label: 'Users and access', items: [{ value: 'users', label: 'Users' }, { value: 'bundles', label: 'Bundles' }, { value: 'devices', label: 'Devices' }] },
-  { label: 'Configuration', items: [{ value: 'settings', label: 'Settings' }, { value: 'switches', label: 'Switches' }, { value: 'steps', label: 'Approval steps' }, { value: 'policies', label: 'Policy methods' }, { value: 'figures', label: 'Figures and price tiers' }] },
+  // Exception rules (S10 A6, M5 round; M5.DS.02): added after Figures and price tiers, nothing above it moved.
+  { label: 'Configuration', items: [{ value: 'settings', label: 'Settings' }, { value: 'switches', label: 'Switches' }, { value: 'steps', label: 'Approval steps' }, { value: 'policies', label: 'Policy methods' }, { value: 'figures', label: 'Figures and price tiers' }, { value: 'rules', label: 'Exception rules' }] },
   { label: 'Reference data', items: [{ value: 'sites', label: 'Sites and storage units' }, { value: 'corridors', label: 'Corridors and routes' }, { value: 'products', label: 'Products' }, { value: 'points', label: 'Delivery points' }, { value: 'calendars', label: 'Operating calendars' }, { value: 'lists', label: 'Classes, grades and seasons' },
     // Vehicles and transporters (S10 reference data, M4 round; M4.DS.01): added, nothing above moved.
     { value: 'vehicles', label: 'Vehicles' }, { value: 'transporters', label: 'Transporters' }] },
   // Data (S11, M3.DS.01): renamed from Uploads, with Production readiness added (Henry, 5 Oct 2026: entries may be added,
   // renamed or regrouped; the layout does not change).
-  { label: 'Data', items: [{ value: 'templates', label: 'Templates' }, { value: 'uploads', label: 'Upload history' }, { value: 'readiness', label: 'Production readiness' }] },
+  // Key uploads (UAG-147; M5.DS.02): added after Production readiness, nothing above it moved.
+  { label: 'Data', items: [{ value: 'templates', label: 'Templates' }, { value: 'uploads', label: 'Upload history' }, { value: 'readiness', label: 'Production readiness' }, { value: 'keyuploads', label: 'Key uploads' }] },
   // Assistant settings (S10 Security and audit, M5 round; M5.DS.01): added after Access review, nothing above it moved.
   { label: 'Security and audit', items: [{ value: 'audit', label: 'Audit logs' }, { value: 'review', label: 'Access review' }, { value: 'assistant', label: 'Assistant settings' }] },
 ];

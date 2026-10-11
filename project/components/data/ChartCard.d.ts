@@ -3,7 +3,8 @@ export interface ChartSeries {
   type?: 'line' | 'area' | 'baseline' | 'histogram';
   /** [{time:'2026-06-01', value: 120}] (histogram may add color per point). */
   data: Array<{ time: string | number; value: number; color?: string }>;
-  /** Line colour: commodity colour for prices, brand #2563EB for money. */
+  /** Line colour: commodity colour for prices, brand #2563EB for money. A token such as 'var(--commodity-wheat)' is
+      read from the page (M5.DS.02), so a screen never writes a hex. */
   color?: string;
   /** End-of-line label name (caption-1). */
   name?: string;
@@ -35,4 +36,6 @@ export interface ChartCardProps {
   style?: React.CSSProperties;
 }
 export function ChartCard(props: ChartCardProps): JSX.Element;
+/** A colour as the chart library needs it: 'var(--token)' read from the page, anything else returned as it is. */
+export function chartColor(value: string, el?: Element | null): string;
 export function ChartAttribution(props: { style?: React.CSSProperties }): JSX.Element;

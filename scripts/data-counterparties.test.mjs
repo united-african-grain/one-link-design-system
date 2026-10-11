@@ -127,7 +127,8 @@ describe('[M3.DS.01] the screens', () => {
   test('[M3.DS.01] the Setup navigation\'s Data group holds Templates, Upload history and Production readiness (S11)', () => {
     const nav = literal(read(join(ADMIN, 'Shell.jsx')), 'SETUP_NAV', '\\[', '\\]');
     const group = nav.find((g) => g.label === 'Data');
-    assert.deepEqual(group.items.map((i) => i.label), ['Templates', 'Upload history', 'Production readiness']);
+    // M5.DS.02 adds Key uploads after them; nothing above it moved.
+    assert.deepEqual(group.items.map((i) => i.label).slice(0, 3), ['Templates', 'Upload history', 'Production readiness']);
     assert.ok(!nav.some((g) => g.label === 'Uploads'), 'renamed, not duplicated');
   });
 

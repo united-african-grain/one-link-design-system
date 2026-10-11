@@ -12,11 +12,19 @@ const FARMERS = [
   { id: 11, farmer: 'Stonebridge', facility: '$37,000', drawn: '$37,000', ltv: '12.8%' },
 ];
 
+/** The price the book is scored at: the approved price, read only, with its approval date and history (corrected at
+    source, M5.DS.02; M4.PRC.01). A new price changes only by approval; no control here edits it or runs a what-if. */
+export const CREDIT_PRICE = { price: 'USD 400.00 per t', approved: '15 Sep 2026', by: 'T. Mwila', route: 'Approval of a new price' };
+export const CREDIT_PRICE_HISTORY = [
+  { id: 'p3', approved: '15 Sep 2026', price: '400.00', by: 'T. Mwila' },
+  { id: 'p2', approved: '01 Sep 2026', price: '380.00', by: 'T. Mwila' },
+  { id: 'p1', approved: '18 Aug 2026', price: '360.00', by: 'J. Tembo' },
+];
+
 /** 10 Farmer Finance: Credit book (Programmes). */
 export function CreditBook({ mobile = false }) {
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
-  const [price, setPrice] = useState('$400');
   const wheat = 'var(--commodity-wheat)';
   const ltv = useMemo(() => Array.from({ length: 26 }, (_, i) => ({ time: '2026-07-' + String(i + 1).padStart(2, '0'), value: 17.5 + Math.sin(i / 4) * 2.6 + i * 0.28 })), []);
 
@@ -25,7 +33,7 @@ export function CreditBook({ mobile = false }) {
   const figures = <FigureStrip cells={[
     <Figure label="total facility" value="$1,663,250" size="heading-2-condensed" derivation="12 farmers" />,
     <Figure label="drawn exposure" value="$1,041,900" size="heading-2-condensed" derivation="62.6% utilised" />,
-    <Figure label="weighted live LTV" value="12.6%" size="heading-2-condensed" derivation="at $400/MT planning price" />,
+    <Figure label="weighted live LTV" value="12.6%" size="heading-2-condensed" derivation={`at ${CREDIT_PRICE.price}, approved ${CREDIT_PRICE.approved}`} />,
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <Figure label="breaches" value="1 red · 3 amber" size="heading-3-condensed" />
       <Button size="xsmall" variant="outline">View alerts</Button>
@@ -48,10 +56,15 @@ export function CreditBook({ mobile = false }) {
 
   const rail = (
     <>
-      <Card title="Market price" meta="Wheat $400/MT">
-        <LineStepper values={['$360', '$380', '$400', '$420']} value={price} onChange={setPrice} activeColor={wheat} />
-        <Text variant="body-3" tone="secondary" style={{ textWrap: 'pretty' }}>Planning price locked at upload. Editing rescores the whole book instantly.</Text>
-        <Text variant="body-4" tone="tertiary">Last change: none</Text>
+      <Card title="Price" meta="Wheat, approved price, read only">
+        <div data-price-control="read-only">
+          <SummaryList items={[{ label: 'Price in force', value: CREDIT_PRICE.price, strong: true }, { label: 'Approved', value: `${CREDIT_PRICE.approved}, ${CREDIT_PRICE.by}` }, { label: 'Changed by', value: CREDIT_PRICE.route }]} />
+        </div>
+        <DataTable rowKey="id" rows={CREDIT_PRICE_HISTORY} columns={[
+          { key: 'approved', label: 'Approved', width: 'minmax(100px, 1fr)', tabular: true },
+          { key: 'price', label: 'Price (USD per t)', width: '130px', align: 'right' },
+          { key: 'by', label: 'By', width: '80px' },
+        ]} />
       </Card>
       <Card title="Concentration · top 5">
         {[['Kapiri Estates', '$376,400', '36%', 0.36], ['Musamba Estates', '$140,100', '13%', 0.13], ['Greenfield Agri (Z) Ltd', '$106,150', '10%', 0.1], ['Meridian Farming Ltd', '$61,600', '6%', 0.06], ['Highveld Cropping', '$39,800', '4%', 0.04]].map(([n, v, p, s]) => (

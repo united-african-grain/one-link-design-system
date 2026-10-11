@@ -6,6 +6,16 @@ import { CapsuleGroup } from '../actions/Capsule.jsx';
 
 const OL_CHART_NONE = [];
 
+/** A chart colour as the chart library needs it: a token (`var(--commodity-wheat)`) is read from the page, so a screen
+    passes semantic tokens and never a hex; a plain colour is returned as it is (M5.DS.02). */
+export function chartColor(value, el) {
+  const m = typeof value === 'string' && value.match(/^var\(\s*(--[a-z0-9-]+)\s*(?:,\s*([^)]+))?\)$/i);
+  if (!m) return value;
+  const root = el || (typeof document !== 'undefined' ? document.documentElement : null);
+  const got = root && typeof getComputedStyle === 'function' ? getComputedStyle(root).getPropertyValue(m[1]).trim() : '';
+  return got || (m[2] ? m[2].trim() : value);
+}
+
 /** Chart card on TradingView Lightweight Charts v5 (window.LightweightCharts). series: [{type:'line'|'area'|'baseline'|'histogram', data, color, name, options}]. */
 export function ChartCard({ title, ranges, range, onRange, series = OL_CHART_NONE, priceLines = OL_CHART_NONE, markers = OL_CHART_NONE, height = 280, state = 'ready', onRetry, retrying = false, endLabel = true, footerNote, style }) {
   const ref = useRef(null);
@@ -22,7 +32,7 @@ export function ChartCard({ title, ranges, range, onRange, series = OL_CHART_NON
       handleScroll: false, handleScale: false,
     });
     const made = series.map((s) => {
-      const color = s.color || '#2563EB';
+      const color = chartColor(s.color || '#2563EB', el);
       const base = { priceLineVisible: false, lastValueVisible: false, ...(s.options || {}) };
       let ser;
       if (s.type === 'area') ser = chart.addSeries(LW.AreaSeries, { lineColor: color, lineWidth: 2, topColor: s.topColor || 'rgba(37,99,235,0.12)', bottomColor: s.bottomColor || 'rgba(37,99,235,0)', ...base });
@@ -30,7 +40,7 @@ export function ChartCard({ title, ranges, range, onRange, series = OL_CHART_NON
       else if (s.type === 'histogram') ser = chart.addSeries(LW.HistogramSeries, { color: '#04af52', ...base });
       else ser = chart.addSeries(LW.LineSeries, { color, lineWidth: 2, ...base });
       ser.setData(s.data);
-      (s.priceLines || priceLines).forEach((p) => ser.createPriceLine({ price: p.price, color: p.color || '#df0c10', lineWidth: 1, lineStyle: LW.LineStyle.Dashed, axisLabelVisible: true, title: p.title || '' }));
+      (s.priceLines || priceLines).forEach((p) => ser.createPriceLine({ price: p.price, color: chartColor(p.color || '#df0c10', el), lineWidth: 1, lineStyle: LW.LineStyle.Dashed, axisLabelVisible: true, title: p.title || '' }));
       if (markers.length && LW.createSeriesMarkers) LW.createSeriesMarkers(ser, markers.map((m) => ({ time: m.time, position: m.position || 'aboveBar', color: '#23272d', shape: 'circle', text: m.text })));
       return { ser, s, color };
     });

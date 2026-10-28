@@ -63,10 +63,10 @@ The operations lead's import schedule and Record offload (S16 AL3, AL4; canvas S
 | Screen | File | States |
 |---|---|---|
 | ImportScheduleApp | `ImportsApp.jsx` | Schedule · Leg KAL-11 · Offline · No legs |
-| RecordOffloadApp | `ImportsApp.jsx` | Weight entered · Missing weight · Beyond tolerance · Recording · Queued · Recorded |
+| RecordOffloadApp | `ImportsApp.jsx` | Weight entered · Missing weight · Beyond allowance · Recording · Queued · Recorded |
 | PipelineApp | `ImportsApp.jsx` | Pipeline · No rate today · Loading |
 | StockApp | `ImportsApp.jsx` | Position · On the road · Loading |
 
-- Record offload is a capture screen (UX-31): the connection status and Pending sync (count), the back chevron, no bottom bar, and the full-width 48 px Record offload at the bottom, busy until the offload has synced however long the phone is offline. The source is the mill's (Mill phone call, Mill offload sheet, Mill email); the difference against the loss allowance, 0.080 t a truck for bulk grain, is computed, never typed.
+- Record offload is a capture screen (UX-31): the connection status and Pending sync (count), the back chevron, no bottom bar, and the full-width 48 px Record offload at the bottom, busy until the offload has synced however long the phone is offline. The source is the mill's (Mill call, Email, Mill offload sheet); the difference against the loss allowance, 80 kg a truck for bulk grain, is computed, never typed, and closes Within allowance or Beyond allowance.
 - A truck leg's checkpoints are `CheckpointTimeline` stacked (`variant="list"`): a position the transporter reported shows its Source, never a badge.
 - Finance's pipeline: Still to invoice in tonnes, Today's USD rate (Not set when it has not been entered), Receivables ageing and Payables ageing in USD. The schedule and stock control's screens carry no money.

@@ -6,11 +6,13 @@ import { textStyle } from '../core/Text.jsx';
 // (R-08: nothing in One Link is typed); `bridge` is gone, because "weighed in only" is readiness, not provenance, and
 // lives in ReadinessChip. The three ocr-* kinds are review-only: they carry the reading's confidence for the slip
 // review, but no confidence word, signal or score ever reaches the screen, so they read as the scanned slip they are.
+// `declared-mill` (M7.IMP.05) is a weight the mill declared, beside the farmer's `declared`, which keeps its words.
 const PROV = {
   synced: { label: 'Weighbridge' }, 'ocr-verified': { label: 'Scanned slip' }, unverified: { label: 'Unverified' }, declared: { label: 'Declared by farmer' },
+  'declared-mill': { label: 'Declared by mill' },
   'ocr-high': { label: 'Scanned slip', review: true }, 'ocr-medium': { label: 'Scanned slip', review: true }, 'ocr-low': { label: 'Scanned slip', review: true },
 };
-/** The provenance kinds, in order: the four a record carries, then the three review-only confidence kinds. */
+/** The provenance kinds, in order: the five a record carries, then the three review-only confidence kinds. */
 export const PROVENANCE_KINDS = Object.keys(PROV);
 const CONF = {
   confirmed: { label: 'Confirmed', icon: 'check', color: 'var(--success-strong)' },
@@ -26,7 +28,7 @@ function Chip({ children, style }) {
 }
 
 /** Provenance chip: how a weight was captured. Lucide `contrast` + Weighbridge / Scanned slip / Unverified / Declared by
-    farmer. On a weighbridge ticket the source is the labelled field Source, never this chip. */
+    farmer / Declared by mill. On a weighbridge ticket the source is the labelled field Source, never this chip. */
 export function ProvenanceChip({ kind = 'synced', label, style }) {
   const p = PROV[kind] || PROV.synced;
   return <Chip style={style}><Icon name="contrast" size={12} />{label || p.label}</Chip>;

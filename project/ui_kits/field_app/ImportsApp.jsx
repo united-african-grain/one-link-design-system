@@ -11,7 +11,7 @@
 
 export const IMPORTS_APP_STATES = {
   ImportScheduleApp: ['Schedule', 'Leg KAL-11', 'Offline', 'No legs'],
-  RecordOffloadApp: ['Weight entered', 'Missing weight', 'Beyond tolerance', 'Recording', 'Queued', 'Recorded'],
+  RecordOffloadApp: ['Weight entered', 'Missing weight', 'Beyond allowance', 'Recording', 'Queued', 'Recorded'],
   PipelineApp: ['Pipeline', 'No rate today', 'Loading'],
   StockApp: ['Position', 'On the road', 'Loading'],
 };
@@ -99,12 +99,12 @@ export function ImportScheduleApp({ state = 'Schedule' }) {
 export function RecordOffloadApp({ state = 'Weight entered' }) {
   const leg = IM_LEGS.find((l) => l.id === 'KAL-11');
   const missing = state === 'Missing weight';
-  const weight = missing ? '' : state === 'Beyond tolerance' ? '33.760' : '33.890';
+  const weight = missing ? '' : state === 'Beyond allowance' ? '33.760' : '33.890';
   const queued = state === 'Queued';
   const sending = state === 'Recording' || queued;
   const recorded = state === 'Recorded';
   const after = { ...leg, offloaded: weight };
-  const diff = imDifference(after);
+  const diff = imDifferenceWords(after);
   const outcome = imOutcome(after);
   return (
     <ImAppPhone title="Record offload" task>
@@ -121,11 +121,11 @@ export function RecordOffloadApp({ state = 'Weight entered' }) {
         <Field label="Offloaded weight (t)" required error={missing ? 'Offloaded weight must be a weight in tonnes.' : null}>
           <Input size="large" inputMode="decimal" align="right" defaultValue={weight} invalid={missing} disabled={sending || recorded} />
         </Field>
-        <Field label="Source" required><Select options={IM_OFFLOAD_SOURCES} defaultValue={CHECKPOINT_SOURCES['mill-phone-call'].word} disabled={sending || recorded} /></Field>
+        <Field label="Source" required><Select options={IM_OFFLOAD_SOURCES} defaultValue={CHECKPOINT_SOURCES['mill-call'].word} disabled={sending || recorded} /></Field>
       </Card>
       <Card padding={16} gap={8}>
-        <SummaryList items={[{ label: 'Difference', value: diff ? `${diff} t` : '', strong: true }, { label: 'Loss allowance', value: IM_LOSS_ALLOWANCE.words }]} />
-        {outcome ? <StatusMark kind={outcome === 'allowance' ? 'clean' : 'attention'} label={outcome === 'allowance' ? 'Within allowance' : 'Beyond tolerance'} /> : null}
+        <SummaryList items={[{ label: 'Difference', value: diff, strong: true }, { label: 'Loss allowance', value: IM_LOSS_ALLOWANCE.words }]} />
+        <ImOutcomeMark outcome={outcome} />
       </Card>
       <div style={{ marginTop: 'auto', paddingTop: 16 }}>
         {recorded ? <PressButton kind="large" variant="primary" fullWidth>Done</PressButton>

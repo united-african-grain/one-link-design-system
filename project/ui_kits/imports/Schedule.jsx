@@ -16,7 +16,7 @@ export const IM_STATES = {
   OperationsHome: ['With items', 'Cannot invoice yet', 'Uploads today', 'Waiting on partners', 'No items', 'Stale data', 'Loading', 'Error'],
   PortSchedulePreview: ['Validating', 'Row to fix', 'Ready to import', 'Importing', 'Imported', 'Failed'],
   ImportSchedule: ['By mill', 'By port', 'At the border', 'Exporting', 'Nothing scheduled', 'No results', 'Loading', 'Error'],
-  TruckLeg: ['At the border', 'Record border departure', 'Record offload', 'Offload missing weight', 'Recording offload', 'Within allowance', 'Beyond tolerance',
+  TruckLeg: ['At the border', 'Record border departure', 'Record offload', 'Offload missing weight', 'Recording offload', 'Within allowance', 'Beyond allowance',
     'Documents not released', 'Release port documents', 'Releasing', 'Related', 'History', 'Loading'],
 };
 
@@ -46,8 +46,9 @@ export function imScheduleFrame(screen, state) {
 
 export const IM_AS_OF = '26 Sep 2026, 10:05 CAT';
 export const IM_STALE_AS_OF = '26 Sep 2026, 06:40 CAT';
-/** The allowed loss on the road (Map D-44, CFG-LOSS), a setting: bulk grain 0.080 t a truck, bagged 0. */
-export const IM_LOSS_ALLOWANCE = { bulk: '0.080', bagged: '0.000', words: '0.080 t a truck, bulk' };
+/** The allowed loss on the road (Map D-44, CFG-LOSS), a setting: bulk grain 0.080 t a truck, bagged 0. It reads in kg
+    (UX-12: weights in tonnes, the allowance in kg), so a leg's Reconcile card says Loss allowance 80 kg. */
+export const IM_LOSS_ALLOWANCE = { bulk: '0.080', bagged: '0.000', words: '80 kg' };
 
 /** The mills on the schedule, each with its vessel, port and allocation from the import allocation (Sid records it). */
 export const IM_MILLS = [
@@ -68,7 +69,17 @@ export const IM_LEGS = [
   { id: 'ZBS-05', mill: 'crest', truck: 'NSH 2207', transporter: 'Northside Haulage', loaded: '33.950', offloaded: '', at: 'in-transit', loadedOn: '24 Sep 2026, 11:50', age: '2 days' },
 ];
 
-const imMill = (id) => IM_MILLS.find((m) => m.id === id);
+/** Antelope Mills' sale contract SYN4811 and its import legs (M7.IMP.05, the card's example): ACZ 4417 within the
+    allowance, BAZ 2231 0.800 t short and beyond it, and ZZT 910 still on the road. They sit beside the schedule's legs
+    so the contract record page, the truck leg and the unmatched offload read one set of figures. */
+export const IM_SALE_MILL = { id: 'antelope', mill: 'Antelope Mills, Lusaka', vessel: 'MV Kalahari', port: 'Beira', corridor: 'Beira to Lusaka', contract: 'SYN4811', allocation: '2,000' };
+export const IM_SALE_LEGS = [
+  { id: 'KAL-21', mill: 'antelope', truck: 'ACZ 4417', transporter: 'Kazungula Freight', loaded: '32.500', offloaded: '32.450', at: 'offloaded', loadedOn: '13 Oct 2026, 07:40', offloadedOn: '15 Oct 2026, 09:15' },
+  { id: 'KAL-22', mill: 'antelope', truck: 'BAZ 2231', transporter: 'Kazungula Freight', loaded: '32.000', offloaded: '31.200', at: 'offloaded', loadedOn: '13 Oct 2026, 08:05', offloadedOn: '15 Oct 2026, 11:50' },
+  { id: 'KAL-23', mill: 'antelope', truck: 'ZZT 910', transporter: 'Kazungula Freight', loaded: '31.700', offloaded: '', at: 'in-transit', loadedOn: '13 Oct 2026, 08:30', age: '2 days' },
+];
+
+const imMill = (id) => (id === IM_SALE_MILL.id ? IM_SALE_MILL : IM_MILLS.find((m) => m.id === id));
 /** A checkpoint's word from the component's copy module (CHECKPOINTS), never retyped. */
 export function imCheckpointWord(key) { return CHECKPOINTS.find((c) => c.key === key).word; }
 
@@ -76,10 +87,26 @@ export function imCheckpointWord(key) { return CHECKPOINTS.find((c) => c.key ===
 export function imDifference(leg) {
   return leg.offloaded ? tonnes(thousandths(leg.loaded) - thousandths(leg.offloaded)) : '';
 }
-/** Within the loss allowance, or beyond it (RL-ALLOW): 'allowance' or 'beyond', '' with no offload. */
+/** The difference as a share of the loaded weight, two decimals (AC 1, 2): 0.050 t of 32.500 t is "0.15%". */
+export function imDifferencePct(leg) {
+  if (!leg.offloaded) return '';
+  const diff = thousandths(leg.loaded) - thousandths(leg.offloaded);
+  return `${(Math.round((diff * 10000) / thousandths(leg.loaded)) / 100).toFixed(2)}%`;
+}
+/** The Reconcile card's Difference: "0.800 t (2.50%)", or '' while the offload is missing. */
+export function imDifferenceWords(leg) {
+  return leg.offloaded ? `${imDifference(leg)} t (${imDifferencePct(leg)})` : '';
+}
+/** Within the loss allowance, or beyond it (RL-ALLOW): the ReconcileCard outcome 'allowance' (Within allowance) or
+    'beyond-allowance' (Beyond allowance), '' with no offload. Exactly the allowance is within. */
 export function imOutcome(leg, allowance = IM_LOSS_ALLOWANCE.bulk) {
   if (!leg.offloaded) return '';
-  return thousandths(leg.loaded) - thousandths(leg.offloaded) <= thousandths(allowance) ? 'allowance' : 'beyond';
+  return thousandths(leg.loaded) - thousandths(leg.offloaded) <= thousandths(allowance) ? 'allowance' : 'beyond-allowance';
+}
+/** The outcome's status line, the component's own icon and word (RECONCILE_OUTCOMES), never retyped. */
+export function ImOutcomeMark({ outcome }) {
+  const o = RECONCILE_OUTCOMES[outcome];
+  return o ? <StatusMark kind={o.kind} label={o.word} /> : null;
 }
 /** A leg's invoice word (S57 Invoices, AL8): Ready to invoice once the mill's offload is in, Blocked until then. */
 export function imInvoice(leg) {
@@ -374,12 +401,12 @@ export function ImportSchedule({ state = 'By mill', onOpen }) {
 
 /* ------------------------------------------------------------------ Truck leg record page (AL4, AL5, UX-19) */
 
-/** The leg each record state draws: KAL-11 at the border, KAL-07 within allowance, ZBS-03 beyond tolerance, KAL-14
-    with its port documents not released. */
+/** The leg each record state draws: KAL-11 at the border, KAL-07 within allowance, KAL-22 (BAZ 2231) beyond the
+    allowance, KAL-14 with its port documents not released. */
 export function imLegFor(state) {
-  const by = (id) => IM_LEGS.find((l) => l.id === id);
+  const by = (id) => [...IM_LEGS, ...IM_SALE_LEGS].find((l) => l.id === id);
   if (state === 'Within allowance') return by('KAL-07');
-  if (state === 'Beyond tolerance') return by('ZBS-03');
+  if (state === 'Beyond allowance') return by('KAL-22');
   if (state === 'Documents not released' || state === 'Release port documents' || state === 'Releasing') return by('KAL-14');
   return by('KAL-11');
 }
@@ -405,7 +432,14 @@ export const IM_CHECKPOINTS = {
     { key: 'in-transit', status: 'done', date: '18 Sep 2026, 11:00', by: 'System', source: 'port-schedule' },
     { key: 'border-arrival', status: 'done', date: '20 Sep 2026, 16:45', by: 'M. Chanda', source: 'transporter-call' },
     { key: 'border-departure', status: 'done', date: '21 Sep 2026, 09:20', by: 'M. Chanda', source: 'transporter-call' },
-    { key: 'offloaded', status: 'done', date: '24 Sep 2026, 09:40', by: 'M. Chanda', source: 'mill-phone-call' },
+    { key: 'offloaded', status: 'done', date: '24 Sep 2026, 09:40', by: 'M. Chanda', source: 'mill-call' },
+  ],
+  'KAL-22': [
+    { key: 'loaded', status: 'done', date: '13 Oct 2026, 08:05', by: 'K. Zulu', source: 'port-schedule' },
+    { key: 'in-transit', status: 'done', date: '13 Oct 2026, 08:40', by: 'System', source: 'port-schedule' },
+    { key: 'border-arrival', status: 'done', date: '14 Oct 2026, 10:30', by: 'M. Chanda', source: 'transporter-call' },
+    { key: 'border-departure', status: 'done', date: '14 Oct 2026, 16:10', by: 'M. Chanda', source: 'clearing-agent' },
+    { key: 'offloaded', status: 'done', date: '15 Oct 2026, 11:50', by: 'M. Chanda', source: 'mill-call' },
   ],
   'KAL-14': [
     { key: 'loaded', status: 'done', date: '25 Sep 2026, 14:10', by: 'K. Zulu', source: 'port-schedule' },
@@ -414,8 +448,12 @@ export const IM_CHECKPOINTS = {
 
 /** The port document set released to the clearing agent when a truck loads (Map D-22). */
 export const IM_PORT_DOCUMENTS = ['Bill of lading', 'Commercial invoice', 'Packing list', 'Certificate of origin'];
-/** The mill's offload reaches Operations by sheet, call or email (AL4 step 2): the weight sources a mill can give. */
-export const IM_OFFLOAD_SOURCES = ['mill-offload-sheet', 'mill-phone-call', 'mill-email'].map((k) => CHECKPOINT_SOURCES[k].word);
+/** The mill's offload reaches Operations by call, email or sheet (AL4 step 2, M7.IMP.05 AC 7): the sources a person
+    picks, from the component (Mill call, Email, Mill offload sheet). Scanned slip and Mill portal are set by how the
+    offload arrived, never picked; no offload is ever Weighbridge. */
+export const IM_OFFLOAD_SOURCES = offloadSourceOptions();
+/** The receiving mill's delivery points, for the offload's Delivery point (AC 11). */
+export const IM_DELIVERY_POINTS = { riverbend: 'Riverbend Mill intake, Lusaka', crest: 'Crest Mill intake, Kitwe', antelope: 'Antelope Mills intake, Lusaka' };
 
 const IM_LEG_HISTORY = [
   { id: 'h3', field: imCheckpointWord('border-arrival'), user: 'M. Chanda', old: '', next: `24 Sep 2026, 11:20, ${CHECKPOINT_SOURCES['transporter-call'].word}`, date: '24 Sep 2026, 11:24' },
@@ -423,11 +461,12 @@ const IM_LEG_HISTORY = [
   { id: 'h1', field: 'Status', user: 'System', old: '', next: 'In transit', date: '22 Sep 2026, 09:10' },
 ];
 
-/** Record offload, KAL-11 (UX-22, 480 px): the weight, the date and the mill's source; the difference against the loss
-    allowance is computed as the weight is entered, never typed. */
+/** Record offload, KAL-11 (UX-22, 480 px): the offloaded weight, the offload date, the mill's Source, the receiving
+    mill's delivery point and the mill's document numbers only, with no grade field (M7.IMP.05 AC 11). The difference
+    against the loss allowance is computed as the weight is entered, never typed. */
 export function ImRecordOffloadDialog({ leg, offloaded = '33.890', missing = false, busy = false, sheet = false }) {
   const after = { ...leg, offloaded: missing ? '' : offloaded };
-  const diff = imDifference(after);
+  const diff = imDifferenceWords(after);
   const outcome = imOutcome(after);
   return (
     <Dialog title={`Record offload, ${leg.id}`} width={480} sheet={sheet} onClose={busy ? undefined : () => {}}
@@ -437,12 +476,25 @@ export function ImRecordOffloadDialog({ leg, offloaded = '33.890', missing = fal
           <Field label="Offloaded weight (t)" required error={missing ? 'Offloaded weight must be a weight in tonnes.' : null}><Input align="right" defaultValue={missing ? '' : offloaded} invalid={missing} disabled={busy} /></Field>
           <Field label="Offload date" required><Input defaultValue="26 Sep 2026, 09:40" disabled={busy} /></Field>
         </div>
-        <Field label="Source" required><Select options={IM_OFFLOAD_SOURCES} defaultValue={IM_OFFLOAD_SOURCES[0]} disabled={busy} /></Field>
-        <SummaryList items={[{ label: 'Loaded', value: `${leg.loaded} t` }, { label: 'Difference', value: diff ? `${diff} t` : '', strong: true }, { label: 'Loss allowance', value: IM_LOSS_ALLOWANCE.words }]} />
-        {outcome ? <StatusMark kind={outcome === 'allowance' ? 'clean' : 'attention'} label={outcome === 'allowance' ? 'Within allowance' : 'Beyond tolerance'} /> : null}
+        <Field label="Source" required><Select options={IM_OFFLOAD_SOURCES} defaultValue={CHECKPOINT_SOURCES['mill-offload-sheet'].word} disabled={busy} /></Field>
+        <Field label="Delivery point" required><Select options={Object.values(IM_DELIVERY_POINTS)} defaultValue={IM_DELIVERY_POINTS[leg.mill]} disabled={busy} /></Field>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 16 }}>
+          <Field label="Mill delivery note"><Input defaultValue="RM-30418" disabled={busy} /></Field>
+          <Field label="Mill document"><Input defaultValue="" disabled={busy} /></Field>
+        </div>
+        <SummaryList items={[{ label: 'Loaded', value: `${leg.loaded} t` }, { label: 'Difference', value: diff, strong: true }, { label: 'Loss allowance', value: IM_LOSS_ALLOWANCE.words }]} />
+        <ImOutcomeMark outcome={outcome} />
       </div>
     </Dialog>
   );
+}
+
+/** A leg's open exceptions on its Related tab (UX-34 names): Leg past clearing window while the offload is missing,
+    Weight difference beyond allowance once it is in and beyond; a reconciled leg has none. */
+export function imLegExceptions(leg) {
+  if (!leg.offloaded) return [{ id: 'EXC-000196', title: 'Leg past clearing window', owner: 'Operations', age: '3 days', status: 'open' }];
+  if (imOutcome(leg) === 'beyond-allowance') return [{ id: 'EXC-000231', title: 'Weight difference beyond allowance', owner: 'Operations', age: '2 h', status: 'open' }];
+  return [];
 }
 
 export function TruckLeg({ state = 'At the border', onOpen }) {
@@ -464,13 +516,13 @@ export function TruckLeg({ state = 'At the border', onOpen }) {
     : !released ? <ConditionBanner>Loaded 25 Sep 2026, 14:10. Port documents not released.</ConditionBanner> : null;
   const outcome = imOutcome(leg);
   const reconcile = leg.offloaded ? (
-    <ReconcileCard outcome={outcome} status={outcome === 'allowance' ? 'Within allowance' : 'Beyond tolerance'} rows={[
+    <ReconcileCard outcome={outcome} rows={[
       { label: 'Loaded', value: `${leg.loaded} t` }, { label: 'Offloaded', value: `${leg.offloaded} t` },
-      { label: 'Difference', value: `${imDifference(leg)} t`, strong: true }, { label: 'Loss allowance', value: IM_LOSS_ALLOWANCE.words },
+      { label: 'Difference', value: imDifferenceWords(leg), strong: true }, { label: 'Loss allowance', value: IM_LOSS_ALLOWANCE.words },
     ]} />
   ) : null;
   const docs = released
-    ? [['Status', 'Released'], ['Released to', 'Corridor Clearing Ltd'], ['Released', leg.id === 'KAL-07' ? '19 Sep 2026, 08:05' : leg.id === 'ZBS-03' ? '18 Sep 2026, 10:30' : '22 Sep 2026, 10:05'], ['Released by', 'M. Chanda'], ['Documents', IM_PORT_DOCUMENTS.join(', ')]]
+    ? [['Status', 'Released'], ['Released to', 'Corridor Clearing Ltd'], ['Released', leg.id === 'KAL-07' ? '19 Sep 2026, 08:05' : leg.id === 'ZBS-03' ? '18 Sep 2026, 10:30' : leg.id === 'KAL-22' ? '13 Oct 2026, 08:15' : '22 Sep 2026, 10:05'], ['Released by', 'M. Chanda'], ['Documents', IM_PORT_DOCUMENTS.join(', ')]]
     : [['Status', <StatusMark kind="attention" label="Not released" size="body-3" />], ['Released to', ''], ['Released', ''], ['Released by', ''], ['Age', leg.age]];
   const invoice = imInvoice(leg);
   return (
@@ -496,8 +548,8 @@ export function TruckLeg({ state = 'At the border', onOpen }) {
           ]} />
         </HmCard>
       ) : tab === 'Related' ? (
-        <HmCard title="Exceptions" count={1} objects="exceptions">
-          <HmTable rows={[{ id: 'EXC-000196', title: 'Missing mill offload', owner: 'M. Chanda', age: '3 days', status: 'open' }]} columns={[
+        <HmCard title="Exceptions" count={imLegExceptions(leg).length} objects="exceptions">
+          <HmTable rows={imLegExceptions(leg)} columns={[
             { key: 'id', label: 'Exception', width: '130px', render: (r) => <HmLink onOpen={() => onOpen && onOpen(r.id)}>{r.id}</HmLink> },
             { key: 'title', label: 'Title', width: 'minmax(180px, 1fr)', wrap: true },
             { key: 'owner', label: 'Owner', width: '110px' }, { key: 'age', label: 'Age', width: '80px' },

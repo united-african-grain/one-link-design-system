@@ -153,7 +153,7 @@
       <Stack>
         <Row label="Status"><StatusMark kind="clean" /><StatusMark kind="attention" /><StatusMark kind="breach" /><StatusMark kind="block" /><StatusMark kind="awaiting" /></Row>
         <Row label="Trend"><StatusMark kind="up" label="Improving" /><StatusMark kind="down" label="Worsening" /><StatusMark kind="flat" /><StatusMark kind="rebalance" /></Row>
-        <Row label="Provenance"><ProvenanceChip kind="synced" /><ProvenanceChip kind="ocr-verified" /><ProvenanceChip kind="unverified" /><ProvenanceChip kind="declared" /></Row>
+        <Row label="Provenance"><ProvenanceChip kind="synced" /><ProvenanceChip kind="ocr-verified" /><ProvenanceChip kind="unverified" /><ProvenanceChip kind="declared" /><ProvenanceChip kind="declared-mill" /></Row>
         <Row label="Confirmation"><ConfirmationChip kind="confirmed" /><ConfirmationChip kind="awaiting" /><ConfirmationChip kind="disputed" /></Row>
         <Row label="Severity"><SeverityTag level="critical" /><SeverityTag level="high" /><SeverityTag level="normal" /></Row>
         <Row label="Sync"><SyncStatus state="live" /><SyncStatus state="stalled" /></Row>

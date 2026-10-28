@@ -126,7 +126,7 @@ function wordsOf(tree, kit) {
 const ds = loadKit([join(COMPONENTS, 'records/CheckpointTimeline.jsx'), join(COMPONENTS, 'records/RunningSum.jsx'), join(COMPONENTS, 'records/ReconcileCard.jsx')]);
 const DEPS = { CHECKPOINTS: ds.CHECKPOINTS, CHECKPOINT_SOURCES: ds.CHECKPOINT_SOURCES, CHECKPOINT_STATUS: ds.CHECKPOINT_STATUS, checkpointSource: ds.checkpointSource,
   checkpointSourceOptions: ds.checkpointSourceOptions, thousandths: ds.thousandths, tonnes: ds.tonnes, RECONCILE_OUTCOMES: ds.RECONCILE_OUTCOMES, OFFLOAD_SOURCES: ds.OFFLOAD_SOURCES,
-  offloadSource: ds.offloadSource };
+  offloadSource: ds.offloadSource, offloadSourceOptions: ds.offloadSourceOptions };
 const SHELL_PARTS = Object.fromEntries(['Sections', 'WithRail', 'WithPanel', 'PageHead', 'FigureStrip', 'ScrollRow', 'SectionLabel', 'Page'].map((n) => [n, stubFor(n)]));
 const kit = loadKit([...['Home.jsx', 'Tickets.jsx', 'Operations.jsx', 'StockControl.jsx', 'Coverage.jsx'].map((f) => join(ONE_LINK, f)), ...['Schedule.jsx', 'Corridor.jsx', 'Dispatch.jsx', 'Offloads.jsx'].map((f) => join(IMPORTS, f)), join(FIELD, 'ImportsApp.jsx')], { ...SHELL_PARTS, ...DEPS });
 const draw = (screen, state) => render(el(kit[screen], { state, onOpen: () => {} }), kit);
@@ -310,7 +310,7 @@ describe('[M7.DS.01] CheckpointTimeline', () => {
       for (const w of ['Loaded at origin', 'Border arrival', 'Border departure', 'Transporter call', 'Mill offload sheet']) assert.ok(!c.includes(`'${w}'`), `${w} is not retyped`);
     }
     assert.match(SRC.schedule, /CHECKPOINTS\.find/);
-    assert.match(SRC.schedule, /IM_OFFLOAD_SOURCES = checkpointSourceOptions\('offloaded'\)/);
+    assert.match(SRC.schedule, /IM_OFFLOAD_SOURCES = offloadSourceOptions\(\)/);
     assert.ok(dsFiles.includes('records/CheckpointTimeline.jsx'), 'the loader publishes it');
     assert.ok(dsFiles.indexOf('records/CheckpointTimeline.jsx') > dsFiles.indexOf('data/DataTable.jsx'), 'after what it composes');
     const dts = read(join(COMPONENTS, 'records/CheckpointTimeline.d.ts'));
@@ -576,28 +576,28 @@ describe('[M7.DS.01] words (AC 8)', () => {
 /* ------------------------------------------------------------------ M7.IMP.05 (UAG-103): the gaps the card left undrawn */
 
 describe('[M7.IMP.05] mill offload: sources, Declared by mill, Beyond allowance, Import legs and unmatched offloads', () => {
-  test('[M7.IMP.05] an offload\'s Source is one of the mill\'s five, never Weighbridge; a form offers Mill call, Email and Mill offload sheet (AC 7, 8)', () => {
-    assert.deepEqual(ds.OFFLOAD_SOURCES, ['mill-call', 'email', 'mill-offload-sheet', 'scanned-slip', 'mill-portal']);
-    assert.deepEqual(ds.OFFLOAD_SOURCES.map((k) => ds.offloadSource(k)), ['Mill call', 'Email', 'Mill offload sheet', 'Scanned slip', 'Mill portal']);
-    for (const k of ds.OFFLOAD_SOURCES) assert.equal(ds.checkpointSource('offloaded', k), ds.CHECKPOINT_SOURCES[k].word, k);
-    for (const k of ['weighbridge', 'port-schedule', 'transporter-call']) assert.equal(ds.checkpointSource('offloaded', k), '', `an offload is never ${k}`);
-    assert.equal(ds.offloadSource('weighbridge'), '');
-    assert.deepEqual(ds.checkpointSourceOptions('offloaded'), ['Mill call', 'Email', 'Mill offload sheet', 'Mill phone call', 'Mill email'], 'Scanned slip and Mill portal are never picked; the kept two stay offered');
-    assert.deepEqual(ds.checkpointSourceOptions('loaded'), ['Port schedule', 'Mill phone call', 'Mill email', 'Weighbridge'], 'a new mill source never stands for the loaded weight');
-    assert.match(words('TruckLeg', 'Record offload').join(' | '), /Source \| Mill call \| Email \| Mill offload sheet \| Mill phone call \| Mill email \| Delivery point[\s\S]*Mill delivery note \| Mill document/, 'AC 11 fields');
-    assert.doesNotMatch(words('TruckLeg', 'Record offload').join(' | '), /Grade/, 'no grade field');
+  test('[M7.IMP.05] every source that existed before keeps its word and behaviour: checkpointSource on every checkpoint and both option lists as on origin/main', () => {
+    // Pinned from git show origin/main:project/components/records/CheckpointTimeline.jsx (82e3a35), before UAG-103.
+    const OLD = {"words": {"port-schedule": "Port schedule", "transporter-call": "Transporter call", "transporter-message": "Transporter message", "clearing-agent": "Clearing agent", "mill-offload-sheet": "Mill offload sheet", "mill-phone-call": "Mill phone call", "mill-email": "Mill email", "weighbridge": "Weighbridge"}, "loaded": ["Port schedule", "Mill offload sheet", "Mill phone call", "Mill email", "Weighbridge"], "offloaded": ["Port schedule", "Mill offload sheet", "Mill phone call", "Mill email", "Weighbridge"], "positions": ["Port schedule", "Transporter call", "Transporter message", "Clearing agent"], "src": {"loaded": {"port-schedule": "Port schedule", "transporter-call": "", "transporter-message": "", "clearing-agent": "", "mill-offload-sheet": "Mill offload sheet", "mill-phone-call": "Mill phone call", "mill-email": "Mill email", "weighbridge": "Weighbridge"}, "in-transit": {"port-schedule": "Port schedule", "transporter-call": "Transporter call", "transporter-message": "Transporter message", "clearing-agent": "Clearing agent", "mill-offload-sheet": "", "mill-phone-call": "", "mill-email": "", "weighbridge": ""}, "border-arrival": {"port-schedule": "Port schedule", "transporter-call": "Transporter call", "transporter-message": "Transporter message", "clearing-agent": "Clearing agent", "mill-offload-sheet": "", "mill-phone-call": "", "mill-email": "", "weighbridge": ""}, "border-departure": {"port-schedule": "Port schedule", "transporter-call": "Transporter call", "transporter-message": "Transporter message", "clearing-agent": "Clearing agent", "mill-offload-sheet": "", "mill-phone-call": "", "mill-email": "", "weighbridge": ""}, "offloaded": {"port-schedule": "Port schedule", "transporter-call": "", "transporter-message": "", "clearing-agent": "", "mill-offload-sheet": "Mill offload sheet", "mill-phone-call": "Mill phone call", "mill-email": "Mill email", "weighbridge": "Weighbridge"}}};
+    for (const [k, w] of Object.entries(OLD.words)) assert.equal(ds.CHECKPOINT_SOURCES[k].word, w, k);
+    for (const [cp, byKey] of Object.entries(OLD.src)) for (const [k, w] of Object.entries(byKey)) assert.equal(ds.checkpointSource(cp, k), w, `${cp} ${k}`);
+    assert.deepEqual(ds.checkpointSourceOptions('loaded'), OLD.loaded);
+    assert.deepEqual(ds.checkpointSourceOptions('offloaded'), [...OLD.offloaded, 'Mill call', 'Email'], 'offloaded only appends the new pickable sources');
+    for (const cp of ['in-transit', 'border-arrival', 'border-departure']) assert.deepEqual(ds.checkpointSourceOptions(cp), OLD.positions, cp);
   });
 
-  test('[UAG-102] the stored sources Mill phone call and Mill email still resolve to their old words, as before', () => {
-    assert.deepEqual(ds.CHECKPOINT_SOURCES['mill-phone-call'].word, 'Mill phone call');
-    assert.deepEqual(ds.CHECKPOINT_SOURCES['mill-email'].word, 'Mill email');
-    for (const cp of ['loaded', 'offloaded']) {
-      assert.equal(ds.checkpointSource(cp, 'mill-phone-call'), 'Mill phone call', cp);
-      assert.equal(ds.checkpointSource(cp, 'mill-email'), 'Mill email', cp);
+  test('[M7.IMP.05] an import offload\'s Source is one of the five, never Weighbridge; the form offers Mill call, Email and Mill offload sheet (AC 7, 8, 11)', () => {
+    assert.deepEqual(ds.OFFLOAD_SOURCES, ['mill-call', 'email', 'mill-offload-sheet', 'scanned-slip', 'mill-portal']);
+    assert.deepEqual(ds.OFFLOAD_SOURCES.map((k) => ds.offloadSource(k)), ['Mill call', 'Email', 'Mill offload sheet', 'Scanned slip', 'Mill portal']);
+    for (const k of ['weighbridge', 'port-schedule', 'mill-phone-call', 'mill-email', 'transporter-call', 'nope']) assert.equal(ds.offloadSource(k), '', k);
+    assert.deepEqual(ds.offloadSourceOptions(), ['Mill call', 'Email', 'Mill offload sheet']);
+    for (const k of ['mill-call', 'email', 'scanned-slip', 'mill-portal']) {
+      assert.equal(ds.checkpointSource('offloaded', k), ds.CHECKPOINT_SOURCES[k].word, k);
+      for (const cp of ['loaded', 'in-transit', 'border-arrival', 'border-departure']) assert.equal(ds.checkpointSource(cp, k), '', `${cp} ${k}`);
     }
-    for (const cp of ['in-transit', 'border-arrival', 'border-departure']) assert.equal(ds.checkpointSource(cp, 'mill-phone-call'), '', cp);
-    assert.deepEqual([ds.offloadSource('mill-phone-call'), ds.offloadSource('mill-email')], ['Mill phone call', 'Mill email']);
-    assert.ok(!ds.OFFLOAD_SOURCES.includes('mill-phone-call') && !ds.OFFLOAD_SOURCES.includes('mill-email'), 'the five import offload sources stay as built');
+    assert.deepEqual(kit.IM_OFFLOAD_SOURCES, ['Mill call', 'Email', 'Mill offload sheet'], 'the import offload form uses offloadSourceOptions');
+    assert.match(words('TruckLeg', 'Record offload').join(' | '), /Source \| Mill call \| Email \| Mill offload sheet \| Delivery point[\s\S]*Mill delivery note \| Mill document/, 'AC 11 fields');
+    assert.doesNotMatch(words('TruckLeg', 'Record offload').join(' | '), /Grade|Weighbridge/, 'no grade field, never Weighbridge');
   });
 
   test('[M7.IMP.05] the provenance chip has Declared by mill beside Declared by farmer, which keeps its words', () => {

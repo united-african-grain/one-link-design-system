@@ -451,7 +451,7 @@ export const IM_PORT_DOCUMENTS = ['Bill of lading', 'Commercial invoice', 'Packi
 /** The mill's offload reaches Operations by call, email or sheet (AL4 step 2, M7.IMP.05 AC 7): the sources a person
     picks, from the component (Mill call, Email, Mill offload sheet). Scanned slip and Mill portal are set by how the
     offload arrived, never picked; no offload is ever Weighbridge. */
-export const IM_OFFLOAD_SOURCES = checkpointSourceOptions('offloaded');
+export const IM_OFFLOAD_SOURCES = offloadSourceOptions();
 /** The receiving mill's delivery points, for the offload's Delivery point (AC 11). */
 export const IM_DELIVERY_POINTS = { riverbend: 'Riverbend Mill intake, Lusaka', crest: 'Crest Mill intake, Kitwe', antelope: 'Antelope Mills intake, Lusaka' };
 

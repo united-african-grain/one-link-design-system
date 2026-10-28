@@ -31,6 +31,10 @@ export const CHECKPOINT_SOURCES = {
   'mill-call': { word: 'Mill call', weight: true, offload: true },
   email: { word: 'Email', weight: true, offload: true },
   'mill-offload-sheet': { word: 'Mill offload sheet', weight: true, offload: true },
+  // Kept as they were (UAG-102, a Done card): stored values on recorded loads still read these words, offered and
+  // resolved on any weight checkpoint as before. New import offloads use Mill call and Email.
+  'mill-phone-call': { word: 'Mill phone call', weight: true, kept: true },
+  'mill-email': { word: 'Mill email', weight: true, kept: true },
   'scanned-slip': { word: 'Scanned slip', weight: true, offload: true, auto: true },
   'mill-portal': { word: 'Mill portal', weight: true, offload: true, auto: true },
   weighbridge: { word: 'Weighbridge', weight: true },
@@ -51,6 +55,7 @@ export const CHECKPOINT_STATUS = {
 function sourceFits(c, s) {
   if (c.position && s.position) return true;
   if (!c.weight || !s.weight) return false;
+  if (s.kept) return true;
   return c.key === 'offloaded' ? !!s.offload : !s.offload;
 }
 
@@ -64,8 +69,8 @@ export function checkpointSource(checkpoint, source) {
 }
 
 /** The sources a capture form offers for a checkpoint, in order: what can report it, and nothing else. A source set by
-    how the record arrived (Scanned slip, Mill portal) is never offered: on Offloaded the options are Mill call, Email
-    and Mill offload sheet. */
+    how the record arrived (Scanned slip, Mill portal) is never offered: on Offloaded the options are Mill call, Email,
+    Mill offload sheet, and the kept Mill phone call and Mill email. */
 export function checkpointSourceOptions(checkpoint) {
   const c = CHECKPOINTS.find((x) => x.key === checkpoint);
   if (!c) return [];
@@ -75,7 +80,7 @@ export function checkpointSourceOptions(checkpoint) {
 /** The word for an offload's Source, whether or not it matched a leg: '' for anything that is not the mill's. */
 export function offloadSource(source) {
   const s = CHECKPOINT_SOURCES[source];
-  return s && s.offload ? s.word : '';
+  return s && (s.offload || s.kept) ? s.word : '';
 }
 
 function checkpointRows(checkpoints) {

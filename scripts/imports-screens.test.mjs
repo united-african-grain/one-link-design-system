@@ -582,11 +582,22 @@ describe('[M7.IMP.05] mill offload: sources, Declared by mill, Beyond allowance,
     for (const k of ds.OFFLOAD_SOURCES) assert.equal(ds.checkpointSource('offloaded', k), ds.CHECKPOINT_SOURCES[k].word, k);
     for (const k of ['weighbridge', 'port-schedule', 'transporter-call']) assert.equal(ds.checkpointSource('offloaded', k), '', `an offload is never ${k}`);
     assert.equal(ds.offloadSource('weighbridge'), '');
-    assert.deepEqual(ds.checkpointSourceOptions('offloaded'), ['Mill call', 'Email', 'Mill offload sheet'], 'Scanned slip and Mill portal are never picked');
-    assert.deepEqual(ds.checkpointSourceOptions('loaded'), ['Port schedule', 'Weighbridge'], 'a mill source never stands for the loaded weight');
-    assert.ok(!('mill-phone-call' in ds.CHECKPOINT_SOURCES) && !('mill-email' in ds.CHECKPOINT_SOURCES), 'the retired words are gone');
-    assert.match(words('TruckLeg', 'Record offload').join(' | '), /Source \| Mill call \| Email \| Mill offload sheet \| Delivery point[\s\S]*Mill delivery note \| Mill document/, 'AC 11 fields');
+    assert.deepEqual(ds.checkpointSourceOptions('offloaded'), ['Mill call', 'Email', 'Mill offload sheet', 'Mill phone call', 'Mill email'], 'Scanned slip and Mill portal are never picked; the kept two stay offered');
+    assert.deepEqual(ds.checkpointSourceOptions('loaded'), ['Port schedule', 'Mill phone call', 'Mill email', 'Weighbridge'], 'a new mill source never stands for the loaded weight');
+    assert.match(words('TruckLeg', 'Record offload').join(' | '), /Source \| Mill call \| Email \| Mill offload sheet \| Mill phone call \| Mill email \| Delivery point[\s\S]*Mill delivery note \| Mill document/, 'AC 11 fields');
     assert.doesNotMatch(words('TruckLeg', 'Record offload').join(' | '), /Grade/, 'no grade field');
+  });
+
+  test('[UAG-102] the stored sources Mill phone call and Mill email still resolve to their old words, as before', () => {
+    assert.deepEqual(ds.CHECKPOINT_SOURCES['mill-phone-call'].word, 'Mill phone call');
+    assert.deepEqual(ds.CHECKPOINT_SOURCES['mill-email'].word, 'Mill email');
+    for (const cp of ['loaded', 'offloaded']) {
+      assert.equal(ds.checkpointSource(cp, 'mill-phone-call'), 'Mill phone call', cp);
+      assert.equal(ds.checkpointSource(cp, 'mill-email'), 'Mill email', cp);
+    }
+    for (const cp of ['in-transit', 'border-arrival', 'border-departure']) assert.equal(ds.checkpointSource(cp, 'mill-phone-call'), '', cp);
+    assert.deepEqual([ds.offloadSource('mill-phone-call'), ds.offloadSource('mill-email')], ['Mill phone call', 'Mill email']);
+    assert.ok(!ds.OFFLOAD_SOURCES.includes('mill-phone-call') && !ds.OFFLOAD_SOURCES.includes('mill-email'), 'the five import offload sources stay as built');
   });
 
   test('[M7.IMP.05] the provenance chip has Declared by mill beside Declared by farmer, which keeps its words', () => {

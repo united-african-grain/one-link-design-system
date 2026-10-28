@@ -12,7 +12,7 @@
 </head><body><div id="root"></div>
 <script type="text/babel">
 loadDS('../').then((DS) => {
-const { CheckpointTimeline, ReconcileCard, Card, Text } = DS;
+const { CheckpointTimeline, ReconcileCard, Card, Text, OFFLOAD_SOURCES, offloadSource } = DS;
 const L = (t) => <Text variant="caption-1-condensed" tone="tertiary">{t}</Text>;
 const atBorder = [
   { key: 'loaded', status: 'done', date: '22 Sep 2026, 08:40', by: 'K. Zulu', source: 'port-schedule' },
@@ -33,7 +33,12 @@ function Demo(){
     <Card title="Checkpoints" padding={4}><CheckpointTimeline checkpoints={atBorder}/></Card>
     {L('Offloaded within allowance: the weight sources (Port schedule, Mill offload sheet) sit on the weight checkpoints, apart from the reported positions')}
     <Card title="Checkpoints" padding={4}><CheckpointTimeline checkpoints={offloaded}/></Card>
-    <ReconcileCard outcome="allowance" status="Within allowance" rows={[{ label: 'Loaded', value: '34.100 t' }, { label: 'Offloaded', value: '34.020 t' }, { label: 'Difference', value: '0.080 t', strong: true }, { label: 'Loss allowance', value: '0.080 t a truck' }]}/>
+    <ReconcileCard outcome="allowance" rows={[{ label: 'Loaded', value: '34.100 t' }, { label: 'Offloaded', value: '34.020 t' }, { label: 'Difference', value: '0.080 t (0.23%)', strong: true }, { label: 'Loss allowance', value: '80 kg' }]}/>
+    {L('Offloaded beyond the allowance: the mill called the weight in (Source: Mill call), and the Reconcile card closes Beyond allowance')}
+    <Card title="Checkpoints" padding={4}><CheckpointTimeline checkpoints={[...offloaded.slice(0, 4), { key: 'offloaded', status: 'done', date: '15 Oct 2026, 11:50', by: 'M. Chanda', source: 'mill-call' }]}/></Card>
+    <ReconcileCard outcome="beyond-allowance" rows={[{ label: 'Loaded', value: '32.000 t' }, { label: 'Offloaded', value: '31.200 t' }, { label: 'Difference', value: '0.800 t (2.50%)', strong: true }, { label: 'Loss allowance', value: '80 kg' }]}/>
+    {L('The offload sources, the mill\'s five: a form offers the first three; Scanned slip and Mill portal come from how the offload arrived; never Weighbridge')}
+    <Text variant="body-3">{OFFLOAD_SOURCES.map((k) => offloadSource(k)).join(', ')}</Text>
     {L('A weighbridge reading offered for a reported position is not drawn: the Source stays blank, never Weighbridge')}
     <Card title="Checkpoints" padding={4}><CheckpointTimeline checkpoints={[{ key: 'border-arrival', status: 'done', date: '24 Sep 2026, 11:20', by: 'M. Chanda', source: 'weighbridge' }]}/></Card>
     {L('On the phone: the same five, stacked')}

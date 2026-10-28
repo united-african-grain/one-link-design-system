@@ -38,7 +38,7 @@ function readmeRows(md) {
 }
 
 const SRC = {
-  schedule: read(join(IMPORTS, 'Schedule.jsx')), corridor: read(join(IMPORTS, 'Corridor.jsx')), dispatch: read(join(IMPORTS, 'Dispatch.jsx')),
+  schedule: read(join(IMPORTS, 'Schedule.jsx')), corridor: read(join(IMPORTS, 'Corridor.jsx')), dispatch: read(join(IMPORTS, 'Dispatch.jsx')), offloads: read(join(IMPORTS, 'Offloads.jsx')),
   app: read(join(FIELD, 'ImportsApp.jsx')), checkpoint: read(join(COMPONENTS, 'records/CheckpointTimeline.jsx')),
   coverage: read(join(ONE_LINK, 'Coverage.jsx')), stock: read(join(ONE_LINK, 'StockControl.jsx')),
 };
@@ -46,6 +46,7 @@ const IM = literal(SRC.schedule, 'IM_STATES');
 const CORRIDOR = literal(SRC.corridor, 'IM_CORRIDOR_STATES');
 const DISPATCH = literal(SRC.dispatch, 'IM_DISPATCH_STATES');
 const APP = literal(SRC.app, 'IMPORTS_APP_STATES');
+const OFFLOADS = literal(SRC.offloads, 'IM_OFFLOAD_STATES');
 const BANNED = JSON.parse(read(join(ROOT, 'project/guidelines/banned-words.json')));
 
 /* ------------------------------------------------------------------ A stand-in React that runs kit screens */
@@ -122,11 +123,12 @@ function wordsOf(tree, kit) {
 }
 
 // The component's copy module and the weight helpers are real functions, so the kit computes as published.
-const ds = loadKit([join(COMPONENTS, 'records/CheckpointTimeline.jsx'), join(COMPONENTS, 'records/RunningSum.jsx')]);
+const ds = loadKit([join(COMPONENTS, 'records/CheckpointTimeline.jsx'), join(COMPONENTS, 'records/RunningSum.jsx'), join(COMPONENTS, 'records/ReconcileCard.jsx')]);
 const DEPS = { CHECKPOINTS: ds.CHECKPOINTS, CHECKPOINT_SOURCES: ds.CHECKPOINT_SOURCES, CHECKPOINT_STATUS: ds.CHECKPOINT_STATUS, checkpointSource: ds.checkpointSource,
-  checkpointSourceOptions: ds.checkpointSourceOptions, thousandths: ds.thousandths, tonnes: ds.tonnes };
+  checkpointSourceOptions: ds.checkpointSourceOptions, thousandths: ds.thousandths, tonnes: ds.tonnes, RECONCILE_OUTCOMES: ds.RECONCILE_OUTCOMES, OFFLOAD_SOURCES: ds.OFFLOAD_SOURCES,
+  offloadSource: ds.offloadSource };
 const SHELL_PARTS = Object.fromEntries(['Sections', 'WithRail', 'WithPanel', 'PageHead', 'FigureStrip', 'ScrollRow', 'SectionLabel', 'Page'].map((n) => [n, stubFor(n)]));
-const kit = loadKit([...['Home.jsx', 'Tickets.jsx', 'Operations.jsx', 'StockControl.jsx', 'Coverage.jsx'].map((f) => join(ONE_LINK, f)), ...['Schedule.jsx', 'Corridor.jsx', 'Dispatch.jsx'].map((f) => join(IMPORTS, f)), join(FIELD, 'ImportsApp.jsx')], { ...SHELL_PARTS, ...DEPS });
+const kit = loadKit([...['Home.jsx', 'Tickets.jsx', 'Operations.jsx', 'StockControl.jsx', 'Coverage.jsx'].map((f) => join(ONE_LINK, f)), ...['Schedule.jsx', 'Corridor.jsx', 'Dispatch.jsx', 'Offloads.jsx'].map((f) => join(IMPORTS, f)), join(FIELD, 'ImportsApp.jsx')], { ...SHELL_PARTS, ...DEPS });
 const draw = (screen, state) => render(el(kit[screen], { state, onOpen: () => {} }), kit);
 const words = (screen, state) => wordsOf(draw(screen, state), kit);
 const findAll = (tree, type) => nodes(tree).filter((n) => n.type === type);
@@ -137,7 +139,7 @@ const cell = (t, row, key) => { const c = t.props.columns.find((x) => x.key === 
 const textOf = (v) => { if (v == null) return ''; const r = typeof v === 'object' ? render(v, kit) : v; return typeof r === 'string' || typeof r === 'number' ? String(r) : wordsOf(r, kit).join(' '); };
 const button = (tree, label) => [...findAll(tree, 'Button'), ...findAll(tree, 'PressButton')].find((b) => b.children.join('') === label);
 
-const WEB = { ...IM, ...CORRIDOR, ...DISPATCH };
+const WEB = { ...IM, ...CORRIDOR, ...DISPATCH, ...OFFLOADS };
 const ALL = [...Object.entries({ ...WEB, ...APP }).flatMap(([s, list]) => list.map((st) => [s, st])),
   ['Coverage', 'In transit'], ['StockPosition', 'Stock by route'], ['StockPosition', 'Direct share']];
 
@@ -165,11 +167,11 @@ describe('[M7.DS.01] the Imports kit', () => {
   test('[M7.DS.01] the design system site has an Imports kit that lists every screen (a) to (s) with its file and states, each opening by ?screen=&state= (AC 1)', () => {
     const index = read(join(IMPORTS, 'index.html'));
     assert.match(index, /@dsCard group="One Link"[^>]*name="Imports"/, 'the kit is a card on the site');
-    for (const f of ['Schedule.jsx', 'Corridor.jsx', 'Dispatch.jsx']) assert.ok(index.includes(`'${f}'`), f);
-    assert.match(index, /const STATES = \{ \.\.\.K\.IM_STATES, \.\.\.K\.IM_DISPATCH_STATES, \.\.\.K\.IM_CORRIDOR_STATES, \.\.\.M7 \}/);
+    for (const f of ['Schedule.jsx', 'Corridor.jsx', 'Dispatch.jsx', 'Offloads.jsx']) assert.ok(index.includes(`'${f}'`), f);
+    assert.match(index, /const STATES = \{ \.\.\.K\.IM_STATES, \.\.\.K\.IM_DISPATCH_STATES, \.\.\.K\.IM_CORRIDOR_STATES, \.\.\.K\.IM_OFFLOAD_STATES, \.\.\.M7 \}/);
     assert.match(index, /params\.get\('screen'\)/);
     const rows = readmeRows(read(join(IMPORTS, 'README.md')));
-    for (const [file, states] of [['Schedule.jsx', IM], ['Corridor.jsx', CORRIDOR], ['Dispatch.jsx', DISPATCH]]) for (const [s, list] of Object.entries(states)) assert.deepEqual(rows[s], { file, states: list }, s);
+    for (const [file, states] of [['Schedule.jsx', IM], ['Corridor.jsx', CORRIDOR], ['Dispatch.jsx', DISPATCH], ['Offloads.jsx', OFFLOADS]]) for (const [s, list] of Object.entries(states)) assert.deepEqual(rows[s], { file, states: list }, s);
     // (a) schedule, (b) truck leg, (c) performance, (d) dispatch preview, (e) uploads today, (i) claim, (o) drawdown,
     // (p) stock by route, (q) rhythm, (r) agreements, (s) unmatched offloads.
     for (const s of ['ImportSchedule', 'TruckLeg', 'TransportPerformance', 'DispatchPreview', 'OperationsHome', 'ShortageClaim', 'AllocationDrawdown', 'ContractedRhythm', 'ToleranceAgreements', 'UnmatchedOffloads']) assert.ok(WEB[s], s);
@@ -245,12 +247,12 @@ describe('[M7.DS.01] the truck leg record page (AC 1b)', () => {
     assert.deepEqual([dialog.props.title, dialog.props.width], ['Record offload, KAL-11', 480], 'UX-22: titled with the act and the leg, 480 px');
     const off = words('TruckLeg', 'Record offload').join(' | ');
     assert.match(off, /Offloaded weight \(t\)[\s\S]*Offload date[\s\S]*Source/);
-    assert.match(off, /Difference \| 0\.070 t[\s\S]*Loss allowance \| 0\.080 t a truck, bulk[\s\S]*Within allowance/, 'the difference is computed against 80 kg a truck (Map D-44)');
+    assert.match(off, /Difference \| 0\.070 t \(0\.21%\)[\s\S]*Loss allowance \| 80 kg[\s\S]*Within allowance/, 'the difference is computed against 80 kg a truck (Map D-44), the allowance in kg (UX-12)');
     const within = findAll(draw('TruckLeg', 'Within allowance'), 'ReconcileCard')[0].props;
-    assert.deepEqual([within.outcome, within.status], ['allowance', 'Within allowance']);
-    assert.deepEqual(within.rows.map((r) => [r.label, r.value]), [['Loaded', '34.100 t'], ['Offloaded', '34.020 t'], ['Difference', '0.080 t'], ['Loss allowance', '0.080 t a truck, bulk']]);
-    const beyond = findAll(draw('TruckLeg', 'Beyond tolerance'), 'ReconcileCard')[0].props;
-    assert.deepEqual([beyond.outcome, beyond.status], ['beyond', 'Beyond tolerance'], 'UX-20 words');
+    assert.deepEqual([within.outcome, within.status], ['allowance', undefined], 'the outcome carries the words; no status is retyped');
+    assert.deepEqual(within.rows.map((r) => [r.label, r.value]), [['Loaded', '34.100 t'], ['Offloaded', '34.020 t'], ['Difference', '0.080 t (0.23%)'], ['Loss allowance', '80 kg']]);
+    const beyond = findAll(draw('TruckLeg', 'Beyond allowance'), 'ReconcileCard')[0].props;
+    assert.deepEqual([beyond.outcome, beyond.status], ['beyond-allowance', undefined], 'UX-20 words: Beyond allowance');
     assert.doesNotMatch(SRC.schedule, /1\.0%/, 'the canvas\'s 1.0% is superseded by 80 kg a truck');
     const release = findAll(draw('TruckLeg', 'Release port documents'), 'Dialog')[0].props;
     assert.deepEqual([release.title, release.width], ['Release port documents, KAL-14', 480]);
@@ -259,7 +261,7 @@ describe('[M7.DS.01] the truck leg record page (AC 1b)', () => {
   test('[M7.DS.01] the difference is computed from loaded and offloaded weight, never typed, and compared with 0.080 t a truck (RL-DIFF, RL-ALLOW)', () => {
     assert.equal(kit.imDifference({ loaded: '33.960', offloaded: '33.890' }), '0.070');
     assert.equal(kit.imOutcome({ loaded: '34.100', offloaded: '34.020' }), 'allowance', 'exactly the allowance is within it');
-    assert.equal(kit.imOutcome({ loaded: '33.880', offloaded: '33.700' }), 'beyond');
+    assert.equal(kit.imOutcome({ loaded: '33.880', offloaded: '33.700' }), 'beyond-allowance');
     assert.equal(kit.imOutcome({ loaded: '33.880', offloaded: '' }), '');
     assert.equal(kit.IM_LOSS_ALLOWANCE.bulk, '0.080');
     assert.equal(kit.IM_LOSS_ALLOWANCE.bagged, '0.000');
@@ -308,7 +310,7 @@ describe('[M7.DS.01] CheckpointTimeline', () => {
       for (const w of ['Loaded at origin', 'Border arrival', 'Border departure', 'Transporter call', 'Mill offload sheet']) assert.ok(!c.includes(`'${w}'`), `${w} is not retyped`);
     }
     assert.match(SRC.schedule, /CHECKPOINTS\.find/);
-    assert.match(SRC.schedule, /CHECKPOINT_SOURCES\[k\]\.word/);
+    assert.match(SRC.schedule, /IM_OFFLOAD_SOURCES = checkpointSourceOptions\('offloaded'\)/);
     assert.ok(dsFiles.includes('records/CheckpointTimeline.jsx'), 'the loader publishes it');
     assert.ok(dsFiles.indexOf('records/CheckpointTimeline.jsx') > dsFiles.indexOf('data/DataTable.jsx'), 'after what it composes');
     const dts = read(join(COMPONENTS, 'records/CheckpointTimeline.d.ts'));
@@ -425,8 +427,8 @@ describe('[M7.DS.01] the corridor screens (AC 1c, 1i, 1o, 1q, 1r, 1s)', () => {
     assert.deepEqual(labels(ag), ['Agreement', 'Transporter', 'Product', 'Tolerance a truck (t)', 'Agreed on', 'Evidence', 'Status']);
     assert.equal(findAll(draw('ToleranceAgreements', 'Agreement'), 'EvidenceTile').length, 1);
     assert.equal(findAll(draw('ToleranceAgreements', 'Evidence missing'), 'Refusal')[0].props.reason, 'No signed agreement is attached');
-    const un = tableBy(draw('UnmatchedOffloads', 'Unmatched'), 'Mill');
-    assert.ok(labels(un).includes('Truck on the sheet') && labels(un).includes('Closest leg'));
+    const un = tableBy(draw('UnmatchedOffloads', 'Unmatched'), 'Truck');
+    assert.deepEqual(labels(un).slice(0, 8), ['Truck', 'Mill', 'Offloaded (t)', 'Offloaded on (CAT)', 'Source', 'Reported by', 'Age', 'Status']);
     assert.equal(findAll(draw('UnmatchedOffloads', 'Match to leg'), 'Dialog')[0].props.width, 480);
     assert.match(words('UnmatchedOffloads', 'No items').join(' | '), /No unmatched offloads to display\./);
   });
@@ -470,12 +472,12 @@ describe('[M7.DS.01] the existing kit screens gain only the M7 states (AC 2)', (
 
 describe('[M7.DS.01] composition, visibility and working states (AC 3, 5, 6)', () => {
   test('[M7.DS.01] every Imports screen composes published components and tokens only, with no bespoke colour, and the Alka, Sid and Ryan app screens too (AC 3, 7)', () => {
-    for (const [name, src] of Object.entries({ schedule: SRC.schedule, corridor: SRC.corridor, dispatch: SRC.dispatch, app: SRC.app, stock: SRC.stock })) {
+    for (const [name, src] of Object.entries({ schedule: SRC.schedule, corridor: SRC.corridor, dispatch: SRC.dispatch, offloads: SRC.offloads, app: SRC.app, stock: SRC.stock })) {
       assert.deepEqual(compositionProblems(src), [], name);
     }
     // Coverage's season chart keeps its older literal wheat colour (pre-existing); the M7 additions add none.
     assert.deepEqual(compositionProblems(SRC.coverage).filter((p) => p !== 'literal colour #7A6937'), [], 'coverage');
-    for (const src of [SRC.schedule, SRC.corridor, SRC.dispatch, SRC.app]) assert.doesNotMatch(src, /<svg|<canvas|<table|fontFamily|boxShadow: '0 /i, 'no bespoke drawing or styling');
+    for (const src of [SRC.schedule, SRC.corridor, SRC.dispatch, SRC.offloads, SRC.app]) assert.doesNotMatch(src, /<svg|<canvas|<table|fontFamily|boxShadow: '0 /i, 'no bespoke drawing or styling');
   });
 
   test('[M7.DS.01] a field the viewer is not entitled to shows the lock with no value and the tooltip Restricted, never a dash, a zero or a figure; Clerk, Warehouse and stock control views show no money (AC 5)', () => {
@@ -534,7 +536,7 @@ describe('[M7.DS.01] the UAG One Link app (AC 7)', () => {
     assert.deepEqual(findAll(off, 'CaptureStatus')[0].props, { online: true, pending: 0 });
     assert.deepEqual(findAll(draw('RecordOffloadApp', 'Queued'), 'CaptureStatus')[0].props, { online: false, pending: 1 }, 'Pending sync (count) while offline');
     assert.match(words('RecordOffloadApp', 'Weight entered').join(' | '), /Difference \| 0\.070 t[\s\S]*Within allowance/);
-    assert.match(words('RecordOffloadApp', 'Beyond tolerance').join(' | '), /Beyond tolerance/);
+    assert.match(words('RecordOffloadApp', 'Beyond allowance').join(' | '), /Beyond allowance/);
     assert.equal(findAll(draw('ImportScheduleApp', 'Leg KAL-11'), 'CheckpointTimeline')[0].props.variant, 'list');
     const pipe = words('PipelineApp', 'Pipeline').join(' | ');
     assert.match(pipe, /Receivables ageing[\s\S]*Payables ageing/);
@@ -560,7 +562,7 @@ describe('[M7.DS.01] words (AC 8)', () => {
     }
     const added = wordsOf(tableBy(draw('Coverage', 'In transit'), 'Mill'), kit).join(' | ') + JSON.stringify(SRC.coverage.match(/COVERAGE_IN_TRANSIT = \[[\s\S]*?\];/)[0]);
     assert.doesNotMatch(added, /\u2014|\s\u2013\s|Needs you|\bUAG\b/);
-    for (const src of [SRC.schedule, SRC.corridor, SRC.dispatch, SRC.app, SRC.checkpoint, read(join(IMPORTS, 'README.md')), read(join(IMPORTS, 'index.html'))]) assert.doesNotMatch(src, /\u2014|\s\u2013\s/);
+    for (const src of [SRC.schedule, SRC.corridor, SRC.dispatch, SRC.offloads, SRC.app, SRC.checkpoint, read(join(IMPORTS, 'README.md')), read(join(IMPORTS, 'index.html'))]) assert.doesNotMatch(src, /\u2014|\s\u2013\s/);
     const leg = tableBy(draw('ImportSchedule', 'By mill'), 'Leg');
     assert.ok(['Loaded (t)', 'Offloaded (t)', 'Difference (t)'].every((l) => labels(leg).includes(l)));
     const cells = leg.props.rows.map((r) => findAll(render(cell(leg, r, 'at'), kit), 'StatusMark')[0].props.label);
@@ -568,6 +570,88 @@ describe('[M7.DS.01] words (AC 8)', () => {
     for (const [screen, state] of [['TruckLeg', 'At the border'], ['ImportSchedule', 'By mill'], ['OperationsHome', 'With items'], ['ShortageClaim', 'Pending approval']]) {
       for (const m of findAll(draw(screen, state), 'StatusMark')) assert.ok(m.props.kind && m.props.label != null, `${screen}: icon and word`);
     }
+  });
+});
+
+/* ------------------------------------------------------------------ M7.IMP.05 (UAG-103): the gaps the card left undrawn */
+
+describe('[M7.IMP.05] mill offload: sources, Declared by mill, Beyond allowance, Import legs and unmatched offloads', () => {
+  test('[M7.IMP.05] an offload\'s Source is one of the mill\'s five, never Weighbridge; a form offers Mill call, Email and Mill offload sheet (AC 7, 8)', () => {
+    assert.deepEqual(ds.OFFLOAD_SOURCES, ['mill-call', 'email', 'mill-offload-sheet', 'scanned-slip', 'mill-portal']);
+    assert.deepEqual(ds.OFFLOAD_SOURCES.map((k) => ds.offloadSource(k)), ['Mill call', 'Email', 'Mill offload sheet', 'Scanned slip', 'Mill portal']);
+    for (const k of ds.OFFLOAD_SOURCES) assert.equal(ds.checkpointSource('offloaded', k), ds.CHECKPOINT_SOURCES[k].word, k);
+    for (const k of ['weighbridge', 'port-schedule', 'transporter-call']) assert.equal(ds.checkpointSource('offloaded', k), '', `an offload is never ${k}`);
+    assert.equal(ds.offloadSource('weighbridge'), '');
+    assert.deepEqual(ds.checkpointSourceOptions('offloaded'), ['Mill call', 'Email', 'Mill offload sheet'], 'Scanned slip and Mill portal are never picked');
+    assert.deepEqual(ds.checkpointSourceOptions('loaded'), ['Port schedule', 'Weighbridge'], 'a mill source never stands for the loaded weight');
+    assert.ok(!('mill-phone-call' in ds.CHECKPOINT_SOURCES) && !('mill-email' in ds.CHECKPOINT_SOURCES), 'the retired words are gone');
+    assert.match(words('TruckLeg', 'Record offload').join(' | '), /Source \| Mill call \| Email \| Mill offload sheet \| Delivery point[\s\S]*Mill delivery note \| Mill document/, 'AC 11 fields');
+    assert.doesNotMatch(words('TruckLeg', 'Record offload').join(' | '), /Grade/, 'no grade field');
+  });
+
+  test('[M7.IMP.05] the provenance chip has Declared by mill beside Declared by farmer, which keeps its words', () => {
+    const prov = literal(read(join(COMPONENTS, 'feedback/TrustChip.jsx')), 'PROV');
+    assert.equal(prov.declared.label, 'Declared by farmer');
+    assert.equal(prov['declared-mill'].label, 'Declared by mill');
+    assert.match(read(join(COMPONENTS, 'feedback/TrustChip.d.ts')), /'declared-mill'/);
+    assert.equal(findAll(draw('UnmatchedOffload', 'Open'), 'ProvenanceChip')[0].props.kind, 'declared-mill');
+  });
+
+  test('[M7.IMP.05] the Reconcile card closes Beyond allowance, the pair to Within allowance, in the attention look (AC 2)', () => {
+    assert.deepEqual(ds.RECONCILE_OUTCOMES['beyond-allowance'], { kind: 'attention', word: 'Beyond allowance' });
+    assert.deepEqual(ds.RECONCILE_OUTCOMES.beyond.kind, ds.RECONCILE_OUTCOMES['beyond-allowance'].kind, 'same look as Beyond tolerance');
+    assert.deepEqual(ds.RECONCILE_OUTCOMES.allowance, { kind: 'clean', word: 'Within allowance' });
+    const leg = draw('TruckLeg', 'Beyond allowance');
+    assert.deepEqual(findAll(leg, 'ReconcileCard')[0].props.rows.map((r) => [r.label, r.value]),
+      [['Loaded', '32.000 t'], ['Offloaded', '31.200 t'], ['Difference', '0.800 t (2.50%)'], ['Loss allowance', '80 kg']]);
+    assert.equal(findAll(leg, 'RecordHighlights')[0].props.status.props.label, 'Delivered', 'the leg stays Delivered');
+    assert.equal(kit.imDifferenceWords({ loaded: '32.500', offloaded: '32.450' }), '0.050 t (0.15%)');
+    assert.equal(kit.imOutcome({ loaded: '32.000', offloaded: '31.920' }), 'allowance', 'exactly 80 kg is within');
+    assert.equal(kit.imOutcome({ loaded: '32.000', offloaded: '31.919' }), 'beyond-allowance', '81 kg is beyond');
+    const tree = draw('TruckLeg', 'Beyond allowance');
+    const rel = render(el(kit.TruckLeg, { state: 'Related', onOpen: () => {} }), kit);
+    assert.ok(rel, 'Related renders');
+    assert.deepEqual(kit.imLegExceptions(kit.IM_SALE_LEGS[1]).map((x) => [x.title, x.status]), [['Weight difference beyond allowance', 'open']]);
+    assert.deepEqual(kit.imLegExceptions(kit.IM_SALE_LEGS[0]), [], 'a reconciled leg has none');
+    assert.ok(tree);
+  });
+
+  test('[M7.IMP.05] a sale contract\'s Related tab has Import legs with a count and View all, the schedule\'s figures (AC 10)', () => {
+    const tree = draw('SaleContract', 'Related');
+    const card = kit.ImImportLegs({ legs: kit.IM_SALE_LEGS });
+    assert.deepEqual([card.props.title, card.props.count, card.props.link], ['Import legs', 3, 'View all']);
+    assert.ok(findAll(tree, 'ImImportLegs').length + tables(tree).length > 0);
+    const t = tableBy(tree, 'Leg');
+    assert.deepEqual(labels(t), ['Leg', 'Truck', 'Loaded (t)', 'Offloaded (t)', 'Difference (t)', 'Status']);
+    const baz = t.props.rows.find((r) => r.truck === 'BAZ 2231');
+    assert.deepEqual([baz.loaded, baz.offloaded, cell(t, baz, 'difference')], ['32.000', '31.200', '0.800']);
+    assert.ok(['loaded', 'offloaded', 'difference'].every((k) => t.props.columns.find((c) => c.key === k).align === 'right'), 'figures right aligned');
+    assert.equal(cell(t, baz, 'id').type, kit.HmLink, 'the leg is a record link');
+    assert.match(words('SaleContract', 'Related').join(' | '), /Weight difference beyond allowance/);
+    assert.equal(kit.imOffloadFrame('SaleContract').breadcrumb.join(' / '), 'Trading / Contracts / SYN4811');
+  });
+
+  test('[M7.IMP.05] an unmatched offload is saved and raises Offload with no loaded record; the portal\'s joins the same list; match or close with a reason, nothing edited (AC 8)', () => {
+    const list = tableBy(draw('UnmatchedOffloads', 'Unmatched'), 'Truck');
+    const zzt = list.props.rows.find((r) => r.truck === 'ZZT 901');
+    assert.deepEqual([zzt.mill, cell(list, zzt, 'source'), zzt.by], ['Antelope Mills, Lusaka', 'Mill call', 'M. Chanda']);
+    const portal = list.props.rows.find((r) => r.source === 'mill-portal');
+    assert.deepEqual([cell(list, portal, 'source'), portal.by], ['Mill portal', 'Antelope Mills'], 'one list whoever reported it');
+    const open = draw('UnmatchedOffload', 'Open');
+    const hl = findAll(open, 'RecordHighlights')[0].props;
+    assert.deepEqual(hl.fields.map((f) => f.label), ['Truck', 'Mill', 'Offloaded', 'Offloaded on', 'Source', 'Reported by']);
+    assert.match(words('UnmatchedOffload', 'Open').join(' | '), /Offload with no loaded record[\s\S]*Operations/);
+    assert.ok(button(open, 'Match to leg') && button(open, 'Close'));
+    assert.equal(findAll(draw('UnmatchedOffload', 'Match to leg'), 'Dialog')[0].props.title, 'Match to leg, ZZT 901');
+    assert.ok(findAll(draw('UnmatchedOffload', 'Matching'), 'Button').some((b) => b.children.join('') === 'Match to leg' && b.props.loading === true), 'Match to leg shows it is working');
+    const close = findAll(draw('UnmatchedOffload', 'Close'), 'ReasonDialog')[0].props;
+    assert.deepEqual([close.open, close.label, close.minLength, close.confirmLabel], [true, 'Reason', 10, 'Close']);
+    assert.equal(findAll(draw('UnmatchedOffload', 'Closing'), 'ReasonDialog')[0].props.busy, true);
+    const matched = draw('UnmatchedOffload', 'Matched');
+    assert.ok(!button(matched, 'Match to leg'), 'a matched offload has no actions');
+    assert.ok(findAll(matched, 'RecordHighlights')[0].props.fields.some((f) => f.label === 'Matched to leg' && f.value === 'KAL-23'));
+    assert.match(words('UnmatchedOffload', 'From the mill portal').join(' | '), /Mill portal[\s\S]*Antelope Mills/);
+    assert.doesNotMatch(code(SRC.offloads) + code(SRC.corridor), /'(Mill call|Email|Mill offload sheet|Scanned slip|Mill portal|Mill email|Mill phone call)'/, 'source words come from the component');
   });
 });
 

@@ -1,15 +1,23 @@
 /** @startingPoint section="Records" subtitle="Checkpoint timeline: an import truck leg's five checkpoints, each with status, date, recorded by and Source; a transporter-reported position is a labelled Source, never a badge (M7.DS.01)" viewport="900x320" */
 export type CheckpointKey = 'loaded' | 'in-transit' | 'border-arrival' | 'border-departure' | 'offloaded';
-export type CheckpointSourceKey = 'port-schedule' | 'transporter-call' | 'transporter-message' | 'clearing-agent' | 'mill-offload-sheet' | 'mill-phone-call' | 'mill-email' | 'weighbridge';
+export type CheckpointSourceKey = 'port-schedule' | 'transporter-call' | 'transporter-message' | 'clearing-agent' | OffloadSourceKey | 'weighbridge';
+/** The mill's five offload sources (M7.IMP.05), the keys of the stored MILL_CALL, EMAIL, MILL_OFFLOAD_SHEET, SCANNED_SLIP, MILL_PORTAL. */
+export type OffloadSourceKey = 'mill-call' | 'email' | 'mill-offload-sheet' | 'scanned-slip' | 'mill-portal';
 /** The five checkpoints in order: Loaded at origin, In transit, Border arrival, Border departure, Offloaded. */
 export const CHECKPOINTS: Array<{ key: CheckpointKey; word: string; weight?: true; position?: true }>;
-/** Each source's word and what it can report: a weight, a position, or both. */
-export const CHECKPOINT_SOURCES: Record<CheckpointSourceKey, { word: string; weight?: true; position?: true }>;
+/** Each source's word and what it can report: a weight, a position, or both. `offload` marks the mill's five, the only
+    sources of an offload (Mill call, Email, Mill offload sheet, Scanned slip, Mill portal); `auto` marks the two set by
+    how the offload arrived (Scanned slip, Mill portal), never offered in a form. */
+export const CHECKPOINT_SOURCES: Record<CheckpointSourceKey, { word: string; weight?: true; position?: true; offload?: true; auto?: true }>;
+/** The offload sources in order: mill-call, email, mill-offload-sheet, scanned-slip, mill-portal. */
+export const OFFLOAD_SOURCES: OffloadSourceKey[];
+/** The Source word of an offload, matched or not: Mill call, Email, Mill offload sheet, Scanned slip or Mill portal; '' otherwise. */
+export function offloadSource(source: string): string;
 /** Done (green check) and Waiting (amber triangle). A checkpoint not reached has no status: a blank cell. */
 export const CHECKPOINT_STATUS: Record<'done' | 'waiting', { kind: string; word: string }>;
-/** The Source word for a checkpoint, or '' when that source cannot report it (a weighbridge position, a transporter's weight). */
+/** The Source word for a checkpoint, or '' when that source cannot report it (a weighbridge position, a transporter's weight, a weighbridge or port schedule offload). */
 export function checkpointSource(checkpoint: CheckpointKey, source: CheckpointSourceKey): string;
-/** The Source options a capture form offers for a checkpoint: what can report it, nothing else. */
+/** The Source options a capture form offers for a checkpoint: what can report it, nothing else. On offloaded: Mill call, Email, Mill offload sheet. */
 export function checkpointSourceOptions(checkpoint: CheckpointKey): string[];
 export interface CheckpointEntry {
   key: CheckpointKey;

@@ -3,16 +3,19 @@ import { Card } from '../data/Card.jsx';
 import { StatusMark } from '../feedback/StatusMark.jsx';
 import { textStyle } from '../core/Text.jsx';
 
-const RECONCILE_OUTCOMES = {
+/** The closing status line's outcomes, an icon and a word each (UX-20): a tolerance pair and an allowance pair.
+    `beyond-allowance` (M7.IMP.05) is the pair to `allowance`: a truck leg that lost more than the loss allowance. */
+export const RECONCILE_OUTCOMES = {
   within: { kind: 'clean', word: 'Within tolerance' },
   allowance: { kind: 'clean', word: 'Within allowance' },
   beyond: { kind: 'attention', word: 'Beyond tolerance' },
+  'beyond-allowance': { kind: 'attention', word: 'Beyond allowance' },
 };
 
 /**
  * The Reconcile card (map UX-20): where a record or form checks one quantity against another, a
  * card at the right with label and value rows, the key difference in bold, and a closing status
- * line with its icon: Within tolerance, Within allowance or Beyond tolerance. `mark` (M4.DS.02) is a closing line of
+ * line with its icon: Within tolerance, Within allowance, Beyond tolerance or Beyond allowance. `mark` (M4.DS.02) is a closing line of
  * the check's own, such as a bag count's Count sheet matches or Count mismatch; left out, the line is drawn as before.
  */
 export function ReconcileCard({ title = 'Reconcile', rows = [], outcome = 'within', status, mark, style }) {

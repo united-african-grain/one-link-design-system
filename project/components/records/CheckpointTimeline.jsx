@@ -16,17 +16,29 @@ export const CHECKPOINTS = [
 
 /** Where a checkpoint was reported from, as the labelled field Source. A source either reports a weight (`weight`),
     a position (`position`) or both. A transporter's report is a position only, so it can never stand for a weight, and
-    the weighbridge reports a weight only, so a reported position is never shown as Source: Weighbridge. */
+    the weighbridge reports a weight only, so a reported position is never shown as Source: Weighbridge.
+
+    The mill's five (`offload`, M7.IMP.05 AC 7 and 8) are the only sources of an offload, and an offload never shows
+    Weighbridge: Mill call (typed from a phone call), Email, Mill offload sheet, Scanned slip (a photographed mill slip
+    confirmed through OCR) and Mill portal (the mill's own entry, M8.PRT.07). A person recording an offload picks one of
+    the first three; Scanned slip and Mill portal are set by how the offload arrived (`auto`), so a form never offers
+    them. The keys match the offload's stored source (MILL_CALL, EMAIL, MILL_OFFLOAD_SHEET, SCANNED_SLIP, MILL_PORTAL). */
 export const CHECKPOINT_SOURCES = {
   'port-schedule': { word: 'Port schedule', weight: true, position: true },
   'transporter-call': { word: 'Transporter call', position: true },
   'transporter-message': { word: 'Transporter message', position: true },
   'clearing-agent': { word: 'Clearing agent', position: true },
-  'mill-offload-sheet': { word: 'Mill offload sheet', weight: true },
-  'mill-phone-call': { word: 'Mill phone call', weight: true },
-  'mill-email': { word: 'Mill email', weight: true },
+  'mill-call': { word: 'Mill call', weight: true, offload: true },
+  email: { word: 'Email', weight: true, offload: true },
+  'mill-offload-sheet': { word: 'Mill offload sheet', weight: true, offload: true },
+  'scanned-slip': { word: 'Scanned slip', weight: true, offload: true, auto: true },
+  'mill-portal': { word: 'Mill portal', weight: true, offload: true, auto: true },
   weighbridge: { word: 'Weighbridge', weight: true },
 };
+
+/** The sources of a mill offload, in order (M7.IMP.05): Mill call, Email, Mill offload sheet, Scanned slip, Mill portal.
+    An unmatched offload, which belongs to no checkpoint yet, reads its Source from these. */
+export const OFFLOAD_SOURCES = Object.keys(CHECKPOINT_SOURCES).filter((k) => CHECKPOINT_SOURCES[k].offload);
 
 /** A checkpoint's status, an icon and a word (UX-14). A checkpoint not yet reached has no status: a blank cell (UX-09). */
 export const CHECKPOINT_STATUS = {
@@ -34,20 +46,36 @@ export const CHECKPOINT_STATUS = {
   waiting: { kind: 'attention', word: 'Waiting' },
 };
 
+/** Whether a source can report a checkpoint: a position from a position source; the offload only from the mill's
+    sources; any other weight (Loaded at origin) from a weight source that is not the mill's. */
+function sourceFits(c, s) {
+  if (c.position && s.position) return true;
+  if (!c.weight || !s.weight) return false;
+  return c.key === 'offloaded' ? !!s.offload : !s.offload;
+}
+
 /** The word for a checkpoint's source, or '' when that source cannot report that checkpoint (a weighbridge position,
-    a transporter's weight): the row then shows no source rather than a wrong one. */
+    a transporter's weight, a weighbridge offload): the row then shows no source rather than a wrong one. */
 export function checkpointSource(checkpoint, source) {
   const c = CHECKPOINTS.find((x) => x.key === checkpoint);
   const s = CHECKPOINT_SOURCES[source];
   if (!c || !s) return '';
-  return (c.position && s.position) || (c.weight && s.weight) ? s.word : '';
+  return sourceFits(c, s) ? s.word : '';
 }
 
-/** The sources a capture form offers for a checkpoint, in order: what can report it, and nothing else. */
+/** The sources a capture form offers for a checkpoint, in order: what can report it, and nothing else. A source set by
+    how the record arrived (Scanned slip, Mill portal) is never offered: on Offloaded the options are Mill call, Email
+    and Mill offload sheet. */
 export function checkpointSourceOptions(checkpoint) {
   const c = CHECKPOINTS.find((x) => x.key === checkpoint);
   if (!c) return [];
-  return Object.values(CHECKPOINT_SOURCES).filter((s) => (c.position && s.position) || (c.weight && s.weight)).map((s) => s.word);
+  return Object.values(CHECKPOINT_SOURCES).filter((s) => !s.auto && sourceFits(c, s)).map((s) => s.word);
+}
+
+/** The word for an offload's Source, whether or not it matched a leg: '' for anything that is not the mill's. */
+export function offloadSource(source) {
+  const s = CHECKPOINT_SOURCES[source];
+  return s && s.offload ? s.word : '';
 }
 
 function checkpointRows(checkpoints) {

@@ -318,48 +318,44 @@ export function ToleranceAgreements({ state = 'Agreements', onOpen }) {
   );
 }
 
-/* ------------------------------------------------------------------ Unmatched offloads (s) */
+/* ------------------------------------------------------------------ Unmatched offloads (s), M7.IMP.05 AC 8 */
 
-/** Offloads a mill reported that match no truck leg: the truck on the sheet is on no leg, or on one already offloaded.
-    Matching is a correction with a reason, kept beside the original. */
+/** Offloads a mill reported for a truck on no leg: saved, never refused, each raising the one exception Offload with
+    no loaded record, whoever reported it (Operations by call, email or sheet, or the mill itself through the portal),
+    so there is one list for one problem. The columns are the operations lead's follow-up: the truck, the mill, the
+    offloaded weight and date, the Source, who reported it, its age and its exception's status. Matching to a leg or
+    closing with a reason are entries beside the original; the unmatched offload is never edited. */
 export const IM_UNMATCHED = [
-  { id: 'm1', mill: 'Riverbend Milling, Lusaka', truck: 'ACE 4447', offloaded: '33.910', on: '25 Sep 2026, 14:20', source: 'Mill offload sheet', closest: 'KAL-11', age: '1 day' },
-  { id: 'm2', mill: 'Crest Milling, Kitwe', truck: 'NSH 2240', offloaded: '34.050', on: '25 Sep 2026, 16:05', source: 'Mill email', closest: '', age: '1 day' },
+  { id: 'ZZT 901', mill: 'Antelope Mills, Lusaka', truck: 'ZZT 901', offloaded: '31.640', on: '15 Oct 2026, 10:20', source: 'mill-call', by: 'M. Chanda', age: '2 h', status: 'open', exception: 'EXC-000233' },
+  { id: 'BCX 3310', mill: 'Antelope Mills, Lusaka', truck: 'BCX 3310', offloaded: '32.180', on: '14 Oct 2026, 16:05', source: 'mill-portal', by: 'Antelope Mills', age: '1 day', status: 'open', exception: 'EXC-000229' },
+  { id: 'NSH 2240', mill: 'Crest Milling, Kitwe', truck: 'NSH 2240', offloaded: '34.050', on: '14 Oct 2026, 09:40', source: 'email', by: 'M. Chanda', age: '1 day', status: 'acknowledged', exception: 'EXC-000226' },
+  { id: 'ACE 4447', mill: 'Riverbend Milling, Lusaka', truck: 'ACE 4447', offloaded: '33.910', on: '13 Oct 2026, 14:20', source: 'mill-offload-sheet', by: 'M. Chanda', age: '2 days', status: 'open', exception: 'EXC-000221' },
 ];
 
-export function UnmatchedOffloads({ state = 'Unmatched' }) {
+export function UnmatchedOffloads({ state = 'Unmatched', onOpen }) {
   const narrow = !useMinWidth(768);
   const rows = state === 'No items' ? [] : IM_UNMATCHED;
   const dialog = state === 'Match to leg' || state === 'Matching';
-  const busy = state === 'Matching';
   return (
     <Sections>
       <HmHead title="Unmatched offloads" count={rows.length} />
-      <ImListBar view="All unmatched offloads" filters={<Capsule chevron>Mill: All</Capsule>} search="Search trucks" />
+      <ImListBar view="All unmatched offloads" filters={<><Capsule chevron>Mill: All</Capsule><Capsule chevron>Source: All</Capsule></>} search="Search trucks" />
       {rows.length ? (
         <Card padding={4}>
           <HmTable rows={rows} columns={[
+            { key: 'truck', label: 'Truck', width: '110px', render: (r) => <HmLink onOpen={() => onOpen && onOpen(`unmatched:${r.id}`)}>{r.truck}</HmLink> },
             { key: 'mill', label: 'Mill', width: 'minmax(170px, 1fr)', wrap: true },
-            { key: 'truck', label: 'Truck on the sheet', width: '140px' },
             { key: 'offloaded', label: 'Offloaded (t)', width: '110px', align: 'right' },
             { key: 'on', label: 'Offloaded on (CAT)', width: '170px', tabular: true },
-            { key: 'source', label: 'Source', width: '150px' },
-            { key: 'closest', label: 'Closest leg', width: '110px', render: (r) => (r.closest ? <HmLink>{r.closest}</HmLink> : '') },
+            { key: 'source', label: 'Source', width: '150px', render: (r) => offloadSource(r.source) },
+            { key: 'by', label: 'Reported by', width: '140px', wrap: true },
             { key: 'age', label: 'Age', width: '72px' },
-            { key: 'action', label: '', width: '130px', align: 'right', render: () => <Button variant="outline" size="xsmall">Match to leg</Button> },
+            { key: 'status', label: 'Status', width: '130px', render: (r) => <ExceptionStatus status={r.status} /> },
+            { key: 'action', label: '', width: '130px', align: 'right', render: (r) => (r.status === 'closed' ? '' : <Button variant="outline" size="xsmall" onClick={() => onOpen && onOpen(`unmatched:${r.id}`)}>Match to leg</Button>) },
           ]} />
         </Card>
       ) : <Card><EmptyState title="No unmatched offloads to display." /></Card>}
-      {dialog ? (
-        <Dialog title="Match to leg, ACE 4447" width={480} sheet={narrow} onClose={busy ? undefined : () => {}}
-          footer={<><Button variant="ghost" size="small" disabled={busy}>Cancel</Button><Button size="small" loading={busy}>Match to leg</Button></>}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <SummaryList items={[{ label: 'Mill', value: 'Riverbend Milling, Lusaka' }, { label: 'Offloaded', value: '33.910 t' }, { label: 'Source', value: 'Mill offload sheet' }]} />
-            <Field label="Leg" required><Select options={['KAL-11, ACE 4474', 'KAL-12, ACE 4475']} defaultValue="KAL-11, ACE 4474" disabled={busy} /></Field>
-            <Field label="Reason" required><Input multiline defaultValue="Truck registration mistyped on the sheet" disabled={busy} /></Field>
-          </div>
-        </Dialog>
-      ) : null}
+      {dialog ? <ImMatchDialog offload={IM_UNMATCHED[0]} busy={state === 'Matching'} sheet={narrow} /> : null}
     </Sections>
   );
 }

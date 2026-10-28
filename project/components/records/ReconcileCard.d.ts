@@ -8,8 +8,8 @@ export interface ReconcileRow {
 export interface ReconcileCardProps {
   title?: React.ReactNode;
   rows: ReconcileRow[];
-  /** within · allowance · beyond */
-  outcome?: 'within' | 'allowance' | 'beyond';
+  /** within (Within tolerance) · allowance (Within allowance) · beyond (Beyond tolerance) · beyond-allowance (Beyond allowance) */
+  outcome?: ReconcileOutcome;
   /** Overrides the status word, keeping the outcome's icon. */
   status?: React.ReactNode;
   /** A closing line of the check's own in place of the outcome's (M4.DS.02): CountMatch's Count sheet matches or
@@ -18,3 +18,6 @@ export interface ReconcileCardProps {
   style?: React.CSSProperties;
 }
 export function ReconcileCard(props: ReconcileCardProps): JSX.Element;
+export type ReconcileOutcome = 'within' | 'allowance' | 'beyond' | 'beyond-allowance';
+/** Each outcome's StatusMark kind and word: clean Within tolerance, clean Within allowance, attention Beyond tolerance, attention Beyond allowance. */
+export const RECONCILE_OUTCOMES: Record<ReconcileOutcome, { kind: 'clean' | 'attention'; word: string }>;

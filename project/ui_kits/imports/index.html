@@ -1,4 +1,4 @@
-<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Imports (M7): the operations lead's Home with Cannot invoice yet, Uploads today and Waiting on partners; the port schedule preview; the import schedule by mill and by port with its invoicing column; a truck leg's checkpoints, port documents, Record offload and the Reconcile card; transport performance, shortage claims, allocation drawdown, contracted rhythm, tolerance agreements and unmatched offloads; the dispatch report preview; and the M7 states of Coverage, stock control's Home and the Managing Director's Home" name="Imports" -->
+<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Imports (M7): the operations lead's Home with Cannot invoice yet, Uploads today and Waiting on partners; the port schedule preview; the import schedule by mill and by port with its invoicing column; a truck leg's checkpoints, port documents, Record offload and the Reconcile card; transport performance, shortage claims, allocation drawdown, contracted rhythm, tolerance agreements, unmatched offloads and an unmatched offload's record; a sale contract's Import legs; the dispatch report preview; and the M7 states of Coverage, stock control's Home and the Managing Director's Home" name="Imports" -->
 <!-- @startingPoint section="Screens" subtitle="Imports (M7): every import screen and state, at 1440 and 390" viewport="1440x900" -->
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Imports</title>
 <link rel="stylesheet" href="../../styles.css">
@@ -12,20 +12,20 @@
 <style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
 </head><body><div id="root"></div>
 <script type="text/babel">
-loadKit('../../components/', './', ['../one_link/Shell.jsx','../one_link/Home.jsx','../one_link/Tickets.jsx','../one_link/Operations.jsx','../one_link/StockControl.jsx','../one_link/Coverage.jsx','Schedule.jsx','Corridor.jsx','Dispatch.jsx']).then((K) => {
+loadKit('../../components/', './', ['../one_link/Shell.jsx','../one_link/Home.jsx','../one_link/Tickets.jsx','../one_link/Operations.jsx','../one_link/StockControl.jsx','../one_link/Coverage.jsx','Schedule.jsx','Corridor.jsx','Dispatch.jsx','Offloads.jsx']).then((K) => {
   const { Page, Segmented, ScrollRow } = K;
   // The card's screens (a) to (s) in the operations lead's, the warehouse's or stock control's frame, then the M7 states
   // of the existing kit screens (Coverage, stock control's Home, On the road and the Managing Director's Home), drawn
   // here in their own frames beside their other states, which are unchanged. Every state opens directly with
   // ?screen=<Screen>&state=<State>, which the screenshot review uses at 1440 and 390.
   const M7 = { Coverage: ['In transit'], StockPosition: ['Stock by route', 'Direct share'], OnTheRoad: ['All'], Home: ['With items'] };
-  const STATES = { ...K.IM_STATES, ...K.IM_DISPATCH_STATES, ...K.IM_CORRIDOR_STATES, ...M7 };
-  const ORDER = ['OperationsHome', 'PortSchedulePreview', 'ImportSchedule', 'TruckLeg', 'TransportPerformance', 'ShortageClaim', 'AllocationDrawdown', 'ContractedRhythm', 'ToleranceAgreements', 'UnmatchedOffloads',
+  const STATES = { ...K.IM_STATES, ...K.IM_DISPATCH_STATES, ...K.IM_CORRIDOR_STATES, ...K.IM_OFFLOAD_STATES, ...M7 };
+  const ORDER = ['OperationsHome', 'PortSchedulePreview', 'ImportSchedule', 'TruckLeg', 'TransportPerformance', 'ShortageClaim', 'AllocationDrawdown', 'ContractedRhythm', 'ToleranceAgreements', 'UnmatchedOffloads', 'UnmatchedOffload', 'SaleContract',
     'DispatchUpload', 'DispatchPreview', 'Coverage', 'StockPosition', 'OnTheRoad', 'Home'];
   const LABEL = { OperationsHome: 'Home, Operations', PortSchedulePreview: 'Port schedule preview', ImportSchedule: 'Import schedule', TruckLeg: 'Truck leg',
-    TransportPerformance: 'Transport performance', ShortageClaim: 'Shortage claim', AllocationDrawdown: 'Import allocation', ContractedRhythm: 'Contracted rhythm', ToleranceAgreements: 'Tolerance agreements', UnmatchedOffloads: 'Unmatched offloads',
+    TransportPerformance: 'Transport performance', ShortageClaim: 'Shortage claim', AllocationDrawdown: 'Import allocation', ContractedRhythm: 'Contracted rhythm', ToleranceAgreements: 'Tolerance agreements', UnmatchedOffloads: 'Unmatched offloads', UnmatchedOffload: 'Unmatched offload', SaleContract: 'Sale contract',
     DispatchUpload: 'Import dispatch report', DispatchPreview: 'Dispatch report preview', Coverage: 'Coverage', StockPosition: 'Home, stock control', OnTheRoad: 'On the road', Home: 'Home, Managing Director' };
-  const frameOf = (screen, state) => K.IM_STATES[screen] ? K.imScheduleFrame(screen, state) : K.IM_DISPATCH_STATES[screen] ? K.imDispatchFrame(screen) : K.IM_CORRIDOR_STATES[screen] ? K.imCorridorFrame(screen, state)
+  const frameOf = (screen, state) => K.IM_STATES[screen] ? K.imScheduleFrame(screen, state) : K.IM_DISPATCH_STATES[screen] ? K.imDispatchFrame(screen) : K.IM_CORRIDOR_STATES[screen] ? K.imCorridorFrame(screen, state) : K.IM_OFFLOAD_STATES[screen] ? K.imOffloadFrame(screen, state)
     : screen === 'Coverage' ? { who: 'owner', module: 'trade' } : screen === 'Home' ? K.homeFrame('Home') : K.stockControlFrame(screen, state);
   const params = new URLSearchParams(location.search);
   function App(){
@@ -35,10 +35,10 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','../one_link/Home.js
     const go=(s,st)=>{ setScreen(s); setState(st || STATES[s][0]); };
     const Screen=K[screen];
     const f=frameOf(screen, state);
-    const LEG = { 'KAL-07': 'Within allowance', 'ZBS-03': 'Beyond tolerance', 'KAL-14': 'Documents not released', 'KAL-11': 'At the border', 'ZBS-04': 'At the border' };
+    const LEG = { 'KAL-07': 'Within allowance', 'ZBS-03': 'Beyond allowance', 'KAL-22': 'Beyond allowance', 'KAL-14': 'Documents not released', 'KAL-11': 'At the border', 'ZBS-04': 'At the border' };
     const open=(ref)=> LEG[ref] ? go('TruckLeg', LEG[ref]) : String(ref).startsWith('offload:') ? go('TruckLeg','Record offload') : ref==='offload' ? go('TruckLeg','Record offload') : ref==='departure' ? go('TruckLeg','Record border departure')
       : ref==='release' ? go('TruckLeg','Release port documents') : ref==='port-schedule' ? go('PortSchedulePreview') : ref==='rhythm' ? go('ContractedRhythm') : ref==='agreement' || ref==='TA-0002' ? go('ToleranceAgreements','Agreement')
-      : ref==='TA-0004' ? go('ToleranceAgreements','Evidence missing') : String(ref).startsWith('home:') ? go('OperationsHome', ref.slice(5)) : null;
+      : ref==='TA-0004' ? go('ToleranceAgreements','Evidence missing') : String(ref).startsWith('unmatched:') ? go('UnmatchedOffload', ref==='unmatched:BCX 3310' ? 'From the mill portal' : 'Open') : ref==='schedule' ? go('ImportSchedule') : ref==='SYN4811' ? go('SaleContract') : String(ref).startsWith('home:') ? go('OperationsHome', ref.slice(5)) : null;
     const controls=<ScrollRow align="flex-end" style={{marginBottom:16}}>
       <Segmented options={ORDER.map((s)=>LABEL[s])} value={LABEL[screen]} onChange={(l)=>go(ORDER.find((s)=>LABEL[s]===l))}/>
       {STATES[screen].length>1?<Segmented options={STATES[screen]} value={state} onChange={setState}/>:null}
@@ -50,6 +50,7 @@ loadKit('../../components/', './', ['../one_link/Shell.jsx','../one_link/Home.js
     if(f.who==='warehouse') return <Page nav={K.IM_WAREHOUSE_NAV} module={f.module} section={f.section} breadcrumb={f.breadcrumb} user={K.IM_WAREHOUSE_USER} sync={null}>{controls}{body}</Page>;
     if(f.who==='stock') return <Page nav={K.STOCK_NAV} module={f.module} section={f.section} breadcrumb={f.breadcrumb} user={K.STOCK_USER} sync={null}
       onModule={(v)=>{ if(v==='home') go('StockPosition'); }} onSection={(v)=>{ if(v==='road') go('OnTheRoad'); }}>{controls}{body}</Page>;
+    if(f.who==='trading') return <Page nav={K.IM_TRADING_NAV} module={f.module} section={f.section} breadcrumb={f.breadcrumb} user={K.IM_TRADING_USER} sync={null}>{controls}{body}</Page>;
     if(f.who==='md') return <K.MdFrame module={f.module} breadcrumb={f.breadcrumb}>{controls}{body}</K.MdFrame>;
     return <Page module={f.module} sync={null}>{controls}{body}</Page>;
   }

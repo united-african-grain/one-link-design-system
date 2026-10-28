@@ -274,10 +274,10 @@ describe('[M2.DS.01] weighbridge continuity screens', () => {
 });
 
 describe('[M2.DS.01] the components it introduced', () => {
-  test('[M2.DS.01] provenance chip kinds are exactly synced, ocr-verified, unverified and declared (with the three review-only confidence kinds)', () => {
+  test('[M2.DS.01] provenance chip kinds are exactly synced, ocr-verified, unverified, declared and declared-mill (with the three review-only confidence kinds)', () => {
     const chip = read(join(COMPONENTS, 'feedback/TrustChip.jsx'));
     const prov = literal(chip, 'PROV');
-    assert.deepEqual(Object.keys(prov), ['synced', 'ocr-verified', 'unverified', 'declared', 'ocr-high', 'ocr-medium', 'ocr-low']);
+    assert.deepEqual(Object.keys(prov), ['synced', 'ocr-verified', 'unverified', 'declared', 'declared-mill', 'ocr-high', 'ocr-medium', 'ocr-low']);
     assert.ok(['ocr-high', 'ocr-medium', 'ocr-low'].every((k) => prov[k].review), 'the confidence kinds are review-only');
     for (const [k, p] of Object.entries(prov)) assert.doesNotMatch(p.label, /high|medium|low|OCR|%|typed|\bbridge\b|feed/i, `${k} shows a confidence or a retired word: ${p.label}`);
     assert.deepEqual([prov.synced.label, prov['ocr-verified'].label], ['Weighbridge', 'Scanned slip']);

@@ -7,7 +7,7 @@ Tokens, type, motion, components and screens for **One Link**, the grain trading
 | What | Where |
 |---|---|
 | **The design system** | [Landing page](https://united-african-grain.github.io/one-link-design-system/): rules, colour, type, shape, motion, live components, screens |
-| **Screens** | [Desktop app](https://united-african-grain.github.io/one-link-design-system/ui_kits/one_link/) · [mobile app](https://united-african-grain.github.io/one-link-design-system/ui_kits/one_link_mobile/) · [partner portal](https://united-african-grain.github.io/one-link-design-system/ui_kits/partner_portal/) · [UAG One Link app](https://united-african-grain.github.io/one-link-design-system/ui_kits/field_app/) · [imports](https://united-african-grain.github.io/one-link-design-system/ui_kits/imports/) |
+| **Screens** | [Desktop app](https://united-african-grain.github.io/one-link-design-system/ui_kits/one_link/) · [mobile app](https://united-african-grain.github.io/one-link-design-system/ui_kits/one_link_mobile/) · [partner portal](https://united-african-grain.github.io/one-link-design-system/ui_kits/partner_portal/) · [UAG One Link app](https://united-african-grain.github.io/one-link-design-system/ui_kits/field_app/) · [imports](https://united-african-grain.github.io/one-link-design-system/ui_kits/imports/) · [invoice preparation and settlement](https://united-african-grain.github.io/one-link-design-system/ui_kits/settlement/) |
 | Tokens, the source of truth for code | [`project/tokens/`](project/tokens), imported together by [`project/styles.css`](project/styles.css) |
 | Components | [`project/components/`](project/components): React primitives, each with a `.d.ts` and a usage note |
 | Content and visual rules | [`project/readme.md`](project/readme.md) |
@@ -121,7 +121,7 @@ project/                 ← the Claude Design export, the design system itself
 ├── tokens/              ← colors, typography, shape, motion, spacing, fonts, base
 ├── guidelines/          ← foundation specimen cards
 ├── components/          ← React primitives (.jsx, .d.ts, .prompt.md) and their cards
-├── ui_kits/             ← one_link (desktop), one_link_mobile, partner_portal, field_app (the UAG One Link app), admin_workspace (Setup), imports (M7)
+├── ui_kits/             ← one_link (desktop), one_link_mobile, partner_portal, field_app (the UAG One Link app), admin_workspace (Setup), imports (M7), settlement (M7 money)
 ├── readme.md            ← content rules, visual foundations, iconography
 └── SKILL.md             ← agent skill entry point
 site/                    ← landing page template and live demos

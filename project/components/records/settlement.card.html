@@ -1,0 +1,67 @@
+<!-- @dsCard group="Components" viewport="1000x1600" subtitle="The money pieces of invoice preparation and settlement: an indicative figure that is always labelled and opens its Calculation details; a contract's two gaps from one row; a settlement proposal's two sides in netting order with Net less, with a reason; Invoice-ready data and the Settlement statement" name="Settlement · Indicative figure, gap bar, netting sides, money document (M7.DS.02)" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../_loader.js"></script>
+<style>body{margin:0;padding:16px;background:var(--surface)} .col{display:flex;flex-direction:column;gap:24px;max-width:960px} .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadDS('../').then((DS) => {
+const { IndicativeFigure, indicativeCalc, CalculationDetails, GapBar, NettingSides, PartialNettingDialog, MoneyDocument, Card, Text } = DS;
+const L = (t) => <Text variant="caption-1-condensed" tone="tertiary">{t}</Text>;
+const payable = [
+  { id: 'p1', what: 'FD-0142, 25 Sep 2026, grade 2', weight: '31.980', rate: '500.00', amount: '15,990.00' },
+  { id: 'p2', what: 'GRN10000419, 20 Sep 2026, grade 1', weight: '28.020', rate: '520.00', amount: '14,570.40' },
+];
+const owed = [
+  { id: 'o2', what: 'Fertiliser, Urea 50 kg, DN 3310', amount: '9,420.00' },
+  { id: 'o1', what: 'Cash prepayment not yet recovered, PAY-0401', amount: '4,000.00', kind: 'prepayment' },
+  { id: 'o3', what: 'Fertiliser, Compound D, DN 3318', amount: '6,150.00' },
+  { id: 'o4', what: 'Seed, wheat, DN 3321', amount: '4,190.00' },
+];
+const leavesOut = ['Transport', 'Transport to be Recovered', 'Clearing Docs', 'Commissions'];
+function Demo(){
+  const [open, setOpen] = React.useState(false);
+  const calc = indicativeCalc({ name: 'Weighted average cost, wheat', value: 'USD 504.90 per t', leavesOut, rate: 'ZMW 25.00 per USD', rateDate: '20 Sep 2026',
+    components: [{ label: 'L-0412, 412.500 t at USD 500.00 per t', value: 'USD 206,250.00' }, { label: 'L-0418, 284.880 t at USD 512.00 per t', value: 'USD 145,858.56' }], total: { label: 'Cost (USD) over 697.380 t', value: '352,108.56' } });
+  return <div className="col" style={{ position: 'relative' }}>
+    {L('Indicative figure: the name always starts with Indicative and the label always shows; the blue figure opens Calculation details, which name the basis, what it leaves out and the rate with its date')}
+    <div className="row">
+      <Card padding={16}><IndicativeFigure name="Weighted average cost, wheat" value="USD 504.90 per t" onOpen={() => setOpen(true)} /></Card>
+      <Card padding={16}><IndicativeFigure name="Weighted average cost, soya" notSet /></Card>
+      <Card padding={16}><IndicativeFigure name="Weighted average cost, maize" restricted /></Card>
+      <Card padding={16}><Text variant="body-4" tone="secondary">In a table cell</Text><div><IndicativeFigure variant="inline" value="504.90" onOpen={() => setOpen(true)} /></div></Card>
+    </div>
+    {L('Gap bar: collected, the invoiced share lighter, the paid share solid; Gap to invoice and Gap to pay worked out from the same row')}
+    <Card padding={16}><div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <GapBar row={{ collected: '4,812.40', invoiced: '3,460.00', paid: '2,888.46' }} />
+      <GapBar row={{ collected: '1,240.00', invoiced: '1,240.00', paid: '940.00' }} />
+      <GapBar row={{ collected: '250.00', invoiced: '0.00', paid: '0.00' }} />
+    </div></Card>
+    {L('Netting sides: Owed to the farmer for grain beside Owed by the farmer, the prepayment first, then oldest first; the offset and the net worked out')}
+    <NettingSides payable={payable} owed={owed} />
+    {L('Netted less, with the reason given in Net less, with a reason: the seed debt stays owed')}
+    <NettingSides payable={payable} owed={owed} partial="19,570.00" />
+    {L('Net less, with a reason: Confirm stays disabled until the offset is below the full one and the reason has ten characters')}
+    <div style={{ position: 'relative', minHeight: 420 }}><PartialNettingDialog contained full="23,760.00" /></div>
+    {L('Invoice-ready data: Not a tax invoice in the header and the footer; no number, no issue or send control')}
+    <MoneyDocument kind="invoice-ready" counterparty="Riverbend Milling" reference="IPR-0009" generated="01 Oct 2026, 09:46 CAT"
+      fields={[['Period', 'September 2026'], ['Loads', '2'], ['Amount', 'USD 19,359.11']]}
+      columns={[{ key: 'load', label: 'Load', width: '90px' }, { key: 'basis', label: 'Basis', width: 'minmax(170px, 1fr)' }, { key: 'weight', label: 'Weight (t)', width: '96px', align: 'right' }, { key: 'amount', label: 'Amount (USD)', width: '110px', align: 'right' }]}
+      rows={[{ id: 'a', load: 'KAL-07', basis: 'Delivered, offloaded weight', weight: '34.020', amount: '9,675.29' }, { id: 'b', load: 'KAL-09', basis: 'Delivered, offloaded weight', weight: '34.050', amount: '9,683.82' }, { id: 'total', total: true, load: 'Total', basis: '', weight: '68.070', amount: '19,359.11' }]} />
+    {L('Settlement statement: one layout with invoice-ready data; a bank detail passed in is dropped')}
+    <MoneyDocument kind="settlement-statement" counterparty="Lakeview Farms Ltd" reference="STL-0142" generated="27 Sep 2026, 14:30 CAT"
+      fields={[['Currency', 'USD'], ['Exchange rate', 'ZMW 25.00 per USD, 27 Sep 2026'], ['Bank account', 'dropped']]}
+      columns={[{ key: 'what', label: 'What', width: 'minmax(200px, 1fr)' }, { key: 'to', label: 'Owed to farmer (USD)', width: '150px', align: 'right' }, { key: 'by', label: 'Owed by farmer (USD)', width: '150px', align: 'right' }]}
+      rows={[{ id: 'a', what: 'Grain payable', to: '30,560.40', by: '' }, { id: 'b', what: 'Fertiliser and prepayment', to: '', by: '19,570.00' }, { id: 'c', what: 'Offset against grain', to: '(19,570.00)', by: '(19,570.00)' }, { id: 'total', total: true, what: 'Balance', to: '10,990.40', by: '0.00' }]} />
+    {open ? <CalculationDetails open contained onClose={() => setOpen(false)} {...calc} /> : null}
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+});
+</script></body></html>

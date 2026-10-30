@@ -248,4 +248,14 @@ The states M6 needs on the existing kit screens, added beside each screen's own 
 - The approval record is Owen's (S09 "Trade SYN4810, pending approval"): highlights with Counterparty, Commodity, Quantity, Margin, Owner, Submitted and Waiting for; Trade information with Rates as of and Exchange rate; Purchase legs with a Total row; Approval history; Approve and Reject, Reject asking "Reject trade SYN4810?" with a comment first. A deputy's decision reads Approved by and On behalf of: Managing Director, with the authority snapshot; the requester's view has no Approve.
 - A grading dispute keeps both results with their assessor, instrument and time; the re-test supersedes the first only once decided, and the money is corrected by a correction beside the original, which stays.
 - A goods received note that failed quality offers three routes (Return to farmer, Dry on site, Divert), each with a reason, then reads Held for drying, Awaiting diversion or Rejected. The Clerk's layout carries no price.
+
+## The trade board's M7 money states (M7.DS.02, UAG-200)
+
+Added beside the trade board's states, which draw exactly as before. `SettlementStates.jsx` holds them and TradeBoard hands it one of these states; Trade Board has a second state control for them here, and the Invoice preparation and settlement kit (`../settlement/`) opens them too.
+
+| Screen | File | States |
+|---|---|---|
+| TradeBoard | `SettlementStates.jsx` | Cost tags · Supplier prepayment · Import trucks · Payments · Without the price tiers |
+
+- Each trade carries its cost tags, the GL categories of the costs recorded on it, in a Costs column. Each state opens one trade's money: its costs with category, account code, reference and amount; a supplier cash prepayment with its tonnage equivalence, delivered and remaining; its import trucks with Loaded, Offloaded and Difference (t), worked out; and its payments with Invoiced, Paid and Outstanding. Without the price tiers every amount and margin is the Restricted lock.
 - Stock groups by stack, bay, silo and drying bay, with third-party sites and stock owned by others shown apart and never in the own position; capacity counts every owner. Stock control's layout carries no price or value.

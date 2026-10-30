@@ -1,0 +1,54 @@
+<!-- @dsCard group="One Link" viewport="1440x900" subtitle="Invoice preparation and settlement (M7): invoice preparation runs and a run with its lines, reference chain, excluded lines, loads awaiting destination weight, contract costs for reference, invoice-ready data and a withdrawn run; Record invoiced and Record payment; the receivables pipeline with both gaps by contract; GL cost categories and where each applies; stock cost per lot with the indicative weighted average; a supplier prepayment with its tonnage equivalence; statements due; a settlement proposal through approval, payment and reversal with its settlement statement; settlement batches; and the trade board's money states" name="Invoice preparation and settlement" -->
+<!-- @startingPoint section="Screens" subtitle="Invoice preparation and settlement (M7): every money screen and state, at 1440 and 390" viewport="1440x900" -->
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Invoice preparation and settlement</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@1.39.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="../../_ds_bundle.js" onerror="void 0"></script>
+<script src="../../components/_loader.js"></script>
+<style>html,body{margin:0;background:var(--surface)}#root{min-height:100vh}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+loadKit('../../components/', './', ['../one_link/Shell.jsx','../one_link/Home.jsx','../one_link/TradingStates.jsx','../one_link/TradeBoard.jsx','../one_link/SettlementStates.jsx','Invoicing.jsx','Costs.jsx','Settlement.jsx']).then((K) => {
+  const { Page, Segmented, ScrollRow } = K;
+  // The card's screens (f) to (u) in Finance's, the operations lead's or a reader's frame without the price tiers, then
+  // the trade board's M7 money states in the owner's frame. Every state opens directly with ?screen=<Screen>&state=<State>,
+  // which the screenshot review uses at 1440 and 390.
+  const STATES = { ...K.ST_INVOICING_STATES, ...K.ST_COST_STATES, ...K.ST_SETTLE_STATES, TradeBoard: K.ST_TRADEBOARD_STATES };
+  const ORDER = ['InvoicePrepRuns', 'InvoicePrepRun', 'ContractReceivables', 'SettlementPipeline', 'CostCategories', 'StockCost', 'StatementsDue', 'SupplierPrepayment', 'SettlementProposal', 'SettlementBatches', 'TradeBoard'];
+  const LABEL = { InvoicePrepRuns: 'Invoice preparation', InvoicePrepRun: 'Invoice preparation run', ContractReceivables: 'Record invoiced and payments', SettlementPipeline: 'Receivables pipeline',
+    CostCategories: 'GL cost categories', StockCost: 'Stock cost', StatementsDue: 'Statements due', SupplierPrepayment: 'Supplier prepayment', SettlementProposal: 'Settlement proposal', SettlementBatches: 'Settlement batches', TradeBoard: 'Trade board' };
+  const frameOf = (screen, state) => K.ST_INVOICING_STATES[screen] ? K.stInvoicingFrame(screen, state) : K.ST_COST_STATES[screen] ? K.stCostFrame(screen, state) : K.ST_SETTLE_STATES[screen] ? K.stSettleFrame(screen, state)
+    : { who: state === 'Without the price tiers' ? 'board-view' : 'board', module: 'trade' };
+  const params = new URLSearchParams(location.search);
+  function App(){
+    const first = STATES[params.get('screen')] ? params.get('screen') : 'InvoicePrepRun';
+    const [screen,setScreen]=React.useState(first);
+    const [state,setState]=React.useState(params.get('screen')===first && params.get('state') || STATES[first][0]);
+    const go=(s,st)=>{ setScreen(s); setState(st || STATES[s][0]); };
+    const Screen=K[screen];
+    const f=frameOf(screen, state);
+    const open=(ref)=> ref==='IPR-0009' ? go('InvoicePrepRun','Waiting for review') : ref==='IPR-0008' ? go('InvoicePrepRun','Prepared') : ref==='IPR-0007' ? go('InvoicePrepRun','Withdrawn')
+      : String(ref).startsWith('details:') ? go('InvoicePrepRun','Reference chain') : String(ref).startsWith('invoiced:') || ref==='invoiced' ? go('ContractReceivables','Record invoiced')
+      : String(ref).startsWith('receivables:') ? go('ContractReceivables') : ref==='payment' ? go('ContractReceivables','Record payment') : ref==='proposal' || ref==='STL-0142' ? go('SettlementProposal')
+      : String(ref).startsWith('STB-') ? go('SettlementBatches','Batch') : null;
+    const controls=<ScrollRow align="flex-end" style={{marginBottom:16}}>
+      <Segmented options={ORDER.map((s)=>LABEL[s])} value={LABEL[screen]} onChange={(l)=>go(ORDER.find((s)=>LABEL[s]===l))}/>
+      {STATES[screen].length>1?<Segmented options={STATES[screen]} value={state} onChange={setState}/>:null}
+    </ScrollRow>;
+    const body=<Screen state={state} onOpen={open}/>;
+    const sections={ 'invoice-prep':'InvoicePrepRuns', receivables:'SettlementPipeline', settlement:'SettlementProposal', batches:'SettlementBatches', due:'StatementsDue', accounts:'SupplierPrepayment', 'stock-cost':'StockCost', 'cost-categories':'CostCategories' };
+    const onSection=(v)=>{ if(sections[v]) go(sections[v]); };
+    if(f.who==='fin') return <Page nav={K.ST_FIN_NAV} module={f.module} section={f.section} breadcrumb={f.breadcrumb} user={K.ST_FIN_USER} sync={null} onSection={onSection}>{controls}{body}</Page>;
+    if(f.who==='ops') return <Page nav={K.ST_OPS_NAV} module={f.module} section={f.section} breadcrumb={f.breadcrumb} user={K.ST_OPS_USER} sync={null} onSection={onSection}>{controls}{body}</Page>;
+    if(f.who==='view') return <Page nav={K.ST_VIEW_NAV} module={f.module} section={f.section} breadcrumb={f.breadcrumb} user={K.ST_VIEW_USER} sync={null} onSection={onSection}>{controls}{body}</Page>;
+    if(f.who==='md') return <K.MdFrame module={f.module} breadcrumb={f.breadcrumb}>{controls}{body}</K.MdFrame>;
+    if(f.who==='board-view') return <Page module="trade" user={K.ST_VIEW_USER} sync={null}>{controls}{body}</Page>;
+    return <Page module="trade" sync={null}>{controls}{body}</Page>;
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+});
+</script></body></html>

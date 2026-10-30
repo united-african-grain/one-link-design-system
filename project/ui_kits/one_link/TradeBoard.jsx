@@ -6,9 +6,11 @@ const TRADES = [
 ];
 
 /** 03 Trade Board (Trade Desk): owner, restricted and loading variants. M6.DS.01 adds the trade statuses beside them
-    (TradingStates.jsx, M6_STATES.TradeBoard); the variants above draw as they always have. */
+    (TradingStates.jsx, M6_STATES.TradeBoard), and M7.DS.02 its money states (SettlementStates.jsx, ST_TRADEBOARD_STATES:
+    cost tags, a supplier prepayment, import trucks and payments); the variants above draw as they always have. */
 export function TradeBoard({ state = 'default', mobile = false, onOpen }) {
   if (M6_STATES.TradeBoard.includes(state)) return <TradeBoardM6 state={state} onOpen={onOpen} />;
+  if (typeof ST_TRADEBOARD_STATES !== 'undefined' && Array.isArray(ST_TRADEBOARD_STATES) && ST_TRADEBOARD_STATES.includes(state)) return <TradeBoardM7 state={state} onOpen={onOpen} />;
   const compact = useCompact(mobile);
   const sectionGap = useMinWidth(1024) ? 32 : 24;
   const [stage, setStage] = useState('Contracted');

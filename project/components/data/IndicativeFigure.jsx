@@ -49,7 +49,7 @@ export function indicativeCalc({ name, value, components = [], total, leavesOut 
  * `variant="figure"` (default) stacks the name, the value and the label; `variant="inline"` draws the value with the
  * word Indicative after it, for a table cell whose header already names the figure.
  */
-export function IndicativeFigure({ name = INDICATIVE_NAME, value, onOpen, restricted = false, notSet = false, owner = 'Finance', variant = 'figure', size = 'heading-3-condensed', style }) {
+export function IndicativeFigure({ name = INDICATIVE_NAME, value, onOpen, restricted = false, notSet = false, owner = 'Finance', variant = 'figure', size = 'heading-4', style }) {
   const figure = restricted ? <Restricted /> : notSet ? <NotSet owner={owner} size={variant === 'inline' ? 'body-4' : 'body-3'} />
     : onOpen ? <RefCell onOpen={onOpen}>{value}</RefCell> : <span style={textStyle('body-3', { tabular: true })}>{value}</span>;
   if (variant === 'inline') {

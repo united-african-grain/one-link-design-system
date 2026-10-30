@@ -37,7 +37,8 @@ export interface IndicativeFigureProps {
   owner?: string;
   /** 'figure' stacks name, value and label; 'inline' is the value and the word Indicative, for a table cell. */
   variant?: 'figure' | 'inline';
-  size?: 'heading-2-condensed' | 'heading-3-condensed' | 'body-2';
+  /** Inter, never a condensed or uppercase face (AC 3): heading-4 by default. */
+  size?: 'heading-3' | 'heading-4' | 'body-2';
   style?: React.CSSProperties;
 }
 export function IndicativeFigure(props: IndicativeFigureProps): JSX.Element;

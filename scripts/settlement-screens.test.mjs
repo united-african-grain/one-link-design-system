@@ -540,10 +540,10 @@ describe('[M7.DS.02] words (business rules)', () => {
       assert.doesNotMatch(said, /\bUAG\b(?! invoice reference)|United African Grain|National Milling|Sky Milling|\bOwen\b|\bJacques\b|\bAlka\b|\bSid\b|\bRyan\b|ZAM ?4666/, `${s} ${st}: fictional, One Link`);
       assert.doesNotMatch(said, /Settlement run|Season book|Two clocks|Needs you|Not recorded|Compensating entry|Hard block|\bCommit\b|Submit for review|Lock run/, `${s} ${st}: S57`);
       assert.doesNotMatch(said, /payment instruction|[Vv]aluation(?<!not a valuation)|[Ii]nvoice (?:the|a) |[Ii]nvoicing the|\bupload|template|\bsync\b/, `${s} ${st}`);
-      assert.doesNotMatch(said, /—|\s–\s/, `${s} ${st}`);
+      assert.doesNotMatch(said, /\u2014|\s\u2013\s/, `${s} ${st}`);
       assert.doesNotMatch(said, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b|\b(AM|PM)\b|\b\d{4}-\d{2}-\d{2}\b/, `${s} ${st}: dates read 27 Sep 2026`);
     }
-    for (const src of [...Object.values(SRC), read(join(KIT, 'README.md')), read(join(KIT, 'index.html')), read(join(COMPONENTS, 'records/settlement.card.html'))]) assert.doesNotMatch(src, /—|\s–\s/);
+    for (const src of [...Object.values(SRC), read(join(KIT, 'README.md')), read(join(KIT, 'index.html')), read(join(COMPONENTS, 'records/settlement.card.html'))]) assert.doesNotMatch(src, /\u2014|\s\u2013\s/);
     assert.match(words('InvoicePrepRuns', 'Runs').join(' | '), /Invoice preparation/);
     for (const [s, st] of [['InvoicePrepRun', 'Waiting for review'], ['SettlementBatches', 'Batches'], ['SettlementProposal', 'Pending approval']]) for (const m of findAll(draw(s, st), 'StatusMark')) assert.ok(m.props.kind && m.props.label != null, `${s}: icon and word`);
   });

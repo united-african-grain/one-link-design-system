@@ -30,7 +30,7 @@ function Demo(){
     <div className="row">{L('provenance')}<ProvenanceChip kind="synced"/><ProvenanceChip kind="ocr-verified"/><ProvenanceChip kind="unverified"/><ProvenanceChip kind="declared"/><ProvenanceChip kind="declared-mill"/></div>
     <div className="row">{L('confirmation')}<ConfirmationChip kind="confirmed"/><ConfirmationChip kind="awaiting"/><ConfirmationChip kind="disputed"/><ConfirmationChip kind="confirm"/><ConfirmationChip kind="pending"/></div>
     <div className="row">{L('severity')}<SeverityTag level="critical"/><SeverityTag level="high"/><SeverityTag level="normal"/></div>
-    <div className="row" style={{alignItems:'flex-start'}}>{L('empty · skeleton')}<div style={{flex:1,background:'var(--elevated)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-minimal-soft)'}}><EmptyState meta="Checked 07:02 · next digest 13:00"/></div><div style={{flex:1}}><CardSkeleton/></div></div>
+    <div className="row" style={{alignItems:'flex-start'}}>{L('empty · skeleton')}<div style={{flex:1,background:'var(--elevated)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-minimal-soft)'}}><EmptyState title="No contracts to display."/><EmptyState tone="success" icon="circle-check" meta="Checked 07:02 · next digest 13:00"/></div><div style={{flex:1}}><CardSkeleton/></div></div>
     <div className="row">{L('dialog')}<Button variant="outline" onClick={()=>setOpen(true)}>Open dialog</Button></div>
     <Dialog open={open} contained title="Void batch?" onClose={()=>setOpen(false)} footer={<><Button variant="ghost" onClick={()=>setOpen(false)}>Cancel</Button><Button variant="critical">Void batch</Button></>}>This removes 14 tickets from today's batch. Each ticket keeps its photo and can be re-synced.</Dialog>
   </div>;

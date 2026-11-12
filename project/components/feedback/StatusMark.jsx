@@ -22,13 +22,14 @@ const KINDS = {
 };
 export const STATUS_KINDS = KINDS;
 
-/** Status = a Lucide icon plus a sentence-case word. Never colour alone. */
+/** Status = a Lucide icon plus a sentence-case word. Never colour alone. A kind it does not know is drawn neutral, never as
+    the green check: an unknown status is not good news (U4). The word is never cut: a long one wraps beside its icon. */
 export function StatusMark({ kind = 'clean', label, size = 'body-3', strong = true, style }) {
-  const k = KINDS[kind] || KINDS.clean;
+  const k = KINDS[kind] || KINDS.neutral;
   const iconSize = size === 'body-4' || size === 'caption-1' ? 14 : 16;
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap', ...textStyle(size, { strong, color: k.color }), ...style }}>
-      <Icon name={k.icon} size={iconSize} />{label || k.word}
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, ...textStyle(size, { strong, color: k.color }), ...style }}>
+      <Icon name={k.icon} size={iconSize} style={{ flex: 'none' }} /><span data-word="" style={{ minWidth: 0, overflowWrap: 'anywhere' }}>{label || k.word}</span>
     </span>
   );
 }

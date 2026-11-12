@@ -3,7 +3,7 @@ import { textStyle } from '../core/Text.jsx';
 import { Restricted } from '../data/Restricted.jsx';
 import { RecordHighlights } from './RecordHighlights.jsx';
 
-/** One figure of the overview: its value (or the Restricted mark) and the line saying what date it is as of. A figure
+/** One figure of the overview: its value (or the Restricted mark) and the line saying the day it is for, "As at 01 Oct 2026" (card 1.3: never "As of"). A figure
     with `onFigure` opens Calculation details, read-only (map UX-18), so its value is a link, never a button. */
 function OverviewFigure({ figure, onFigure }) {
   const value = figure.restricted ? <Restricted />
@@ -12,7 +12,7 @@ function OverviewFigure({ figure, onFigure }) {
   return (
     <span data-figure={figure.key} data-restricted={figure.restricted || undefined} style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
       <span style={{ ...textStyle('body-3', { tabular: true }), minHeight: 20 }}>{value}</span>
-      <span data-as-of="" style={textStyle('body-4', { tone: 'secondary' })}>As of {figure.asOf}</span>
+      <span data-as-of="" style={textStyle('body-4', { tone: 'secondary' })}>As at {figure.asOf}</span>
     </span>
   );
 }

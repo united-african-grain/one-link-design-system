@@ -4,7 +4,7 @@ export interface OverviewFigureSpec {
   /** Sales under contract, Delivered, Left to deliver, Receivables, Oldest unpaid. */
   label: string;
   value?: React.ReactNode;
-  /** DD MMM YYYY: "01 Oct 2026". Every figure says what date it is as of. */
+  /** DD MMM YYYY: "01 Oct 2026". Every figure says the day it is for, drawn as "As at 01 Oct 2026" (card 1.3: never "As of"). */
   asOf: string;
   /** The viewer's price tier does not allow it: a lock, no value, the tooltip Restricted. */
   restricted?: boolean;

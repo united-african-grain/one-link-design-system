@@ -464,6 +464,6 @@ describe('[M4.DS.02] the components', () => {
       assert.ok(card.includes(`<${c}`), `${c} is on the card`);
     }
     assert.match(read(join(COMPONENTS, 'records/ReconcileCard.d.ts')), /mark\?: React\.ReactNode;/);
-    assert.match(read(join(COMPONENTS, 'records/ReconcileCard.jsx')), /\{mark \|\| <StatusMark kind=\{o\.kind\} label=\{status \|\| o\.word\} \/>\}/, 'without mark, drawn as before');
+    assert.match(read(join(COMPONENTS, 'records/ReconcileCard.jsx')), /\{(none \? null : )?mark \|\| <StatusMark kind=\{o\.kind\} label=\{status \|\| o\.word\} \/>\}/, 'without mark, drawn as before');
   });
 });

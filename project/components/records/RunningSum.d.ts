@@ -1,11 +1,12 @@
 /** @startingPoint section="Records" subtitle="Running sum: a goods received note's lines total against the ticket net, Exact, Within or Beyond tolerance (M4.DS.01)" viewport="420x120" */
-export type RunningSumState = 'exact' | 'within' | 'beyond';
-export const RUNNING_SUM_MARKS: Record<RunningSumState, { kind: string; word: string }>;
+/** `none`: nothing added yet, so the sum reads "none yet" with no verdict and no difference (card 1.6, C-NewGRN row 8). */
+export type RunningSumState = 'exact' | 'within' | 'beyond' | 'none';
+export const RUNNING_SUM_MARKS: Record<Exclude<RunningSumState, 'none'>, { kind: string; word: string }>;
 /** "32.140" as 32140 thousandths of a tonne. */
 export function thousandths(t: string | number): number;
 /** 440 as "0.440". */
 export function tonnes(k: number): string;
-/** Exact when the two are equal, within when the difference is at most the tolerance, beyond otherwise. */
+/** None while the total is zero, exact when the two are equal, within when the difference is at most the tolerance, beyond otherwise. */
 export function runningSumState(total: string | number, target: string | number, tolerance?: string | number): RunningSumState;
 export interface RunningSumProps {
   /** "Lines total". */

@@ -16,8 +16,10 @@ export function tonnes(k) {
   return `${sign}${Math.floor(a / 1000).toLocaleString('en-GB')}.${String(a % 1000).padStart(3, '0')}`;
 }
 
-/** Where a running sum stands against its target: exact, within the tolerance, or beyond it. */
+/** Where a running sum stands against its target: exact, within the tolerance, or beyond it; `none` while nothing is
+    added yet, so an empty note is never judged (card 1.6, C-NewGRN row 8). */
 export function runningSumState(total, target, tolerance = 0) {
+  if (thousandths(total) === 0) return 'none';
   const d = Math.abs(thousandths(total) - thousandths(target));
   if (d === 0) return 'exact';
   return d <= thousandths(tolerance) ? 'within' : 'beyond';
@@ -35,6 +37,7 @@ export const RUNNING_SUM_MARKS = {
 export function RunningSum({ label = 'Lines total', total, target, targetLabel = 'Ticket net', tolerance = 0, unit = 't', style }) {
   const state = runningSumState(total, target, tolerance);
   const mark = RUNNING_SUM_MARKS[state];
+  const none = state === 'none';
   const t = thousandths(total);
   const g = thousandths(target);
   const share = g > 0 ? Math.min(1, t / g) : 0;
@@ -42,12 +45,12 @@ export function RunningSum({ label = 'Lines total', total, target, targetLabel =
     <div data-running-sum={state} style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0, ...style }}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 12px' }}>
         <span style={textStyle('body-3', { tone: 'secondary' })}>{label}</span>
-        <span style={textStyle('body-3', { strong: true, tabular: true })}>{tonnes(t)} {unit} of {tonnes(g)} {unit} {targetLabel.toLowerCase()}</span>
+        <span style={textStyle('body-3', { strong: true, tabular: true })}>{none ? 'none yet' : `${tonnes(t)} ${unit} of ${tonnes(g)} ${unit} ${targetLabel.toLowerCase()}`}</span>
       </div>
       <ShareBar share={share} color="var(--content-primary)" maxWidth="100%" height={4} />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 12px' }}>
-        <StatusMark kind={mark.kind} label={mark.word} size="body-4" />
-        {state === 'exact' ? null : <span style={textStyle('body-4', { tone: 'secondary', tabular: true })}>Difference {tonnes(Math.abs(t - g))} {unit}</span>}
+        {none ? null : <StatusMark kind={mark.kind} label={mark.word} size="body-4" />}
+        {state === 'exact' || none ? null : <span style={textStyle('body-4', { tone: 'secondary', tabular: true })}>Difference {tonnes(Math.abs(t - g))} {unit}</span>}
       </div>
     </div>
   );

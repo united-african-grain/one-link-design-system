@@ -4,7 +4,7 @@ export interface KpiTileProps {
   label: React.ReactNode;
   /** The figure as a tile shows it: "USD 2.66M", "78.2%" (K or M only in tiles, UX-11). */
   value?: React.ReactNode;
-  /** One line under the figure: "As of 26 Sep 2026, 07:02 CAT", "21.8% of total exposure". */
+  /** One line under the figure: "ROE updated 26 Sep", "21.8% of total exposure". */
   caption?: React.ReactNode;
   /** The figure rests on a setting with no value: Not set with the amber triangle in its place, never a zero (UX-16). */
   notSet?: boolean;

@@ -12,13 +12,19 @@ export const RECONCILE_OUTCOMES = {
   'beyond-allowance': { kind: 'attention', word: 'Beyond allowance' },
 };
 
+/** Nothing to judge yet (card 1.6, C-NewGRN row 8): until the check's inputs are in, the card draws its rows and no
+    verdict at all, no word and no icon. A form passes it while a count or a line is still missing. */
+export const RECONCILE_NOTHING_YET = 'none';
+
 /**
  * The Reconcile card (map UX-20): where a record or form checks one quantity against another, a
  * card at the right with label and value rows, the key difference in bold, and a closing status
  * line with its icon: Within tolerance, Within allowance, Beyond tolerance or Beyond allowance. `mark` (M4.DS.02) is a closing line of
  * the check's own, such as a bag count's Count sheet matches or Count mismatch; left out, the line is drawn as before.
+ * `outcome="none"` is nothing to judge yet: the rows and no closing line, so an empty form never reads as a verdict.
  */
 export function ReconcileCard({ title = 'Reconcile', rows = [], outcome = 'within', status, mark, style }) {
+  const none = outcome === RECONCILE_NOTHING_YET;
   const o = RECONCILE_OUTCOMES[outcome] || RECONCILE_OUTCOMES.within;
   return (
     <Card title={title} style={style}>
@@ -30,7 +36,7 @@ export function ReconcileCard({ title = 'Reconcile', rows = [], outcome = 'withi
           </React.Fragment>
         ))}
       </dl>
-      {mark || <StatusMark kind={o.kind} label={status || o.word} />}
+      {none ? null : mark || <StatusMark kind={o.kind} label={status || o.word} />}
     </Card>
   );
 }

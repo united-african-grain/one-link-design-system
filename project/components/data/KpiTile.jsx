@@ -17,7 +17,8 @@ export function kpiTiles(tiles = []) {
  * the whole tile opens Calculation details. Money carries its currency code and may use K or M here, and only here
  * (UX-11). A figure that rests on a setting with no value (no exchange rate at all) is `notSet`: the tile shows Not
  * set with the amber triangle in the figure's place, never a zero, and its Calculation details names the setting and
- * its owner (UX-16). The tile is a real button when `onOpen` is given, so Tab reaches it and Enter opens it.
+ * its owner (UX-16). The tile is a real button when `onOpen` is given, so Tab reaches it and Enter opens it. The figure is
+ * never cut with an ellipsis: a long one wraps and the tile grows (card 1.6).
  */
 export function KpiTile({ label, value, caption, notSet = false, onOpen, size = 'heading-1-condensed', style }) {
   const { hover, down, focusVisible, handlers } = useInteraction({ inert: !onOpen });
@@ -31,7 +32,7 @@ export function KpiTile({ label, value, caption, notSet = false, onOpen, size = 
     <>
       <span style={textStyle('body-3', { tone: 'secondary' })}>{label}</span>
       {notSet ? <span data-not-set="" style={{ minHeight: 32, display: 'inline-flex', alignItems: 'center' }}><NotSet size="body-2" /></span>
-        : <span style={{ ...textStyle(size, { tabular: true }), whiteSpace: 'nowrap', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{value}</span>}
+        : <span data-value="" style={{ ...textStyle(size, { tabular: true }), maxWidth: '100%', overflowWrap: 'anywhere' }}>{value}</span>}
       {caption ? <span style={{ ...textStyle('body-4', { tone: 'secondary' }), fontVariantNumeric: 'tabular-nums', textWrap: 'pretty' }}>{caption}</span> : null}
     </>);
 }

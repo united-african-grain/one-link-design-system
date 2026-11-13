@@ -9,3 +9,5 @@ The running sum of a goods received note's lines against the ticket net (M4.DS.0
 - Three states, each an icon and a word: Exact, Within tolerance, Beyond tolerance. `runningSumState(total, target, tolerance)` says which.
 - Weights are summed as thousandths of a tonne (`thousandths`, `tonnes`), so 0.1 plus 0.2 never reads 0.30000000000000004 and three decimals stay three decimals (UX-12).
 - The full three-way check (ticket net, lines total and offload tally) is `ThreeWayReconcile`, in the Reconcile card at the right.
+
+While nothing is added the total is zero and the sum is `none`: it reads "none yet", with no verdict and no difference, so an empty note is never Beyond tolerance (card 1.6, C-NewGRN row 8).

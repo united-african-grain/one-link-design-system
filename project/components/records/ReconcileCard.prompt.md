@@ -29,3 +29,9 @@ Two pairs, never mixed: `within` and `beyond` for a tolerance (Within tolerance,
 `mark` puts a check's own closing line in place of the outcome's: the bag count's `CountMatch` (M4.DS.02). The outbound figures (ordered, loaded, ticket net) are `OutboundReconcile`, and the fertiliser weighbridge check is `VarianceReconcile`; both compose this card.
 
 `ReconcilePanel` (within, held, block) is kept for the screens built before the map's convention.
+
+Nothing to judge yet (card 1.6, C-NewGRN row 8): while a form's counts or lines are not in, pass `outcome="none"` (`RECONCILE_NOTHING_YET`). The rows are drawn and there is no closing line at all, no word and no icon, so an empty form never reads Counts match or Beyond tolerance.
+
+```jsx
+<ReconcileCard rows={[{ label: 'Ticket net', value: '24.500 t' }, { label: 'Lines total', value: 'none yet' }]} outcome="none" />
+```

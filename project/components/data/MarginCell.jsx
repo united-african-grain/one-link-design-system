@@ -15,12 +15,14 @@ export function marginSign(value) {
   return n < 0 ? 'negative' : n > 0 ? 'positive' : 'zero';
 }
 
-/** The figure as it is read: the sign as a typographic minus, after the currency code when one is given (UX-11:
-    "USD -800.00" in a field; "-800.00" in a table whose header names the currency), then the unit ("per t"). */
+/** The figure as it is read: the sign as a typographic minus, with the currency in front when one is given (UX-11, fix
+    list 2, card 1.1): kwacha as K with no space ("K320.00", "−K800.00"), every other currency its code and a space
+    ("USD −800.00"); "−800.00" in a table whose header names the currency; then the unit ("per t"). */
 export function marginWords(value, { currency, unit } = {}) {
   const raw = String(value).trim().replace(/^[-−]\s*/, '');
-  const negative = marginSign(value) === 'negative';
-  return [currency, `${negative ? '−' : ''}${raw}`, unit].filter(Boolean).join(' ');
+  const minus = marginSign(value) === 'negative' ? '−' : '';
+  const figure = !currency ? `${minus}${raw}` : currency === 'ZMW' ? `${minus}K${raw}` : `${currency} ${minus}${raw}`;
+  return [figure, unit].filter(Boolean).join(' ');
 }
 
 /**

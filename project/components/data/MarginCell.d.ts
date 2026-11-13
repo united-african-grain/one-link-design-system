@@ -2,12 +2,12 @@
 export type MarginSign = 'positive' | 'zero' | 'negative' | 'notSet';
 /** The sign of a margin figure; no value at all, or one that is not a number, is notSet, never 0. */
 export function marginSign(value?: string | number | null): MarginSign;
-/** "USD -800.00 per t" with a typographic minus; the currency and unit are left out where a table header names them. */
+/** "USD −800.00 per t" or "−K800.00 per t" (kwacha is K with no space) with a typographic minus; the currency and unit are left out where a table header names them. */
 export function marginWords(value: string | number, options?: { currency?: string; unit?: string }): string;
 export interface MarginCellProps {
   /** The figure as a string: "8,365.00", "-800.00", "11.95". */
   value?: string | number | null;
-  /** "USD" or "ZMW" in a field; left out in a table whose header carries it, e.g. Margin (USD). */
+  /** "USD" or "ZMW" (written K) in a field; left out in a table whose header carries it, e.g. Margin (USD). */
   currency?: string;
   /** "per t" for a per-tonne margin. */
   unit?: string;

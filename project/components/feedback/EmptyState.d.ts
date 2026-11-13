@@ -3,7 +3,7 @@ export interface EmptyStateProps {
   title?: React.ReactNode;
   /** e.g. "Checked 07:02 · next digest 13:00" */
   meta?: React.ReactNode;
-  /** success = green check (nothing to do); neutral = tertiary icon (no data). */
+  /** neutral (the default) = tertiary icon, for an empty list; success = green check, only for something done and good (U4). */
   tone?: 'success' | 'neutral';
   style?: React.CSSProperties;
 }

@@ -377,7 +377,7 @@ describe('[M3.DS.01] the components', () => {
   });
 
   test('[M3.DS.01] every figure renders an as-at line', () => {
-    assert.match(fn(overview, 'OverviewFigure'), /<span data-as-of="" [^>]*>As of \{figure\.asOf\}<\/span>/);
+    assert.match(fn(overview, 'OverviewFigure'), /<span data-as-of="" [^>]*>As at \{figure\.asOf\}<\/span>/);
     assert.doesNotMatch(fn(overview, 'OverviewFigure'), /figure\.asOf \?/, 'the line is never conditional');
     for (const cp of ['RIVERBEND', 'LAKEVIEW']) {
       const figures = literal(counterparties, cp).figures;

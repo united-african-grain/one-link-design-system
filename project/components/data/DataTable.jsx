@@ -69,7 +69,7 @@ export function DataTable({ columns: given, rows, footer, total, page = 1, pageS
   };
   return (
     <div ref={outer} style={{ width: '100%', ...style }}>
-      <div style={scroll ? { overflowX: 'auto', margin: '0 -8px', padding: '0 8px', WebkitOverflowScrolling: 'touch' } : undefined}>
+      <div data-table-scroll={scroll || undefined} style={scroll ? { overflowX: 'auto', WebkitOverflowScrolling: 'touch' } : undefined}>
       <div style={scroll ? { minWidth: tableMin } : undefined}>
       {groupLabels ? <div style={{ display: 'grid', gridTemplateColumns: grid, height: 24 }}>{groupLabels.map((g, i) => <div key={i} style={{ gridColumn: g.span ? `span ${g.span}` : undefined, padding: '0 12px', display: 'flex', alignItems: 'center', ...textStyle('caption-1-condensed', { tone: 'tertiary' }) }}>{g.label}</div>)}</div> : null}
       <div role="row" style={{ display: 'grid', gridTemplateColumns: grid, height: 36, boxShadow: 'inset 0 -1px 0 var(--border-light)' }}>
@@ -78,7 +78,7 @@ export function DataTable({ columns: given, rows, footer, total, page = 1, pageS
       {rows.map((r, i) => (
         <React.Fragment key={keyOf(r, i)}>
           <div role="row" onMouseEnter={() => setHoverI(i)} onMouseLeave={() => setHoverI(-1)} style={{ position: 'relative', display: 'grid', gridTemplateColumns: grid, height: wraps ? undefined : 48, minHeight: 48, boxShadow: r.correction ? 'none' : 'inset 0 -1px 0 var(--border-light)', opacity: r.closed ? 0.6 : 1 }}>
-            <span aria-hidden style={{ position: 'absolute', inset: '2px -8px', borderRadius: 'var(--radius-md)', background: 'var(--grouped)', opacity: hoverI === i ? 1 : 0, transition: 'opacity var(--dur-default) var(--ease-default)', pointerEvents: 'none' }} />
+            <span aria-hidden style={{ position: 'absolute', inset: scroll ? '2px 0' : '2px -8px', borderRadius: 'var(--radius-md)', background: 'var(--grouped)', opacity: hoverI === i ? 1 : 0, transition: 'opacity var(--dur-default) var(--ease-default)', pointerEvents: 'none' }} />
             {columns.map((c) => cell(c, r, i))}
           </div>
           {expand && isOpen(keyOf(r, i)) && expand(r) ? (
